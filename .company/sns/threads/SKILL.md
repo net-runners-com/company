@@ -25,9 +25,30 @@ trigger: /threads
 ├── references/
 │   └── styles/
 │       └── ren.md                # れんのスタイルガイド
+├── output/
+│   └── {style}/
+│       └── YYYY-MM-DD-HHMM.txt  # 投稿テキスト（1投稿1ファイル）
+├── logs/
+│   └── posts.log                 # 投稿ログ
 └── research/
     └── analysis-2026-03-26.md    # 競合分析レポート
 ```
+
+## ログ・投稿管理
+
+### 投稿前に必ずログを確認する
+```bash
+cat .company/sns/threads/logs/posts.log
+```
+
+### ログ形式
+```
+YYYY-MM-DD HH:MM | {style} | {トピック} | {投稿テキスト全文}
+```
+
+### 投稿テキストの保存
+- `output/{style}/YYYY-MM-DD-HHMM.txt` に投稿テキストを保存
+- 投稿後にログを `logs/posts.log` に追記
 
 ## 投稿ワークフロー
 

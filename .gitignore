@@ -6,3 +6,7 @@ docs/.vitepress/dist/
 my/
 *.env
 .env
+features/preview/fonts/
+features/preview/node_modules/
+todo-app/node_modules/
+www/construction-lp/node_modules/

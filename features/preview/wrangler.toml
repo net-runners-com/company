@@ -1,0 +1,7 @@
+name = "article-preview"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+[[kv_namespaces]]
+binding = "PREVIEWS"
+id = "0d537b92cdc444859b28da4c0d852561"

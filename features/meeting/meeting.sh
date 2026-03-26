@@ -31,6 +31,7 @@ get_dept_info() {
     PM)         echo "pm|PM" ;;
     開発)       echo "dev|開発" ;;
     SNS)        echo "sns|SNS運用" ;;
+    新規事業)    echo "newbiz|新規事業開発" ;;
     *)          echo "" ;;
   esac
 }

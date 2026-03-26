@@ -126,6 +126,50 @@ chrome_profile: Profile X
 |-----------|---------|---------------|---------------|
 | ren | れん｜自己開発（啓発）ASD/ADHDグレーゾーン | Profile 3 | @personal_dev |
 
+## 記事ファイルのルール
+
+### title.txt と article.md は完全に分離する
+
+- `title.txt`: タイトルのみ（1行）
+- `article.md`: **本文のみ**。`# タイトル` 行を含めない
+- 投稿スクリプトはタイトルを `title.txt` から読み、本文を `article.md` から読む
+- article.md に `# タイトル` が入っていると、noteエディタ上でタイトルが2重表示される
+
+### article.md に含めないもの
+
+- `# タイトル`（h1見出し） → title.txt に分離済み
+- `---`（水平線 / セパレーター） → noteエディタでは不要。余計な空白になる
+
+### 正しい article.md の例
+
+```markdown
+僕は朝が、本当に無理だった。
+
+目覚ましを5個セットしても起きれない。（本文が続く…）
+
+## 「早く寝ろ」が通用しない脳
+
+ADHDグレーの脳は、夜になると覚醒する。（本文が続く…）
+```
+
+## 投稿前の確認事項
+
+### 投稿ログを必ず確認する
+
+投稿前に `logs/posts.log` を読んで、同じ記事が既に投稿されていないか確認する。
+
+```bash
+cat .company/sns/note/logs/posts.log
+```
+
+ログ形式: `日時 | スタイル | タイトル | 概要`
+
+### 投稿後はログを更新する
+
+```
+YYYY-MM-DD HH:MM | {style} | {タイトル} | {1行概要}
+```
+
 ## 投稿フロー（post_to_note.py の処理順）
 
 1. **Step 1: エディタを開く** — `editor.note.com/new` をChromeプロファイルで開く
@@ -158,6 +202,7 @@ chrome_profile: Profile X
 
 | Markdown | HTML | note上の表示 |
 |----------|------|------------|
+| `# タイトル` | **スキップ** | title.txtと重複するため除去 |
 | `## 見出し` | `<h3>見出し</h3>` | 見出し（目次にも反映） |
 | `### 小見出し` | `<h4>小見出し</h4>` | 小見出し |
 | `**太字**` | `<b>太字</b>` | **太字** |
@@ -165,6 +210,7 @@ chrome_profile: Profile X
 | `> 引用` | `<blockquote>引用</blockquote>` | 引用ブロック |
 | `- リスト` | `<ul><li>リスト</li></ul>` | 箇条書き |
 | `` ```コード``` `` | `<pre><code>コード</code></pre>` | コードブロック |
+| `---` | **スキップ** | noteでは不要。noteでは反映されない |
 | 空行 | `<br>` | 段落区切り |
 | 通常テキスト | `<p>テキスト</p>` | 段落 |
 
@@ -217,6 +263,9 @@ chrome_profile: Profile X
 | 有料設定が反映されない | エディタページで設定しようとした | 公開ページ（/publish/）でのみ設定可能 |
 | タイトル入力できない | Shadow DOM内のtextarea | JS fallbackでShadow DOMを横断して操作 |
 | 目次が先頭に入らない | 本文の後に目次を挿入した | 目次は本文より先に挿入する（Step 3 → Step 4の順） |
+| タイトルが2重表示 | article.md に `# タイトル` が残っている | article.md には本文のみ。タイトルは title.txt に分離 |
+| `---` が空白として表示 | 水平線がnoteで不要な空白になる | article.md に `---` を含めない。markdown_to_html() でスキップ |
+| 同じ記事を2回投稿した | 投稿ログを確認せず投稿した | 投稿前に必ず logs/posts.log を確認する |
 | `**太字**` がそのまま表示される | `insertText` を使っている | `insertHTML` + `markdown_to_html()` を使う |
 | stateクリックで意図しない要素が反応 | stateインデックスのズレ | JS `eval` で `getElementById` を直接使う |
 

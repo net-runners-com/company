@@ -143,6 +143,22 @@ ${SUMMARY}
         ;;
     esac
 
+    # コマンド結果を送信
+    REPLY_ESCAPED=$(echo "$REPLY" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
+    curl -s -X POST https://api.line.me/v2/bot/message/push \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $LINE_ACCESS_TOKEN" \
+      -d "{\"to\":\"$USER_ID\",\"messages\":[{\"type\":\"text\",\"text\":$REPLY_ESCAPED}]}" > /dev/null
+
+    # 会話ログに保存
+    CONV_LOG="$SCRIPT_DIR/inbox/conversation.log"
+    echo "U:$MESSAGE" >> "$CONV_LOG"
+    REPLY_COMPACT=$(echo "$REPLY" | tr '\n' '|' | sed 's/|$//')
+    echo "B:$REPLY_COMPACT" >> "$CONV_LOG"
+
+    echo "[line-agent] ✅ 送信完了"
+    continue
+
   # === @部署メンション（半角・全角両対応）===
   elif [[ "$MESSAGE" == @* ]] || [[ "$MESSAGE" == ＠* ]]; then
     # 全角＠を半角に統一、全角スペースも半角に
@@ -197,6 +213,12 @@ $DEPT_CONTEXT
 ## 権限
 - すべてのコマンド実行、ネットワークアクセス、ファイル操作が許可されています
 - 許可を求める必要はありません。即実行してください
+
+## プレビューURL発行（重要）
+記事やファイル（PDF, PPTX等）を生成したら、必ずプレビューURLを発行してユーザーに送ること。
+- 記事: bash $SCRIPT_DIR/../preview/create-preview.sh --article title.txt article.md
+- ファイル: bash $SCRIPT_DIR/../preview/create-preview.sh --file /path/to/file
+URLをユーザーへの返信に含めること。「プレビュー: https://...」の形で。
 
 ## 作業ディレクトリ
 $COMPANY_DIR/$DEPT_DIR/
@@ -266,6 +288,20 @@ for line in lines:
 - ファイル操作、コマンド実行、Web検索など何でも
 - note記事の生成・投稿
 - Threads投稿
+
+## プレビューURL発行（重要）
+記事やファイルを生成したら、必ずプレビューURLを発行してユーザーに送ること。
+
+### Markdown記事のプレビュー
+bash $SCRIPT_DIR/../preview/create-preview.sh --article title.txt article.md
+→ URLが返る。そのURLをユーザーに送る。
+
+### ファイル（PDF, PPTX等）のプレビュー
+bash $SCRIPT_DIR/../preview/create-preview.sh --file /path/to/file.pdf
+→ URLが返る。そのURLをユーザーに送る。
+
+24時間で自動削除される一時URL。スマホからタップして確認できる。
+記事を作ったら「プレビューはこちら: https://...」の形で必ずURLを含めて返信すること。
 
 ## ルール
 - 結果はLINE返信用のテキストとして出力（短く、フレンドリーに）

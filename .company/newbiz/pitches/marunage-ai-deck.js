@@ -39,7 +39,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 9,
     h: 0.35,
     fontSize: 7,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.sourceGray,
     margin: 0,
   });
@@ -71,7 +71,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8,
     h: 1.2,
     fontSize: 48,
-    fontFace: "Arial Black",
+    fontFace: "Noto Sans JP",
     color: C.white,
     bold: true,
     margin: 0,
@@ -82,7 +82,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 7,
     h: 0.6,
     fontSize: 22,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.light,
     margin: 0,
   });
@@ -101,7 +101,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 5,
     h: 0.4,
     fontSize: 14,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.gray,
     margin: 0,
   });
@@ -114,7 +114,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 7,
       h: 0.8,
       fontSize: 12,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.lightText,
       margin: 0,
     }
@@ -132,7 +132,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.navy,
     bold: true,
     margin: 0,
@@ -153,7 +153,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 2.6,
     h: 0.8,
     fontSize: 30,
-    fontFace: "Arial Black",
+    fontFace: "Noto Sans JP",
     color: C.accent,
     align: "center",
     margin: 0,
@@ -164,7 +164,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 2.6,
     h: 0.35,
     fontSize: 11,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.gray,
     align: "center",
     margin: 0,
@@ -177,7 +177,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 2.4,
       h: 0.9,
       fontSize: 8,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.sourceGray,
       align: "center",
       margin: 0,
@@ -199,7 +199,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 2.6,
     h: 0.8,
     fontSize: 30,
-    fontFace: "Arial Black",
+    fontFace: "Noto Sans JP",
     color: C.orange,
     align: "center",
     margin: 0,
@@ -210,7 +210,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 2.6,
     h: 0.35,
     fontSize: 11,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.gray,
     align: "center",
     margin: 0,
@@ -223,7 +223,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 2.4,
       h: 0.9,
       fontSize: 8,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.sourceGray,
       align: "center",
       margin: 0,
@@ -245,7 +245,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 2.6,
     h: 0.8,
     fontSize: 30,
-    fontFace: "Arial Black",
+    fontFace: "Noto Sans JP",
     color: C.red,
     align: "center",
     margin: 0,
@@ -256,7 +256,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 2.6,
     h: 0.35,
     fontSize: 11,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.gray,
     align: "center",
     margin: 0,
@@ -269,7 +269,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 2.4,
       h: 0.9,
       fontSize: 8,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.sourceGray,
       align: "center",
       margin: 0,
@@ -306,7 +306,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 8.0,
       h: 0.6,
       fontSize: 12,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       valign: "middle",
       margin: 0,
     }
@@ -324,7 +324,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.navy,
     bold: true,
     margin: 0,
@@ -399,7 +399,7 @@ const addSource = (slide, text, y = 4.85) => {
         options: { fontSize: 7, color: C.sourceGray },
       },
     ],
-    { x: 5.5, y: 1.2, w: 3.8, h: 1.0, fontFace: "Arial", margin: 0 }
+    { x: 5.5, y: 1.2, w: 3.8, h: 1.0, fontFace: "Noto Sans JP", margin: 0 }
   );
 
   // SAM
@@ -426,7 +426,7 @@ const addSource = (slide, text, y = 4.85) => {
         options: { fontSize: 7, color: C.sourceGray },
       },
     ],
-    { x: 5.5, y: 2.4, w: 3.8, h: 1.0, fontFace: "Arial", margin: 0 }
+    { x: 5.5, y: 2.4, w: 3.8, h: 1.0, fontFace: "Noto Sans JP", margin: 0 }
   );
 
   // SOM
@@ -453,7 +453,7 @@ const addSource = (slide, text, y = 4.85) => {
         options: { fontSize: 7, color: C.sourceGray },
       },
     ],
-    { x: 5.5, y: 3.6, w: 3.8, h: 1.0, fontFace: "Arial", margin: 0 }
+    { x: 5.5, y: 3.6, w: 3.8, h: 1.0, fontFace: "Noto Sans JP", margin: 0 }
   );
 }
 
@@ -468,7 +468,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.white,
     bold: true,
     margin: 0,
@@ -498,7 +498,7 @@ const addSource = (slide, text, y = 4.85) => {
         options: { fontSize: 7, color: C.sourceGray },
       },
     ],
-    { x: 0.7, y: 1.3, w: 3.9, h: 1.3, fontFace: "Arial", margin: 0 }
+    { x: 0.7, y: 1.3, w: 3.9, h: 1.3, fontFace: "Noto Sans JP", margin: 0 }
   );
 
   // トレンド2: LINE普及
@@ -525,7 +525,7 @@ const addSource = (slide, text, y = 4.85) => {
         options: { fontSize: 7, color: C.sourceGray },
       },
     ],
-    { x: 5.4, y: 1.3, w: 3.9, h: 1.3, fontFace: "Arial", margin: 0 }
+    { x: 5.4, y: 1.3, w: 3.9, h: 1.3, fontFace: "Noto Sans JP", margin: 0 }
   );
 
   // トレンド3: オンラインアシスタント浸透率
@@ -552,7 +552,7 @@ const addSource = (slide, text, y = 4.85) => {
         options: { fontSize: 7, color: C.sourceGray },
       },
     ],
-    { x: 0.7, y: 3.1, w: 3.9, h: 1.3, fontFace: "Arial", margin: 0 }
+    { x: 0.7, y: 3.1, w: 3.9, h: 1.3, fontFace: "Noto Sans JP", margin: 0 }
   );
 
   // トレンド4: チャットボット市場
@@ -584,7 +584,7 @@ const addSource = (slide, text, y = 4.85) => {
         options: { fontSize: 7, color: C.sourceGray },
       },
     ],
-    { x: 5.4, y: 3.1, w: 3.9, h: 1.3, fontFace: "Arial", margin: 0 }
+    { x: 5.4, y: 3.1, w: 3.9, h: 1.3, fontFace: "Noto Sans JP", margin: 0 }
   );
 
   addSource(
@@ -605,7 +605,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 24,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.white,
     bold: true,
     margin: 0,
@@ -619,7 +619,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 8.5,
       h: 0.4,
       fontSize: 14,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.light,
       margin: 0,
     }
@@ -647,7 +647,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 1.8,
       h: 1.2,
       fontSize: 13,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.white,
       align: "center",
       valign: "middle",
@@ -700,7 +700,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 2.2,
       h: 0.4,
       fontSize: 12,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.accent,
       bold: true,
       align: "center",
@@ -712,7 +712,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 2.0,
       h: 0.9,
       fontSize: 9,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.lightText,
       align: "center",
       margin: 0,
@@ -731,7 +731,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.navy,
     bold: true,
     margin: 0,
@@ -752,7 +752,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 3.8,
     h: 0.4,
     fontSize: 12,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.white,
     align: "center",
     fill: { color: "06C755" },
@@ -884,7 +884,7 @@ const addSource = (slide, text, y = 4.85) => {
         options: { fontSize: 11, color: C.gray },
       },
     ],
-    { x: 5.2, y: 1.2, w: 4.3, h: 3.8, fontFace: "Arial", margin: 0 }
+    { x: 5.2, y: 1.2, w: 4.3, h: 3.8, fontFace: "Noto Sans JP", margin: 0 }
   );
 }
 
@@ -899,7 +899,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.navy,
     bold: true,
     margin: 0,
@@ -952,7 +952,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 2.9,
       h: 0.6,
       fontSize: 16,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.white,
       bold: true,
       align: "center",
@@ -967,7 +967,7 @@ const addSource = (slide, text, y = 4.85) => {
         },
         { text: " /月", options: { fontSize: 12, color: C.gray } },
       ],
-      { x, y: 1.75, w: 2.9, h: 0.5, align: "center", fontFace: "Arial", margin: 0 }
+      { x, y: 1.75, w: 2.9, h: 0.5, align: "center", fontFace: "Noto Sans JP", margin: 0 }
     );
     s.addText(p.features, {
       x: x + 0.2,
@@ -975,7 +975,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 2.5,
       h: 1.2,
       fontSize: 10,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.gray,
       margin: 0,
     });
@@ -988,7 +988,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.4,
     fontSize: 14,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.navy,
     bold: true,
     margin: 0,
@@ -1021,7 +1021,7 @@ const addSource = (slide, text, y = 4.85) => {
     y: 4.15,
     w: 9,
     fontSize: 10,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     border: { pt: 0.5, color: "DEE2E6" },
     colW: [2.0, 2.3, 2.3, 2.4],
     rowH: [0.3, 0.3, 0.3, 0.3, 0.3],
@@ -1046,7 +1046,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.navy,
     bold: true,
     margin: 0,
@@ -1087,7 +1087,7 @@ const addSource = (slide, text, y = 4.85) => {
     y: 1.1,
     w: 9,
     fontSize: 10,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     border: { pt: 0.5, color: "DEE2E6" },
     colW: [1.8, 2.2, 2.2, 2.8],
     rowH: [0.45, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38, 0.38],
@@ -1128,7 +1128,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 8.6,
       h: 0.8,
       fontSize: 12,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       valign: "middle",
       margin: 0,
     }
@@ -1152,7 +1152,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.navy,
     bold: true,
     margin: 0,
@@ -1206,7 +1206,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 1.5,
       h: 0.8,
       fontSize: 11,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.white,
       bold: true,
       align: "center",
@@ -1227,7 +1227,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 3.3,
       h: 0.8,
       fontSize: 9,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.darkText,
       valign: "middle",
       margin: 0,
@@ -1246,7 +1246,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 3.6,
       h: 0.8,
       fontSize: 9,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.green,
       valign: "middle",
       margin: 0,
@@ -1293,7 +1293,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.white,
     bold: true,
     margin: 0,
@@ -1388,7 +1388,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 8.5,
       h: 0.5,
       fontSize: 13,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.light,
       align: "center",
       margin: 0,
@@ -1407,7 +1407,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.7,
     fontSize: 26,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.white,
     bold: true,
     margin: 0,
@@ -1466,7 +1466,7 @@ const addSource = (slide, text, y = 4.85) => {
       h: 2.2,
       fontSize: 11,
       color: C.light,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       margin: 0,
     }
   );
@@ -1530,7 +1530,7 @@ const addSource = (slide, text, y = 4.85) => {
       y: 1.7,
       w: 3.9,
       h: 2.2,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.white,
       margin: 0,
     }
@@ -1560,7 +1560,7 @@ const addSource = (slide, text, y = 4.85) => {
       w: 8.6,
       h: 0.8,
       fontSize: 13,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       color: C.white,
       align: "center",
       valign: "middle",
@@ -1580,7 +1580,7 @@ const addSource = (slide, text, y = 4.85) => {
     w: 8.5,
     h: 0.6,
     fontSize: 24,
-    fontFace: "Arial",
+    fontFace: "Noto Sans JP",
     color: C.navy,
     bold: true,
     margin: 0,
@@ -1612,7 +1612,7 @@ const addSource = (slide, text, y = 4.85) => {
       y: 0.95,
       w: 9,
       h: 4.2,
-      fontFace: "Arial",
+      fontFace: "Noto Sans JP",
       margin: 0,
       lineSpacingMultiple: 1.4,
     }
