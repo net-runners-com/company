@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Solutions | AI開発・業務自動化</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #11111a;
+      --bg3: #1a1a2e;
+      --accent: #6c63ff;
+      --accent2: #00d4aa;
+      --text: #e8e8f0;
+      --muted: #8888aa;
+      --border: rgba(108,99,255,0.2);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif;
+      line-height: 1.7;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      padding: 1.2rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 40%, rgba(108,99,255,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(0,212,170,0.08) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0; opacity: 0.04;
+      background-image:
+        linear-gradient(rgba(108,99,255,1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,1) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+    .badge {
+      display: inline-block; margin-bottom: 1.5rem;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(108,99,255,0.1);
+      font-size: 0.8rem; color: var(--accent); letter-spacing: 0.1em;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      color: var(--muted); font-size: 1.1rem;
+      margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+    .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 0.8rem 2rem; border-radius: 8px;
+      font-size: 0.95rem; font-weight: 600;
+      text-decoration: none; transition: all 0.2s; cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #8b80ff);
+      color: #fff; border: none;
+      box-shadow: 0 4px 20px rgba(108,99,255,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,99,255,0.5); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { background: rgba(108,99,255,0.1); border-color: var(--accent); }
+
+    /* SECTIONS */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 700; margin-bottom: 1rem;
+    }
+    .section-desc { color: var(--muted); max-width: 500px; margin-bottom: 3.5rem; }
+
+    /* SERVICES */
+    #services { background: var(--bg2); }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 2rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 30px rgba(108,99,255,0.15);
+    }
+    .card-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(0,212,170,0.1));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1.2rem;
+    }
+    .card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+    .card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+
+    /* ABOUT */
+    #about .about-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .about-visual {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2.5rem; text-align: center;
+    }
+    .avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+    .about-visual h3 { font-weight: 700; margin-bottom: 0.3rem; }
+    .about-visual span { color: var(--muted); font-size: 0.85rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; justify-content: center; }
+    .tag {
+      padding: 0.3rem 0.8rem; border-radius: 999px;
+      background: rgba(108,99,255,0.1); border: 1px solid var(--border);
+      font-size: 0.75rem; color: var(--accent);
+    }
+    .about-text h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; }
+    .about-text p { color: var(--muted); margin-bottom: 1rem; font-size: 0.95rem; }
+
+    /* CONTACT */
+    #contact { background: var(--bg2); text-align: center; }
+    .contact-box {
+      max-width: 560px; margin: 0 auto;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 16px; padding: 3rem 2.5rem;
+    }
+    .contact-box p { color: var(--muted); margin-bottom: 2rem; }
+    .contact-box a.btn { display: inline-block; }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 2rem;
+      color: var(--muted); font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      #about .about-inner { grid-template-columns: 1fr; gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">AI Solutions</div>
+    <ul class="nav-links">
+      <li><a href="#services">サービス</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">お問い合わせ</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="badge">✦ AI-Powered Development</div>
+      <h1>
+        AIで、<br>
+        <span class="gradient-text">ビジネスを加速する。</span>
+      </h1>
+      <p class="hero-desc">
+        AI開発・業務自動化を通じて、あなたのビジネスの課題を解決します。
+        最新のAI技術で、開発スピードと業務効率を同時に高めます。
+      </p>
+      <div class="btn-group">
+        <a href="#contact" class="btn btn-primary">お問い合わせ</a>
+        <a href="#services" class="btn btn-outline">サービスを見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="container">
+      <div class="section-label">Services</div>
+      <h2 class="section-title">提供サービス</h2>
+      <p class="section-desc">最新のAI技術を活用し、お客様の課題に合わせたソリューションを提供します。</p>
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">🤖</div>
+          <h3>AIシステム開発</h3>
+          <p>LLMを活用したチャットボット・RAGシステム・AIエージェントの設計から実装まで対応します。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>業務自動化</h3>
+          <p>繰り返し作業をAIと自動化で解消。データ処理・レポート生成・ワークフロー自動化を実現します。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧠</div>
+          <h3>技術顧問・コンサル</h3>
+          <p>AI導入の方針策定から技術選定まで、事業の目標に合わせた最適なアドバイスを提供します。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-inner">
+        <div class="about-visual">
+          <div class="avatar">👤</div>
+          <h3>AI Solutions</h3>
+          <span>個人事業主 / AI Developer</span>
+          <div class="tags">
+            <span class="tag">Python</span>
+            <span class="tag">LLM</span>
+            <span class="tag">RAG</span>
+            <span class="tag">Automation</span>
+            <span class="tag">AI Agent</span>
+          </div>
+        </div>
+        <div class="about-text">
+          <div class="section-label">About</div>
+          <h2>AIで課題を解決する<br>エンジニア</h2>
+          <p>
+            最新のAI技術を活用したシステム開発・業務効率化を専門とする個人事業主です。
+          </p>
+          <p>
+            LLMやAIエージェントを活用したプロダクト開発から、
+            既存業務の自動化・効率化まで、幅広い課題に対応します。
+          </p>
+          <p>
+            スピードと品質にこだわり、クライアントのビジネス成果に直結する
+            ソリューションを提供します。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-box">
+        <div class="section-label">Contact</div>
+        <h2 class="section-title">お問い合わせ</h2>
+        <p>
+          プロジェクトのご相談・お見積りはお気軽にどうぞ。<br>
+          初回相談は無料で承っています。
+        </p>
+        <a href="mailto:contact@example.com" class="btn btn-primary">メールで相談する</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 AI Solutions. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
