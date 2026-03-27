@@ -122,6 +122,12 @@ python3 post_to_threads.py "テキスト" --profile "Profile 3" --topic "ASD"
 - **Y座標が最も大きい**ものがダイアログ内のボタン
 - まれにY座標が異常値（数百万）を返すことがある → リトライで解決
 
+### 投稿テキストのフォーマット
+- リスト・ステップ（①②③、箇条書き等）は**1項目ごとに改行**する。1行にベタ書きしない
+- **改行は1行改行のみ。空行（2行以上の改行）を入れない**
+- 本文にハッシュタグを含めない（トピックはUIで別途設定）
+- 詳細はスタイルガイド `references/styles/ren.md` の「フォーマットルール」を参照
+
 ### テキスト入力
 - `document.querySelector('[contenteditable=true]')` で投稿エリアを取得
 - `execCommand('insertText')` で挿入（React状態と整合させるため）

@@ -1,0 +1,7 @@
+{
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true,
+    "document-skills@anthropic-agent-skills": true,
+    "claude-mem@thedotmack": true
+  }
+}
