@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gws calendar:*)",
+      "WebFetch(domain:humalance.com)",
+      "WebFetch(domain:www.jtuc-rengo.or.jp)",
+      "WebSearch",
+      "WebFetch(domain:rimo.app)",
+      "WebFetch(domain:sg.wantedly.com)",
+      "Bash(npx create-expo-app@latest todo-app --template blank-typescript)",
+      "Bash(npm install:*)",
+      "Bash(npx expo:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7"
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
