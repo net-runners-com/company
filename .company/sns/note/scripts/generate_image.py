@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 
 # .env 読み込み
-env_path = Path(__file__).parent.parent / ".env"
+env_path = Path(__file__).resolve().parents[4] / ".env"
 if env_path.exists():
     for line in env_path.read_text().splitlines():
         line = line.strip()
