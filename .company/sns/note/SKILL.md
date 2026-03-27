@@ -270,6 +270,15 @@ YYYY-MM-DD HH:MM | {style} | {タイトル} | {1行概要}
 | `**太字**` がそのまま表示される | `insertText` を使っている | `insertHTML` + `markdown_to_html()` を使う |
 | stateクリックで意図しない要素が反応 | stateインデックスのズレ | JS `eval` で `getElementById` を直接使う |
 
+## 重要ルール
+
+### ディレクトリは `.company/sns/note/` 配下に統一する
+
+- 記事の出力先は必ず `.company/sns/note/output/{style}/{timestamp}/` に保存する
+- **`.company/sns/note-article/` のような別ディレクトリを作らないこと**
+- `/note-article` スキル（`.claude/skills/`）はエントリポイントであり、データの保存先ではない
+- スクリプト・ログ・リファレンス・出力は全て `.company/sns/note/` 以下に集約する
+
 ## 依存関係
 
 - **browser-use CLI**: `~/.browser-use-env/bin/browser-use`（ブラウザ自動操作）
