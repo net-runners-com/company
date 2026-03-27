@@ -69,3 +69,41 @@ U:/journal
 B:📒 仕訳帳（今月）|https://article-preview.hirotodev-line-crm.workers.dev/e8672255-e61f-4376-ad51-adf719a5a71c
 U:今日のニュースまとめて　
 B:📰 今日のニュースまとめ（3/27）||【国際・中東情勢】|🔴 米・イスラエルとイランの緊張が継続中。イスラエル軍がイラン革命防衛隊の海軍司令官を空爆で殺害。ホルムズ海峡は3週間タンカーが足止めされる異常事態に|🔴 イランは「米が地上侵攻なら紅海の船舶を標的にする」と警告||【ウクライナ】|🇺🇦 ゼレンスキー氏「米がドンバス割譲を要求」と明かし、割譲を拒否|🇺🇦 ウクライナ軍がロシアの原油輸出港を攻撃、4割超が停止||【国内】|🚨 池袋ポケモンセンターで元交際相手の男が女性店員を刺殺。男はストーカーで逮捕歴も釈放されていた|🏠 東京・目黒区自由が丘で住宅5棟焼ける火事、2人死亡|🍞 大阪・熊取町の給食パンからノロウイルス、633人が症状|🌊 岩手県で震度4の地震||【経済・テック】|📉 NY市場でナスダックが調整入り、株急落|⚡ 石油確保で東南アジアが日本に支援要請|🍎 アップル、Siriを競合AIアシスタントに開放へ
+U:https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/customaize-agent/skills/prompt-engineering
+
+このスキル入れて
+B:✅ プロンプトエンジニアリングスキルを入れました！||📂 `.company/skills/prompt-engineering/SKILL.md`||Few-Shot、Chain-of-Thought、説得原則（Authority・Commitment・Scarcity等）など、エージェントプロンプト設計のガイドが使えるようになりました 🛠️
+U:https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/sadd/skills/subagent-driven-development
+
+これも入れて
+B:✅ サブエージェント駆動開発（SADD）スキルも入れました！||📂 `.company/skills/subagent-driven-development/SKILL.md`||複雑なタスクをサブエージェントに分割・並列実行して高速に開発するためのフレームワークが使えるようになりました 🛠️
+U:https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/kaizen/skills/kaizen
+
+https://github.com/obra/superpowers/tree/main/skills/brainstorming
+
+https://github.com/michalparkola/tapestry-skills/tree/main/ship-learn-next
+
+https://github.com/michalparkola/tapestry-skills/tree/main/ship-learn-next
+
+
+https://github.com/ComposioHQ/awesome-claude-skills/tree/master/image-enhancer
+
+
+これらのスキルいれて
+B:||全エージェント完了。brainstorming スキルはスクリプト含む8ファイルも含めて完全にインストールされました。||最終確認 — 全スキル一覧:||```|.company/skills/|├── brainstorming/       ✅ (8ファイル)|├── image-enhancer/      ✅|├── kaizen/              ✅|├── prompt-engineering/  ✅ (前回)|├── ship-learn-next/     ✅|└── subagent-driven-development/ ✅ (前回)|```
+U:軽く今のノート投稿に関して分析結果だして
+B:📊 note投稿分析レポート||■ 現在の状況|・記事数: 4本（3/26に集中投稿）|・総ビュー: 25（3記事分、4本目は集計前）|・総スキ: 5|・コメント: 0||■ 記事別ランキング|1️⃣ 2回うつになった僕がnoteを始める理由|→ 14view / 2スキ（スキ率14.3%）|→ 自己紹介記事としてビュー最多。プロフ経由の流入||2️⃣ ADHDグレーの僕がToDoリストを捨てた結果|→ 6view / 2スキ（スキ率33.3%）🏆最高スキ率|→ 逆説×実用がめちゃ刺さってる||3️⃣ 感覚過敏の僕が飲み会を半分やめた結果|→ 5view / 1スキ（スキ率20.0%）
+U:[画像]
+B:画像を確認しました。カフェ・ベローチェのレシートです。|---|**LINE返信メッセージ:**|✅ 領収書を記録しました: ¥330 カフェ・ベローチェ（飲食費・ドリンク1点）
+U:/journal
+B:📒 仕訳帳（今月）|https://article-preview.hirotodev-line-crm.workers.dev/12830eb3-b446-424c-801b-df2272f7bfb3
+U:株のニュースみせて
+B:📉 今日の株ニュース（3/27）||■ 日経平均|前日比 -900円の大幅続落|→ 52,700円前後で推移中（前日終値 53,603円）||■ 下落の要因|・米国で半導体株が下落 → 東京市場にも波及|・中東情勢の悪化でリスク回避売りが加速||■ 注目銘柄|🔹 EDP — ホンダとダイヤモンドデバイス材料の共同研究で締結|🔹 住石HD — 豪州ワンボ炭鉱から配当12.1億円受領|🔹 サクサ — 今期配当を65円増額修正💰||■ 今後の見通し|岡三証券は「2027年3月に6万円」予想、野村證券も年末6万円に上方修正と強気。短期は中東リスクに注意⚠️||Sources:|- [日経新聞 株式市場](https://www.nikkei.com/markets/stocks/)
+U:今日の予定は
+B:📅 今日の予定（3/27）||・19:00〜21:00 会食||予定は1件だけ！夕方まではフリーだね🍽️
+U:/help
+B:📋 使えるコマンド一覧||【コマンド】|/help — このヘルプを表示|/calendar — 今後の予定を確認|/weather [都市] — 天気を確認|/todo — 今日のTODOを確認|/todo add [内容] — TODOを追加|/note — 最新のnote記事を確認|/threads [テキスト] — Threadsに投稿|/meeting [議題] — 部門横断会議を開催||【経理】|/finance — 経理ダッシュボード|/journal — 仕訳帳（今月）|/expenses — 経費一覧（今月）|/invoices — 請求書管理|/cash — 出納帳（今月）|/report — 月次レポート||【部署メンション】|@秘書 — スケジュール管理、TODO、相談|@経理 — 売上・経費・請求書|@営業 — リード管理・営業メール|@リサーチ — 市場調査・競合分析|@エンジニア — AI開発・技術設計|@PM — プロダクト方向性・仕様|@開発 — アプリ・Webサービス|@SNS — 投稿管理・コンテンツ企画|@新規事業 — アイデア検証・MVP・ピッチ||例: @秘書 明日の予定教えて|例: @経理 今月の経費まとめて||コマンドなしでメッセージを送ると、AIが自由に返答します。
+U:[画像]
+B:レシート画像を確認しました。|✅ 領収書を記録しました: ¥3,450 パレルモ池袋店（ランチ3名分・会議費）
+U:/journal
+B:📒 仕訳帳（今月）|https://article-preview.hirotodev-line-crm.workers.dev/94457879-8ce2-4829-b2ee-7773c6d7735f

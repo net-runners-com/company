@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>草分 拓弥 | Official</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Noto+Serif+JP:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07060e;--surface:rgba(255,255,255,0.04);--surface2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);--text:#f0eef5;--muted:rgba(255,255,255,0.5);
+  --dim:rgba(255,255,255,0.3);
+  --g1:#6c5ce7;--g2:#a855f7;--g3:#06b6d4;--g4:#3b82f6;
+  --glow:rgba(168,85,247,0.15);
+  --serif:'Noto Serif JP',serif;--sans:'Noto Sans JP',sans-serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);color:var(--text);background:var(--bg);line-height:1.8;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+img{max-width:100%;display:block}
+
+/* ---- Animated BG ---- */
+.bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-glow .orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.35;animation:float 20s ease-in-out infinite}
+.bg-glow .orb:nth-child(1){width:600px;height:600px;background:#6c5ce7;top:-10%;left:-10%;animation-delay:0s}
+.bg-glow .orb:nth-child(2){width:500px;height:500px;background:#06b6d4;bottom:-15%;right:-10%;animation-delay:-7s}
+.bg-glow .orb:nth-child(3){width:400px;height:400px;background:#a855f7;top:40%;left:50%;animation-delay:-14s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-40px) scale(1.05)}66%{transform:translate(-20px,30px) scale(.95)}}
+
+/* ---- Glass ---- */
+.glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px}
+
+/* ---- Nav ---- */
+nav{position:fixed;top:0;width:100%;z-index:100;padding:0 clamp(1.5rem,4vw,3rem);transition:all .4s}
+nav.scrolled{background:rgba(7,6,14,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;height:72px}
+.nav-logo{font-family:var(--serif);font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,var(--g2),var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{color:var(--muted);font-size:.82rem;letter-spacing:.06em;transition:color .3s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:.5rem 1.2rem;border-radius:8px;font-size:.82rem;font-weight:700;transition:opacity .3s}
+.nav-cta:hover{opacity:.85}
+@media(max-width:768px){.nav-links{display:none}}
+
+/* ---- Sections ---- */
+section{position:relative;z-index:1;padding:clamp(4rem,10vw,8rem) clamp(1.5rem,4vw,3rem)}
+.container{max-width:1000px;margin:0 auto}
+.sec-label{font-size:.68rem;letter-spacing:.35em;text-transform:uppercase;background:linear-gradient(135deg,var(--g2),var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;margin-bottom:.6rem}
+.sec-title{font-family:var(--serif);font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;margin-bottom:1rem;letter-spacing:.04em}
+.sec-bar{width:40px;height:3px;background:linear-gradient(90deg,var(--g1),var(--g3));margin-bottom:2rem;border-radius:2px}
+
+/* ---- Hero ---- */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:100px}
+.hero-inner{max-width:800px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:.4rem 1.2rem;border:1px solid rgba(168,85,247,0.3);border-radius:30px;color:var(--g2);font-size:.72rem;letter-spacing:.2em;margin-bottom:2rem;background:rgba(168,85,247,0.06)}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--g2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:var(--serif);font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.4;margin-bottom:1.5rem;background:linear-gradient(135deg,#fff 30%,var(--g2) 60%,var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-family:var(--serif);color:var(--muted);font-size:clamp(.9rem,1.5vw,1.15rem);margin-bottom:2.5rem;line-height:2}
+.hero-name{font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:900;margin-bottom:3rem;background:linear-gradient(135deg,var(--g2),var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stats{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:var(--serif);font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,var(--g2),var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stat-num span{font-size:.9rem}
+.hero-stat-label{color:var(--dim);font-size:.72rem;margin-top:.3rem;letter-spacing:.05em}
+
+/* ---- Vision ---- */
+.vision-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+.vision-card{padding:2rem;text-align:center}
+.vision-card .icon{font-size:2.5rem;margin-bottom:1rem}
+.vision-card h3{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:.8rem;background:linear-gradient(135deg,var(--g2),var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.vision-card p{color:var(--muted);font-size:.88rem}
+@media(max-width:600px){.vision-grid{grid-template-columns:1fr}}
+
+/* ---- Career ---- */
+.timeline{margin-top:2rem;position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--g1),var(--g3),transparent)}
+.tl-item{margin-bottom:2rem;position:relative}
+.tl-item::before{content:'';position:absolute;left:-24px;top:6px;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3));box-shadow:0 0 12px rgba(168,85,247,0.4)}
+.tl-year{font-family:var(--serif);font-size:.85rem;color:var(--g2);font-weight:700;margin-bottom:.2rem}
+.tl-text{color:var(--muted);font-size:.9rem}
+
+/* ---- Company ---- */
+.company-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+.company-card{padding:2rem}
+.company-card h3{font-family:var(--serif);font-size:1.15rem;font-weight:700;margin-bottom:.3rem}
+.company-card .tagline{color:var(--g2);font-size:.8rem;margin-bottom:1rem}
+.company-card p{color:var(--muted);font-size:.88rem}
+@media(max-width:600px){.company-grid{grid-template-columns:1fr}}
+
+/* ---- Business ---- */
+.biz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:2rem}
+.biz-card{padding:1.8rem;transition:transform .3s,box-shadow .3s}
+.biz-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(168,85,247,0.1)}
+.biz-num{font-family:var(--serif);font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--g1),var(--g3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:.3}
+.biz-card h3{font-family:var(--serif);font-size:1rem;font-weight:700;margin:.4rem 0 .6rem}
+.biz-card p{color:var(--muted);font-size:.82rem}
+
+/* ---- Staff ---- */
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2rem}
+.staff-card{padding:1.8rem;text-align:center}
+.staff-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3));margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.staff-card h4{font-weight:700;font-size:.95rem;margin-bottom:.5rem}
+.staff-card p{color:var(--muted);font-size:.82rem;font-style:italic}
+
+/* ---- Message ---- */
+.message-box{padding:clamp(2rem,5vw,3.5rem);text-align:center;position:relative;overflow:hidden}
+.message-box::before{content:'';position:absolute;inset:-2px;background:linear-gradient(135deg,var(--g1),var(--g2),var(--g3));border-radius:18px;z-index:-1}
+.message-box::after{content:'';position:absolute;inset:2px;background:var(--bg);border-radius:14px;z-index:-1}
+.message-box h3{font-family:var(--serif);font-size:clamp(1.2rem,2.5vw,1.6rem);font-weight:900;margin-bottom:1.5rem;line-height:1.8;background:linear-gradient(135deg,#fff,var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.message-box p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto;line-height:2}
+
+/* ---- Contact ---- */
+.contact-box{text-align:center;padding:3rem;background:linear-gradient(135deg,rgba(108,92,231,0.1),rgba(6,182,212,0.1));border:1px solid rgba(168,85,247,0.2);border-radius:16px}
+.contact-box h3{font-family:var(--serif);font-size:1.4rem;margin-bottom:1rem}
+.social-links{display:flex;justify-content:center;gap:1rem;margin-top:1.5rem}
+.social-links a{width:48px;height:48px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .3s}
+.social-links a:hover{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent;transform:translateY(-2px)}
+
+/* ---- Footer ---- */
+footer{position:relative;z-index:1;text-align:center;padding:2.5rem;color:var(--dim);font-size:.75rem;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<div class="bg-glow">
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+</div>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">草分 拓弥</a>
+    <div class="nav-links">
+      <a href="#vision">ビジョン</a>
+      <a href="#career">経歴</a>
+      <a href="#company">会社概要</a>
+      <a href="#business">事業</a>
+      <a href="#staff">スタッフの声</a>
+      <a class="nav-cta" href="#contact">お問い合わせ</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">OFFICIAL WEBSITE</div>
+    <h1>100年続く会社の社長を<br>100人輩出する</h1>
+    <p class="hero-sub">草を分けて、開拓して、弥（ひろくゆきわたる）</p>
+    <div class="hero-name">草分 拓弥 ── Takuya Kusawake</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">18<span>名</span></div>
+        <div class="hero-stat-label">社長輩出</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">6<span>億</span></div>
+        <div class="hero-stat-label">年商達成</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">100<span>回+</span></div>
+        <div class="hero-stat-label">講演実績</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">4<span>事業</span></div>
+        <div class="hero-stat-label">展開中</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="container">
+    <div class="sec-label">Vision & Mission</div>
+    <h2 class="sec-title">ビジョン・ミッション</h2>
+    <div class="sec-bar"></div>
+    <div class="vision-grid">
+      <div class="vision-card glass">
+        <div class="icon">🌅</div>
+        <h3>VISION</h3>
+        <p>一人の達成が、周囲の願望を呼び起こす社会</p>
+      </div>
+      <div class="vision-card glass">
+        <div class="icon">🚀</div>
+        <h3>MISSION</h3>
+        <p>願望をTodoに変え現実化する</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAREER -->
+<section id="career">
+  <div class="container">
+    <div class="sec-label">Career</div>
+    <h2 class="sec-title">経歴</h2>
+    <div class="sec-bar"></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">18歳</div>
+        <div class="tl-text">高校卒業後、営業の世界へ飛び込む</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">20歳</div>
+        <div class="tl-text">最年少マネージャーに就任</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">23歳</div>
+        <div class="tl-text">独立。年商6億円を達成</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">25歳</div>
+        <div class="tl-text">社長輩出18名。複数事業を展開</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">現在</div>
+        <div class="tl-text">小売・不動産・人材紹介・講演の4事業を運営。「100年続く会社の社長を100人輩出する」を掲げ活動中</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPANY -->
+<section id="company">
+  <div class="container">
+    <div class="sec-label">Company</div>
+    <h2 class="sec-title">会社概要</h2>
+    <div class="sec-bar"></div>
+    <div class="company-grid">
+      <div class="company-card glass">
+        <h3>日田商会合同会社</h3>
+        <div class="tagline">「ワクワクを伝播する」</div>
+        <p>小売・不動産・イベント企画を展開。目白のギフトショップthreaFを運営し、健康にこだわったアイテムを提供。</p>
+      </div>
+      <div class="company-card glass">
+        <h3>supernova合同会社</h3>
+        <div class="tagline">キャリア支援・転職支援</div>
+        <p>20〜30代向けの伴走型キャリアサポート。「まじめちゃん転職」を通じて、誠実な働き方を応援。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESS -->
+<section id="business">
+  <div class="container">
+    <div class="sec-label">Business</div>
+    <h2 class="sec-title">事業紹介</h2>
+    <div class="sec-bar"></div>
+    <div class="biz-grid">
+      <div class="biz-card glass">
+        <div class="biz-num">01</div>
+        <h3>小売（threaF）</h3>
+        <p>目白のギフトショップ。健康にこだわったアイテムを厳選して販売。</p>
+      </div>
+      <div class="biz-card glass">
+        <div class="biz-num">02</div>
+        <h3>不動産仲介業</h3>
+        <p>個人向けの住まい探し支援。ライフスタイルに合った物件をご提案。</p>
+      </div>
+      <div class="biz-card glass">
+        <div class="biz-num">03</div>
+        <h3>人材紹介業</h3>
+        <p>「まじめちゃん転職」。誠実に働きたい人のための伴走型転職支援。</p>
+      </div>
+      <div class="biz-card glass">
+        <div class="biz-num">04</div>
+        <h3>講演会事業</h3>
+        <p>通算100回以上の講演実績。生き方・働き方をテーマに全国で開催。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAFF -->
+<section id="staff">
+  <div class="container">
+    <div class="sec-label">Voice</div>
+    <h2 class="sec-title">スタッフの声</h2>
+    <div class="sec-bar"></div>
+    <div class="staff-grid">
+      <div class="staff-card glass">
+        <div class="staff-avatar">👤</div>
+        <h4>Aさん</h4>
+        <p>「草分さんと出会って、自分の可能性を信じられるようになりました。毎日が挑戦の連続ですが、それが楽しいと思える環境です。」</p>
+      </div>
+      <div class="staff-card glass">
+        <div class="staff-avatar">👤</div>
+        <h4>Bさん</h4>
+        <p>「"やりたい"を"やる"に変えてくれる人。背中を押すんじゃなくて、一緒に走ってくれる。そんな社長です。」</p>
+      </div>
+      <div class="staff-card glass">
+        <div class="staff-avatar">👤</div>
+        <h4>Cさん</h4>
+        <p>「入社して半年で自分の事業を任せてもらえた。信じて任せてくれるから、全力で応えたいと思える。」</p>
+      </div>
+      <div class="staff-card glass">
+        <div class="staff-avatar">👤</div>
+        <h4>Dさん</h4>
+        <p>「人の可能性を本気で信じている人に初めて出会った。ここでの経験が、人生を変えた。」</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MESSAGE -->
+<section>
+  <div class="container">
+    <div class="sec-label">Message</div>
+    <h2 class="sec-title">メッセージ</h2>
+    <div class="sec-bar"></div>
+    <div class="message-box">
+      <h3>ヒトが売れる時代。<br>あなた自身が、最大の商品になる。</h3>
+      <p>人の可能性を信じ、挑戦する勇気が持てる場所を創り続ける。<br>一人ひとりの「やりたい」が「できた」に変わる瞬間を、これからも一緒に。</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-box">
+      <h3>お問い合わせ・SNS</h3>
+      <p style="color:var(--muted);font-size:.9rem">お気軽にご連絡ください</p>
+      <div class="social-links">
+        <a href="#" title="Instagram">📸</a>
+        <a href="#" title="TikTok">🎵</a>
+        <a href="#" title="X">✖</a>
+        <a href="#" title="note">📝</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 草分 拓弥 All Rights Reserved.</p>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>40);
+});
+</script>
+</body>
+</html>

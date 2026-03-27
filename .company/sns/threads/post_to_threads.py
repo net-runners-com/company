@@ -166,36 +166,125 @@ def post_to_threads(text: str, topic: str = ""):
     print("\n=== Step 4: Post ===")
 
     # ダイアログ内の「投稿」ボタンを座標クリックで押す
-    # 複数ある場合、Y座標が最も下にあるもの（ダイアログ内のボタン）を選ぶ
+    # scrollIntoView してから座標取得。異常値（Y>2000）ならリトライ
     js_find = (
         "const btns=Array.from(document.querySelectorAll('[role=button]'));"
-        "const posts=btns.filter(b=>b.textContent.trim()==='投稿');"
-        "let best=null;let maxY=0;"
-        "posts.forEach(b=>{const r=b.getBoundingClientRect();if(r.y>maxY&&r.width>0){maxY=r.y;best=r;}});"
-        "if(best){JSON.stringify({x:Math.round(best.x+best.width/2),y:Math.round(best.y+best.height/2)});}else{'not found';}"
+        "const posts=btns.filter(b=>b.textContent.trim()==='投稿'&&b.offsetWidth>0);"
+        "if(posts.length>0){"
+        "const btn=posts[posts.length-1];"  # 最後の「投稿」ボタン（ダイアログ内）
+        "btn.scrollIntoView({block:'center'});"
+        "const r=btn.getBoundingClientRect();"
+        "JSON.stringify({x:Math.round(r.x+r.width/2),y:Math.round(r.y+r.height/2)});"
+        "}else{'not found';}"
     )
-    coords = run(f'eval "{js_find}"')
-    print(f"  投稿ボタン座標: {coords}")
 
-    if "not found" not in coords and "{" in coords:
+    posted = False
+    for attempt in range(3):
+        coords = run(f'eval "{js_find}"')
+        print(f"  投稿ボタン座標 (attempt {attempt+1}): {coords}")
+
+        if "not found" in coords or "{" not in coords:
+            print(f"  ⚠ 投稿ボタンが見つかりません")
+            break
+
         json_str = coords.split("result: ")[-1] if "result:" in coords else coords
         try:
             pos = json.loads(json_str)
+            # Y座標が異常値（2000以上）ならリトライ
+            if pos['y'] > 2000:
+                print(f"  ⚠ Y座標異常値 ({pos['y']})、リトライ...")
+                wait(2)
+                continue
             run(f"click {pos['x']} {pos['y']}")
             wait(4)
             check = run('eval "document.querySelector(\'[contenteditable=true]\')?.innerText?.slice(0,10)||\'gone\'"', check=False)
             if "gone" in check or len(check.strip()) < 15:
                 print("  ✅ 投稿しました")
+                posted = True
             else:
                 print(f"  ⚠ 投稿ボタンが反応しなかった可能性あり: {check[:50]}")
+                posted = True  # テキストが残っていても投稿済みの場合あり
+            break
         except Exception as e:
             print(f"  ⚠ 座標パースエラー: {e}")
-    else:
-        print(f"  ⚠ 投稿ボタンが見つかりません: {coords}")
+            break
 
-    # ブラウザを閉じる（browser-useセッションのみ。Chrome自体は閉じない）
+    if not posted:
+        # 最終手段: ページリロードしてダイアログを開き直す
+        print("  最終手段: ページリロードして再試行...")
+        run("open https://www.threads.net")
+        wait(5)
+        # 新規投稿ダイアログを再度開く
+        js_create = (
+            "const btn=document.querySelector('[aria-label=\"作成\"]')||"
+            "Array.from(document.querySelectorAll('[role=button]')).find(b=>b.textContent.trim()==='作成');"
+            "if(btn){btn.click();'opened';}else{'not found';}"
+        )
+        run(f'eval "{js_create}"')
+        wait(3)
+        # テキスト再入力
+        b64 = base64.b64encode(text.encode("utf-8")).decode("ascii")
+        js_input = (
+            f"const b='{b64}';"
+            "const bytes=Uint8Array.from(atob(b),c=>c.charCodeAt(0));"
+            "const t=new TextDecoder().decode(bytes);"
+            "const el=document.querySelector('[contenteditable=true]');"
+            "if(el){el.focus();document.execCommand('insertText',false,t);}"
+        )
+        run(f'eval "{js_input}"')
+        wait(2)
+        # 投稿ボタン再取得
+        for retry in range(3):
+            coords2 = run(f'eval "{js_find}"')
+            print(f"  リトライ投稿ボタン座標 (attempt {retry+1}): {coords2}")
+            if "not found" in coords2 or "{" not in coords2:
+                wait(2)
+                continue
+            json_str2 = coords2.split("result: ")[-1] if "result:" in coords2 else coords2
+            try:
+                pos2 = json.loads(json_str2)
+                if pos2['y'] > 2000:
+                    wait(2)
+                    continue
+                run(f"click {pos2['x']} {pos2['y']}")
+                wait(4)
+                posted = True
+                break
+            except:
+                wait(2)
+                continue
+
+    # === Step 5: 投稿確認 ===
+    print("\n=== Step 5: Verify post ===")
+    run("open https://www.threads.net/@ren_adhd_asd")
+    wait(5)
+    # 最新投稿のテキストを取得して確認
+    verify_js = (
+        "const articles=document.querySelectorAll('article,[role=article]');"
+        "if(articles.length>0){"
+        "const first=articles[0];"
+        "const spans=first.querySelectorAll('span');"
+        "let txt='';"
+        "spans.forEach(s=>{if(s.innerText&&s.innerText.length>10)txt=s.innerText;});"
+        "txt.slice(0,80);"
+        "}else{'no articles';}"
+    )
+    verify = run(f'eval "{verify_js}"', check=False)
+    print(f"  最新投稿: {verify[:100] if verify else 'N/A'}")
+
+    # 投稿テキストの一部が含まれていれば成功
+    text_snippet = text[:20]
+    if text_snippet in str(verify):
+        print("  ✅ 投稿を確認しました")
+    else:
+        print("  ⚠ 投稿が確認できませんでした。Threadsで手動確認してください")
+
+    # ブラウザを閉じる
     run("close")
-    print("\n✅ Threads投稿完了")
+    if text_snippet in str(verify):
+        print("\n✅ Threads投稿完了（確認済み）")
+    else:
+        print("\n⚠ Threads投稿完了（未確認）")
 
 
 if __name__ == "__main__":

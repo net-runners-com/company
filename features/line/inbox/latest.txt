@@ -77,3 +77,30 @@
 [2026-03-27T00:04:41.150Z] [画像] /Users/hirotodev0622i/Desktop/company-test/features/line/inbox/media/20260327000441._606896623549416023.jpg
 [2026-03-27T00:05:16.907Z] /journal
 [2026-03-27T00:06:46.828Z] 今日のニュースまとめて　
+[2026-03-27T00:52:34.705Z] https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/customaize-agent/skills/prompt-engineering
+
+このスキル入れて
+[2026-03-27T00:54:45.293Z] https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/sadd/skills/subagent-driven-development
+
+これも入れて
+[2026-03-27T00:58:21.772Z] https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/kaizen/skills/kaizen
+
+https://github.com/obra/superpowers/tree/main/skills/brainstorming
+
+https://github.com/michalparkola/tapestry-skills/tree/main/ship-learn-next
+
+https://github.com/michalparkola/tapestry-skills/tree/main/ship-learn-next
+
+
+https://github.com/ComposioHQ/awesome-claude-skills/tree/master/image-enhancer
+
+
+これらのスキルいれて
+[2026-03-27T01:04:46.406Z] 軽く今のノート投稿に関して分析結果だして
+[2026-03-27T02:20:23.603Z] [画像] /Users/hirotodev0622i/Desktop/company-test/features/line/inbox/media/20260327022023._606910284111806746.jpg
+[2026-03-27T02:20:58.755Z] /journal
+[2026-03-27T02:34:22.579Z] 株のニュースみせて
+[2026-03-27T05:28:04.357Z] 今日の予定は
+[2026-03-27T05:34:56.068Z] /help
+[2026-03-27T06:02:05.155Z] [画像] /Users/hirotodev0622i/Desktop/company-test/features/line/inbox/media/20260327060205._606932599990387032.jpg
+[2026-03-27T06:03:08.475Z] /journal

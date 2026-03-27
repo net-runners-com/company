@@ -129,6 +129,7 @@ python3 post_to_threads.py "テキスト" --profile "Profile 3" --topic "ASD"
 - `result: None` が返っても入力は成功している場合が多い
 
 ### browser-use注意点
+- **投稿前に対象プロファイルのChromeウィンドウをすべて閉じる**。同じプロファイルでChromeが開いていると、browser-useのセッションが競合し、Y座標が異常値（8388734等）になって投稿ボタンが押せない。これがY座標異常値問題の主因
 - `run("close")` はbrowser-useセッションのみ閉じる（Chrome自体は閉じない）
 - **`killall "Google Chrome"` は絶対にしない**（ユーザーの他のタブが閉じてしまう）
 - Profile 3はviewport 0x0問題が発生することがあるが、座標クリックが有効なら投稿可能
@@ -138,6 +139,21 @@ python3 post_to_threads.py "テキスト" --profile "Profile 3" --topic "ASD"
 - 投稿ログは `.company/sns/note/logs/posts.log` で確認できる
 - note記事のURL形式: `https://note.com/{ユーザー名}/n/{記事ID}`
 - れんのnoteアカウント: `@personal_dev` → URL: `note.com/personal_dev`
+
+### クロスポスト時のURL貼り付けルール（重要）
+**別の媒体（note等）で投稿済みの内容をThreadsに投稿する場合、必ず元記事のURLを本文に含める。**
+
+例:
+```
+目覚まし5個セットしても起きれなかった僕が...（要約テキスト）
+
+▶ 詳しくはnoteで
+https://note.com/personal_dev/n/xxxxx
+```
+
+- URLは投稿テキストの末尾に配置
+- 「▶ 詳しくはnoteで」等の導線テキストを1行入れる
+- note以外の媒体（ブログ等）でも同様にURLを含める
 
 ## トラブルシューティング
 
