@@ -259,6 +259,6 @@ def generate(output_path, data):
 # ── 実行 ─────────────────────────────────────────────────
 if __name__ == '__main__':
     import os
-    out_dir = '/Users/hirotodev0622i/Desktop/company-test/.company/finance/invoices'
+    out_dir = '/Users/hirotodev0622i/Desktop/company-test/company/back-office/accounting/invoices'
     os.makedirs(out_dir, exist_ok=True)
     generate(os.path.join(out_dir, 'invoice-202603-01.pdf'), DATA)

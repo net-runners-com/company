@@ -15,18 +15,21 @@ company-test/
 │   ├── settings.json           # プラグイン設定
 │   └── settings.local.json     # パーミッション・フック設定
 │
-├── .company/                   # 仮想組織
+├── company/                   # 仮想組織
 │   ├── CLAUDE.md               # 組織ルール
-│   ├── secretary/              # 秘書室（常設）
+│   ├── back-office/
+│   │   ├── general-affairs/    # 秘書室（総務・常設）
+│   │   └── accounting/         # 経理部
+│   ├── front-office/
+│   │   └── marketing/
+│   │       └── sns/            # SNS運用部（note, threads, etc.）
+│   ├── product/
+│   │   └── dev/                # 開発部
 │   ├── research/               # リサーチ部
 │   ├── engineering/            # エンジニアリング部
 │   ├── pm/                     # PM部
-│   ├── finance/                # 経理部
 │   ├── sales/                  # 営業部
-│   ├── sns/                    # SNS運用部（note, threads, etc.）
-│   ├── dev/                    # 開発部
-│   ├── newbiz/                 # 新規事業部
-│   └── skills/                 # ローカルスキル（3つ）
+│   └── newbiz/                 # 新規事業部
 │
 ├── features/                   # 独立機能モジュール
 │   ├── line/                   # LINE Messaging API 連携
@@ -67,7 +70,7 @@ company-test/
 | ship-learn-next | 学習コンテンツ→実践 | 学習内容をShip-Learn-Nextサイクルに変換 |
 | subagent-driven-development | 複数タスク実行時 | サブエージェント分散実行＋コードレビュー |
 
-### ローカルスキル（`.company/skills/`）
+### ローカルスキル（`.claude/skills/`）
 
 | スキル | トリガー | 概要 |
 |--------|----------|------|

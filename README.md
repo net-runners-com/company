@@ -36,7 +36,7 @@ Claude Code で仮想組織を構築・運営するプラグイン。
 秘書: 今の目標や困りごとは？
 あなた: SaaSを作って月10万目指してる。タスクが散らかるのが悩み
 
-→ .company/secretary/ が自動生成される（完了！）
+→ company/back-office/general-affairs/ が自動生成される（完了！）
 ```
 
 ### 日常の運営
@@ -52,7 +52,7 @@ Claude Code で仮想組織を構築・運営するプラグイン。
 
 > 競合サービスについて調べて
 秘書: 承知しました。調べますね。
-  → secretary/notes/2026-03-16-competitor-research.md に保存
+  → back-office/general-affairs/notes/2026-03-16-competitor-research.md に保存
 
 > 海外のトレンドも知りたい
 秘書: リサーチの依頼が増えていますね。
@@ -78,14 +78,15 @@ Claude Code で仮想組織を構築・運営するプラグイン。
 ## 初期構成
 
 ```
-.company/
+company/
 ├── CLAUDE.md              ← 組織ルール
-└── secretary/
-    ├── CLAUDE.md           ← 秘書の振る舞い
-    ├── inbox/
-    ├── todos/
-    │   └── YYYY-MM-DD.md   ← 今日のTODO
-    └── notes/
+└── back-office/
+    └── general-affairs/
+        ├── CLAUDE.md           ← 秘書の振る舞い
+        ├── inbox/
+        ├── todos/
+        │   └── YYYY-MM-DD.md   ← 今日のTODO
+        └── notes/
 ```
 
 ## v1 からのアップグレード

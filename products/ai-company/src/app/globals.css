@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+@theme {
+  --color-primary: #7C5CFC;
+  --color-primary-light: #EDE9FE;
+  --color-primary-dark: #5B3FD9;
+
+  --color-bg: #F8F9FC;
+  --color-surface: #FFFFFF;
+  --color-text: #1A1D26;
+  --color-subtext: #6B7280;
+  --color-border: #E5E7EB;
+  --color-border-light: #F3F4F6;
+
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-warning: #F59E0B;
+  --color-warning-light: #FEF3C7;
+  --color-danger: #EF4444;
+  --color-danger-light: #FEE2E2;
+  --color-info: #3B82F6;
+  --color-info-light: #DBEAFE;
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in { animation: fade-in 200ms ease-out forwards; }
+.animate-slide-in { animation: slide-in 200ms ease-out forwards; }
+
+/* Global rich shadows for cards & surfaces */
+.bg-white {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+}
+.bg-white:hover {
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+}
+
+/* Sidebar elevated */
+aside.fixed {
+  box-shadow: 2px 0 12px -2px rgba(0, 0, 0, 0.06);
+}
+
+/* Buttons with depth */
+button[class*="bg-[var(--color-primary)]"],
+a[class*="bg-[var(--color-primary)]"] {
+  box-shadow: 0 1px 3px 0 rgba(124, 92, 252, 0.3), 0 1px 2px -1px rgba(124, 92, 252, 0.2);
+}
+button[class*="bg-[var(--color-primary)]"]:hover,
+a[class*="bg-[var(--color-primary)]"]:hover {
+  box-shadow: 0 4px 14px -2px rgba(124, 92, 252, 0.4), 0 2px 4px -2px rgba(124, 92, 252, 0.2);
+}
+
+/* Stat cards & badges lift on hover */
+.rounded-xl {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Input fields subtle inset */
+input:focus, textarea:focus, select:focus {
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Avatar shadow */
+[class*="rounded-full"][class*="bg-[var(--color-primary-light)]"] {
+  box-shadow: 0 2px 8px -1px rgba(124, 92, 252, 0.2);
+}
+
+/* Table row hover glow */
+tr:hover td {
+  transition: background-color 0.15s ease;
+}
+
+/* Mobile bottom nav */
+nav.fixed {
+  box-shadow: 0 -2px 10px -2px rgba(0, 0, 0, 0.06);
+}

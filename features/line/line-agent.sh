@@ -38,7 +38,7 @@ tail -n +$((SKIP_LINES + 1)) -f "$QUEUE" | while IFS= read -r line; do
   if [ -n "$MEDIA_PATH" ] && [ -f "$MEDIA_PATH" ]; then
     echo "[line-agent] 📷 メディア処理: $MEDIA_PATH (type=$MEDIA_TYPE)"
 
-    COMPANY_DIR="$SCRIPT_DIR/../../.company"
+    COMPANY_DIR="$SCRIPT_DIR/../../company"
 
     if [ "$MEDIA_TYPE" = "image" ]; then
       # 画像 → Claude Vision で解析
@@ -92,7 +92,7 @@ $VISION_PROMPT" 2>/dev/null)
         EXPENSE_ITEMS=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['items'])" 2>/dev/null)
         EXPENSE_CAT=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['category'])" 2>/dev/null)
 
-        EXPENSE_FILE="$COMPANY_DIR/finance/expenses/$(date '+%Y-%m').md"
+        EXPENSE_FILE="$COMPANY_DIR/back-office/accounting/expenses/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$EXPENSE_FILE")"
         if [ ! -f "$EXPENSE_FILE" ]; then
           echo "| 日付 | 内容 | 金額 | 区分 | 備考 |" > "$EXPENSE_FILE"
@@ -102,7 +102,7 @@ $VISION_PROMPT" 2>/dev/null)
         echo "[line-agent] 📊 経理記録: ¥${EXPENSE_AMOUNT} ${EXPENSE_STORE}"
 
         # 仕訳帳にも追記
-        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        JOURNAL_FILE="$COMPANY_DIR/back-office/accounting/journal/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$JOURNAL_FILE")"
         if [ ! -f "$JOURNAL_FILE" ]; then
           echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
@@ -193,7 +193,7 @@ JSONは \`\`\`json ... \`\`\` で囲んでください。
         INV_DUE=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('due_date',''))" 2>/dev/null)
         INV_DESC=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('description',''))" 2>/dev/null)
 
-        INV_FILE="$COMPANY_DIR/finance/invoices/received-$(date '+%Y-%m').md"
+        INV_FILE="$COMPANY_DIR/back-office/accounting/invoices/received-$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$INV_FILE")"
         if [ ! -f "$INV_FILE" ]; then
           echo "# 受領請求書 $(date '+%Y年%m月')" > "$INV_FILE"
@@ -205,7 +205,7 @@ JSONは \`\`\`json ... \`\`\` で囲んでください。
         echo "[line-agent] 📄 請求書記録: ¥${INV_AMOUNT} ${INV_FROM}"
 
         # 仕訳帳にも追記（買掛金）
-        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        JOURNAL_FILE="$COMPANY_DIR/back-office/accounting/journal/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$JOURNAL_FILE")"
         if [ ! -f "$JOURNAL_FILE" ]; then
           echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
@@ -224,7 +224,7 @@ JSONは \`\`\`json ... \`\`\` で囲んでください。
         EXPENSE_ITEMS=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['items'])" 2>/dev/null)
         EXPENSE_CAT=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['category'])" 2>/dev/null)
 
-        EXPENSE_FILE="$COMPANY_DIR/finance/expenses/$(date '+%Y-%m').md"
+        EXPENSE_FILE="$COMPANY_DIR/back-office/accounting/expenses/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$EXPENSE_FILE")"
         if [ ! -f "$EXPENSE_FILE" ]; then
           echo "| 日付 | 内容 | 金額 | 区分 | 備考 |" > "$EXPENSE_FILE"
@@ -234,7 +234,7 @@ JSONは \`\`\`json ... \`\`\` で囲んでください。
         echo "[line-agent] 📊 経費記録: ¥${EXPENSE_AMOUNT} ${EXPENSE_STORE}"
 
         # 仕訳帳にも追記
-        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        JOURNAL_FILE="$COMPANY_DIR/back-office/accounting/journal/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$JOURNAL_FILE")"
         if [ ! -f "$JOURNAL_FILE" ]; then
           echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
@@ -342,12 +342,12 @@ $CAL_RESULT"
       /todo)
         if [[ "$ARGS" == add* ]]; then
           TODO_TEXT=$(echo "$ARGS" | sed 's/^add *//')
-          TODO_FILE="$SCRIPT_DIR/../../.company/secretary/todos/$(date '+%Y-%m-%d').md"
+          TODO_FILE="$SCRIPT_DIR/../../company/back-office/general-affairs/todos/$(date '+%Y-%m-%d').md"
           mkdir -p "$(dirname "$TODO_FILE")"
           echo "- [ ] $TODO_TEXT | 優先度: 通常" >> "$TODO_FILE"
           REPLY="✅ TODOに追加しました: $TODO_TEXT"
         else
-          TODO_FILE="$SCRIPT_DIR/../../.company/secretary/todos/$(date '+%Y-%m-%d').md"
+          TODO_FILE="$SCRIPT_DIR/../../company/back-office/general-affairs/todos/$(date '+%Y-%m-%d').md"
           if [ -f "$TODO_FILE" ]; then
             TODOS=$(cat "$TODO_FILE")
             REPLY="📝 今日のTODO:
@@ -358,7 +358,7 @@ $TODOS"
         fi
         ;;
       /note)
-        LOG=$(tail -3 "$SCRIPT_DIR/../../.company/sns/note/logs/posts.log" 2>/dev/null)
+        LOG=$(tail -3 "$SCRIPT_DIR/../../company/front-office/marketing/sns/note/logs/posts.log" 2>/dev/null)
         if [ -n "$LOG" ]; then
           REPLY="📝 最近のnote記事:
 $LOG"
@@ -369,7 +369,7 @@ $LOG"
       /threads)
         if [ -n "$ARGS" ]; then
           echo "$ARGS" > /tmp/line_threads_post.txt
-          python3 "$SCRIPT_DIR/../../.company/sns/threads/post_to_threads.py" /tmp/line_threads_post.txt --profile "Profile 3" > /dev/null 2>&1
+          python3 "$SCRIPT_DIR/../../company/front-office/marketing/sns/threads/post_to_threads.py" /tmp/line_threads_post.txt --profile "Profile 3" > /dev/null 2>&1
           REPLY="✅ Threadsに投稿しました: ${ARGS:0:50}..."
         else
           REPLY="使い方: /threads [投稿テキスト]"
@@ -389,7 +389,7 @@ $LOG"
 
 ${SUMMARY}
 
-📝 議事録: secretary/notes/$(basename "$MINUTES")"
+📝 議事録: back-office/general-affairs/notes/$(basename "$MINUTES")"
           else
             REPLY="🏢 会議を実行しましたが、議事録の取得に失敗しました。"
           fi
@@ -401,7 +401,7 @@ ${SUMMARY}
         fi
         ;;
       /journal)
-        JOURNAL_FILE="$SCRIPT_DIR/../../.company/finance/journal/$(date '+%Y-%m').md"
+        JOURNAL_FILE="$SCRIPT_DIR/../../company/finance/journal/$(date '+%Y-%m').md"
         if [ -f "$JOURNAL_FILE" ]; then
           PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
             <(echo "仕訳帳 $(date '+%Y年%m月')") "$JOURNAL_FILE" 2>/dev/null)
@@ -412,7 +412,7 @@ $PREVIEW_URL"
         fi
         ;;
       /expenses)
-        EXPENSE_FILE="$SCRIPT_DIR/../../.company/finance/expenses/$(date '+%Y-%m').md"
+        EXPENSE_FILE="$SCRIPT_DIR/../../company/finance/expenses/$(date '+%Y-%m').md"
         if [ -f "$EXPENSE_FILE" ]; then
           TOTAL=$(grep "^|" "$EXPENSE_FILE" | grep -v "日付" | grep -v "---" | python3 -c "
 import sys,re
@@ -431,7 +431,7 @@ $PREVIEW_URL"
         fi
         ;;
       /invoice|/invoices)
-        INV_DIR="$SCRIPT_DIR/../../.company/finance/invoices"
+        INV_DIR="$SCRIPT_DIR/../../company/finance/invoices"
         RECV_FILE="$INV_DIR/received-$(date '+%Y-%m').md"
         # 発行・受領をまとめたMarkdownを作成
         TMP_INV="/tmp/line_invoices_$(date '+%Y%m').md"
@@ -455,7 +455,7 @@ $PREVIEW_URL"
 $PREVIEW_URL"
         ;;
       /cash)
-        CASH_FILE="$SCRIPT_DIR/../../.company/finance/cash/$(date '+%Y-%m').md"
+        CASH_FILE="$SCRIPT_DIR/../../company/finance/cash/$(date '+%Y-%m').md"
         if [ -f "$CASH_FILE" ]; then
           PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
             <(echo "出納帳 $(date '+%Y年%m月')") "$CASH_FILE" 2>/dev/null)
@@ -466,7 +466,7 @@ $PREVIEW_URL"
         fi
         ;;
       /report)
-        REPORT_FILE="$SCRIPT_DIR/../../.company/finance/reports/report-$(date '+%Y-%m').md"
+        REPORT_FILE="$SCRIPT_DIR/../../company/finance/reports/report-$(date '+%Y-%m').md"
         if [ -f "$REPORT_FILE" ]; then
           PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
             <(echo "月次レポート $(date '+%Y年%m月')") "$REPORT_FILE" 2>/dev/null)
@@ -477,7 +477,7 @@ $PREVIEW_URL"
         fi
         ;;
       /finance)
-        FIN_DIR="$SCRIPT_DIR/../../.company/finance"
+        FIN_DIR="$SCRIPT_DIR/../../company/finance"
         EXP_TOTAL=$(grep "^|" "$FIN_DIR/expenses/$(date '+%Y-%m').md" 2>/dev/null | grep -v "日付" | grep -v "---" | python3 -c "
 import sys,re
 total=0
@@ -533,14 +533,14 @@ print(f'{total:,}')
 
     # 部署名の正規化
     case "$DEPT" in
-      秘書|secretary)     DEPT_DIR="secretary" ; DEPT_NAME="秘書室" ;;
-      経理|finance)       DEPT_DIR="finance"   ; DEPT_NAME="経理" ;;
+      秘書|secretary)     DEPT_DIR="back-office/general-affairs" ; DEPT_NAME="秘書室" ;;
+      経理|finance)       DEPT_DIR="back-office/accounting" ; DEPT_NAME="経理" ;;
       営業|sales)         DEPT_DIR="sales"     ; DEPT_NAME="営業" ;;
       リサーチ|research)   DEPT_DIR="research"  ; DEPT_NAME="リサーチ" ;;
       エンジニア|eng|engineering) DEPT_DIR="engineering" ; DEPT_NAME="エンジニアリング" ;;
       PM|pm)              DEPT_DIR="pm"        ; DEPT_NAME="PM" ;;
-      開発|dev)           DEPT_DIR="dev"       ; DEPT_NAME="開発" ;;
-      SNS|sns)            DEPT_DIR="sns"       ; DEPT_NAME="SNS運用" ;;
+      開発|dev)           DEPT_DIR="product/dev" ; DEPT_NAME="開発" ;;
+      SNS|sns)            DEPT_DIR="front-office/marketing/sns" ; DEPT_NAME="SNS運用" ;;
       新規事業|newbiz)     DEPT_DIR="newbiz"    ; DEPT_NAME="新規事業開発" ;;
       *)
         REPLY="❓ 「$DEPT」という部署はありません。
@@ -560,7 +560,7 @@ print(f'{total:,}')
         ;;
     esac
 
-    COMPANY_DIR="$SCRIPT_DIR/../../.company"
+    COMPANY_DIR="$SCRIPT_DIR/../../company"
     DEPT_CLAUDE="$COMPANY_DIR/$DEPT_DIR/CLAUDE.md"
     DEPT_CONTEXT=$(cat "$DEPT_CLAUDE" 2>/dev/null || echo "部署の設定ファイルがありません")
 
