@@ -6,23 +6,68 @@ const TTL = 86400; // 24時間
 
 // ─── Markdown → HTML 変換 ───
 function markdownToHtml(md: string): string {
-  let html = md
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/^---+$/gm, '<hr>')
-    .replace(/^#\S.*$/gm, (match) => `<div class="tags">${match}</div>`)
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>');
+  const lines = md.split('\n');
+  const out: string[] = [];
+  let inTable = false;
+  let isFirstTableRow = true;
 
-  html = html.replace(/(<li>.*?<\/li>(?:<br>)?)+/g, (match) =>
-    '<ul>' + match.replace(/<br>/g, '') + '</ul>'
-  );
-  return '<p>' + html + '</p>';
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+
+    // テーブル行判定
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      const cells = line.split('|').slice(1, -1).map(c => c.trim());
+
+      // セパレーター行（|---|---|）はスキップ
+      if (cells.every(c => /^[-:]+$/.test(c))) continue;
+
+      if (!inTable) {
+        out.push('<table>');
+        inTable = true;
+        isFirstTableRow = true;
+      }
+
+      const tag = isFirstTableRow ? 'th' : 'td';
+      out.push('<tr>' + cells.map(c => `<${tag}>${inlineFormat(c)}</${tag}>`).join('') + '</tr>');
+      isFirstTableRow = false;
+      continue;
+    }
+
+    // テーブル終了
+    if (inTable) {
+      out.push('</table>');
+      inTable = false;
+    }
+
+    // 見出し
+    if (line.startsWith('### ')) { out.push(`<h3>${inlineFormat(line.slice(4))}</h3>`); continue; }
+    if (line.startsWith('## ')) { out.push(`<h2>${inlineFormat(line.slice(3))}</h2>`); continue; }
+    if (line.startsWith('# ')) { out.push(`<h1>${inlineFormat(line.slice(2))}</h1>`); continue; }
+    // 引用
+    if (line.startsWith('> ')) { out.push(`<blockquote>${inlineFormat(line.slice(2))}</blockquote>`); continue; }
+    // リスト
+    if (line.startsWith('- ')) { out.push(`<li>${inlineFormat(line.slice(2))}</li>`); continue; }
+    // 水平線
+    if (/^-{3,}$/.test(line.trim())) { out.push('<hr>'); continue; }
+    // ハッシュタグ行
+    if (/^#\S/.test(line.trim())) { out.push(`<div class="tags">${line}</div>`); continue; }
+    // 空行
+    if (line.trim() === '') { out.push('<br>'); continue; }
+    // 通常
+    out.push(`<p>${inlineFormat(line)}</p>`);
+  }
+  if (inTable) out.push('</table>');
+
+  // liをulで囲む
+  let result = out.join('\n');
+  result = result.replace(/(<li>.*?<\/li>\n?)+/g, (m) => '<ul>' + m + '</ul>');
+  return result;
+}
+
+function inlineFormat(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
 }
 
 // ─── note風HTMLテンプレート ───
@@ -48,6 +93,10 @@ h1.title{font-family:'Noto Serif JP',serif;font-size:26px;font-weight:700;line-h
 .body li{margin:4px 0;font-size:16px}
 .body hr{border:none;border-top:1px solid #eee;margin:32px 0}
 .body .tags{color:#c57d12;font-size:14px;margin-top:32px}
+.body table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+.body th{background:#1a2540;color:#e8ecf2;padding:10px 12px;text-align:left;font-weight:700;white-space:nowrap}
+.body td{padding:10px 12px;border-bottom:1px solid #eee;color:#333}
+.body tr:hover td{background:#f8f8f6}
 @media(max-width:600px){.container{padding:24px 16px 40px}h1.title{font-size:22px}}
 </style></head><body>
 <div class="banner">📝 プレビュー（24時間で自動削除）</div>

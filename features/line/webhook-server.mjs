@@ -1,7 +1,7 @@
 import http from "node:http";
 import crypto from "node:crypto";
 import { execSync } from "node:child_process";
-import { readFileSync, appendFileSync, mkdirSync } from "node:fs";
+import { readFileSync, appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -24,7 +24,9 @@ const PORT = parseInt(process.env.PORT || "18789");
 const CHANNEL_SECRET = process.env.LINE_CHANNEL_SECRET;
 const ACCESS_TOKEN = process.env.LINE_ACCESS_TOKEN;
 const INBOX_DIR = resolve(__dirname, "inbox");
+const MEDIA_DIR = resolve(INBOX_DIR, "media");
 mkdirSync(INBOX_DIR, { recursive: true });
+mkdirSync(MEDIA_DIR, { recursive: true });
 
 function verifySignature(body, signature) {
   const hash = crypto
@@ -37,25 +39,80 @@ function verifySignature(body, signature) {
 async function handleEvent(event) {
   console.log(`[${new Date().toISOString()}] Event: ${event.type}`, JSON.stringify(event).slice(0, 200));
 
-  if (event.type === "message" && event.message.type === "text") {
-    const userMessage = event.message.text;
-    const replyToken = event.replyToken;
-    const userId = event.source?.userId || "unknown";
-    const timestamp = new Date().toISOString();
+  if (event.type !== "message") return;
 
+  const userId = event.source?.userId || "unknown";
+  const timestamp = new Date().toISOString();
+  const msgType = event.message.type;
+
+  // === テキストメッセージ ===
+  if (msgType === "text") {
+    const userMessage = event.message.text;
     console.log(`  Message from ${userId}: ${userMessage}`);
 
-    // inboxに保存
-    const entry = JSON.stringify({ timestamp, userId, replyToken, message: userMessage }) + "\n";
+    const entry = JSON.stringify({ timestamp, userId, replyToken: event.replyToken, message: userMessage }) + "\n";
     appendFileSync(resolve(INBOX_DIR, "messages.jsonl"), entry);
-
-    // 最新メッセージを別ファイルにも保存
     appendFileSync(resolve(INBOX_DIR, "latest.txt"), `[${timestamp}] ${userMessage}\n`);
 
-    // 未処理キューに追加（Claude Codeが監視→処理→返信）
     const queueEntry = JSON.stringify({ timestamp, userId, message: userMessage }) + "\n";
     appendFileSync(resolve(INBOX_DIR, "queue.jsonl"), queueEntry);
     console.log(`  📩 Queued for Claude Code`);
+    return;
+  }
+
+  // === 画像メッセージ ===
+  if (msgType === "image") {
+    console.log(`  📷 Image from ${userId} (messageId: ${event.message.id})`);
+    const mediaPath = await downloadContent(event.message.id, "jpg");
+    if (mediaPath) {
+      const queueEntry = JSON.stringify({
+        timestamp, userId, type: "image", mediaPath, message: "[画像]",
+      }) + "\n";
+      appendFileSync(resolve(INBOX_DIR, "queue.jsonl"), queueEntry);
+      appendFileSync(resolve(INBOX_DIR, "latest.txt"), `[${timestamp}] [画像] ${mediaPath}\n`);
+      console.log(`  📩 Image queued: ${mediaPath}`);
+    }
+    return;
+  }
+
+  // === ファイルメッセージ ===
+  if (msgType === "file") {
+    const filename = event.message.fileName || "unknown";
+    const ext = filename.split(".").pop() || "bin";
+    console.log(`  📎 File from ${userId}: ${filename}`);
+    const mediaPath = await downloadContent(event.message.id, ext);
+    if (mediaPath) {
+      const queueEntry = JSON.stringify({
+        timestamp, userId, type: "file", mediaPath, originalFilename: filename, message: `[ファイル] ${filename}`,
+      }) + "\n";
+      appendFileSync(resolve(INBOX_DIR, "queue.jsonl"), queueEntry);
+      appendFileSync(resolve(INBOX_DIR, "latest.txt"), `[${timestamp}] [ファイル] ${filename}\n`);
+      console.log(`  📩 File queued: ${mediaPath}`);
+    }
+    return;
+  }
+}
+
+// === LINE Content API からメディアをダウンロード ===
+async function downloadContent(messageId, ext) {
+  try {
+    const res = await fetch(`https://api-data.line.me/v2/bot/message/${messageId}/content`, {
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
+    });
+    if (!res.ok) {
+      console.error(`  ⚠ Content download failed: ${res.status}`);
+      return null;
+    }
+    const buf = Buffer.from(await res.arrayBuffer());
+    const ts = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 15);
+    const filename = `${ts}_${messageId}.${ext}`;
+    const filepath = resolve(MEDIA_DIR, filename);
+    writeFileSync(filepath, buf);
+    console.log(`  💾 Saved: ${filepath} (${buf.length} bytes)`);
+    return filepath;
+  } catch (err) {
+    console.error(`  ⚠ Download error:`, err.message);
+    return null;
   }
 }
 

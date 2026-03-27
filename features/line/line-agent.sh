@@ -22,14 +22,268 @@ tail -n +$((SKIP_LINES + 1)) -f "$QUEUE" | while IFS= read -r line; do
   MESSAGE=$(echo "$line" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['message'])")
   USER_ID=$(echo "$line" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['userId'])")
   TIMESTAMP=$(echo "$line" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['timestamp'])")
+  MEDIA_TYPE=$(echo "$line" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('type','text'))" 2>/dev/null)
+  MEDIA_PATH=$(echo "$line" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('mediaPath',''))" 2>/dev/null)
+  ORIGINAL_FILENAME=$(echo "$line" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('originalFilename',''))" 2>/dev/null)
 
-  echo "[line-agent] $(date '+%H:%M:%S') 受信: $MESSAGE (from $USER_ID)"
+  echo "[line-agent] $(date '+%H:%M:%S') 受信: $MESSAGE (type=$MEDIA_TYPE, from $USER_ID)"
 
   # ローディング表示
   curl -s -X POST https://api.line.me/v2/bot/chat/loading/start \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $LINE_ACCESS_TOKEN" \
     -d "{\"chatId\":\"$USER_ID\",\"loadingSeconds\":60}" > /dev/null
+
+  # === メディア処理（画像・ファイル）===
+  if [ -n "$MEDIA_PATH" ] && [ -f "$MEDIA_PATH" ]; then
+    echo "[line-agent] 📷 メディア処理: $MEDIA_PATH (type=$MEDIA_TYPE)"
+
+    COMPANY_DIR="$SCRIPT_DIR/../../.company"
+
+    if [ "$MEDIA_TYPE" = "image" ]; then
+      # 画像 → Claude Vision で解析
+      VISION_PROMPT="この画像を分析してください。
+
+## 分類ルール
+以下のいずれかに分類し、対応する情報を抽出してJSON形式で返してください。
+JSONの後に、ユーザーへのLINE返信メッセージを書いてください。
+
+### 領収書・レシートの場合
+\`\`\`json
+{\"type\":\"receipt\",\"date\":\"YYYY-MM-DD\",\"amount\":1280,\"store\":\"店名\",\"items\":\"内容\",\"category\":\"経費区分\"}
+\`\`\`
+返信例: ✅ 領収書を記録しました: ¥1,280 ○○商店（昼食代）
+
+### 名刺の場合
+\`\`\`json
+{\"type\":\"namecard\",\"name\":\"氏名\",\"company\":\"会社名\",\"title\":\"役職\",\"phone\":\"電話番号\",\"email\":\"メール\"}
+\`\`\`
+返信例: 📇 名刺を登録しました: 山田太郎様（○○株式会社）
+
+### 請求書の場合
+\`\`\`json
+{\"type\":\"invoice\",\"from\":\"送り元\",\"amount\":50000,\"due_date\":\"YYYY-MM-DD\",\"description\":\"内容\"}
+\`\`\`
+返信例: 📄 請求書: ¥50,000（○○会社、支払期限: YYYY-MM-DD）
+
+### その他の画像
+\`\`\`json
+{\"type\":\"other\",\"description\":\"内容の説明\"}
+\`\`\`
+返信例: 内容の説明を1-2文で
+
+---
+必ずJSON部分と返信メッセージ部分を分けて出力してください。
+JSONは \`\`\`json ... \`\`\` で囲んでください。"
+
+      RESULT=$(claude --dangerously-skip-permissions -p "まず画像ファイル $MEDIA_PATH をReadツールで読み込んでください。その上で以下の指示に従ってください。
+
+$VISION_PROMPT" 2>/dev/null)
+
+      # JSONを抽出
+      JSON_DATA=$(echo "$RESULT" | sed -n '/```json/,/```/p' | sed '1d;$d')
+      DATA_TYPE=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin).get('type','other'))" 2>/dev/null || echo "other")
+
+      # 経理自動記録（領収書の場合）
+      if [ "$DATA_TYPE" = "receipt" ]; then
+        EXPENSE_DATE=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['date'])" 2>/dev/null)
+        EXPENSE_AMOUNT=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['amount'])" 2>/dev/null)
+        EXPENSE_STORE=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['store'])" 2>/dev/null)
+        EXPENSE_ITEMS=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['items'])" 2>/dev/null)
+        EXPENSE_CAT=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['category'])" 2>/dev/null)
+
+        EXPENSE_FILE="$COMPANY_DIR/finance/expenses/$(date '+%Y-%m').md"
+        mkdir -p "$(dirname "$EXPENSE_FILE")"
+        if [ ! -f "$EXPENSE_FILE" ]; then
+          echo "| 日付 | 内容 | 金額 | 区分 | 備考 |" > "$EXPENSE_FILE"
+          echo "|------|------|------|------|------|" >> "$EXPENSE_FILE"
+        fi
+        echo "| $EXPENSE_DATE | $EXPENSE_STORE $EXPENSE_ITEMS | ¥${EXPENSE_AMOUNT} | $EXPENSE_CAT | LINE受信・自動記録 |" >> "$EXPENSE_FILE"
+        echo "[line-agent] 📊 経理記録: ¥${EXPENSE_AMOUNT} ${EXPENSE_STORE}"
+
+        # 仕訳帳にも追記
+        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        mkdir -p "$(dirname "$JOURNAL_FILE")"
+        if [ ! -f "$JOURNAL_FILE" ]; then
+          echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
+          echo "" >> "$JOURNAL_FILE"
+          echo "| 日付 | 摘要 | 借方科目 | 借方金額 | 貸方科目 | 貸方金額 |" >> "$JOURNAL_FILE"
+          echo "|------|------|---------|---------|---------|---------|" >> "$JOURNAL_FILE"
+        fi
+        echo "| $(date '+%m-%d') | $EXPENSE_STORE $EXPENSE_ITEMS | $EXPENSE_CAT | $EXPENSE_AMOUNT | 現金 | $EXPENSE_AMOUNT |" >> "$JOURNAL_FILE"
+      fi
+
+      # 名刺の場合 → 営業リードに追加
+      if [ "$DATA_TYPE" = "namecard" ]; then
+        NC_NAME=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['name'])" 2>/dev/null)
+        NC_COMPANY=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['company'])" 2>/dev/null)
+        NC_EMAIL=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin).get('email',''))" 2>/dev/null)
+        NC_PHONE=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin).get('phone',''))" 2>/dev/null)
+        NC_TITLE=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin).get('title',''))" 2>/dev/null)
+
+        LEAD_FILE="$COMPANY_DIR/sales/leads/$(date '+%Y-%m-%d')-namecard.md"
+        mkdir -p "$(dirname "$LEAD_FILE")"
+        echo "" >> "$LEAD_FILE"
+        echo "## $NC_NAME（$NC_COMPANY）" >> "$LEAD_FILE"
+        echo "- 役職: $NC_TITLE" >> "$LEAD_FILE"
+        echo "- TEL: $NC_PHONE" >> "$LEAD_FILE"
+        echo "- Email: $NC_EMAIL" >> "$LEAD_FILE"
+        echo "- 取得日: $(date '+%Y-%m-%d') LINE受信" >> "$LEAD_FILE"
+        echo "[line-agent] 📇 営業リード追加: $NC_NAME ($NC_COMPANY)"
+      fi
+
+      # 返信メッセージ抽出（JSON以外の部分）
+      REPLY=$(echo "$RESULT" | sed '/```json/,/```/d' | sed '/^$/d' | head -5)
+      if [ -z "$REPLY" ]; then
+        REPLY="画像を受信しました。"
+      fi
+
+    elif [ "$MEDIA_TYPE" = "file" ]; then
+      FNAME="${ORIGINAL_FILENAME:-$(basename "$MEDIA_PATH")}"
+      EXT=$(echo "$FNAME" | sed 's/.*\.//' | tr '[:upper:]' '[:lower:]')
+
+      # プレビューURL発行
+      PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --file "$MEDIA_PATH" 2>/dev/null)
+
+      # ファイルの中身を分析（PDF, DOCX等）
+      FILE_PROMPT="ファイル $MEDIA_PATH をReadツールで読み込んで分析してください。ファイル名: $FNAME
+
+## 分類ルール
+ファイルの内容を分析し、以下のいずれかに分類してJSON形式で返してください。
+JSONの後に、ユーザーへのLINE返信メッセージを書いてください。
+
+### 請求書の場合
+\`\`\`json
+{\"type\":\"invoice\",\"from\":\"送り元\",\"amount\":50000,\"due_date\":\"YYYY-MM-DD\",\"description\":\"内容\"}
+\`\`\`
+
+### 領収書・レシートの場合
+\`\`\`json
+{\"type\":\"receipt\",\"date\":\"YYYY-MM-DD\",\"amount\":1280,\"store\":\"店名\",\"items\":\"内容\",\"category\":\"経費区分\"}
+\`\`\`
+
+### 見積書の場合
+\`\`\`json
+{\"type\":\"estimate\",\"from\":\"送り元\",\"amount\":100000,\"valid_until\":\"YYYY-MM-DD\",\"description\":\"内容\"}
+\`\`\`
+
+### 契約書の場合
+\`\`\`json
+{\"type\":\"contract\",\"parties\":\"当事者\",\"subject\":\"契約内容\",\"amount\":0,\"date\":\"YYYY-MM-DD\"}
+\`\`\`
+
+### その他ドキュメントの場合
+\`\`\`json
+{\"type\":\"document\",\"summary\":\"内容の要約を2-3文で\"}
+\`\`\`
+
+JSONは \`\`\`json ... \`\`\` で囲んでください。
+返信メッセージは短くフレンドリーに。"
+
+      FILE_RESULT=$(claude --dangerously-skip-permissions -p "$FILE_PROMPT" 2>/dev/null)
+
+      # JSONを抽出
+      FILE_JSON=$(echo "$FILE_RESULT" | sed -n '/```json/,/```/p' | sed '1d;$d')
+      FILE_TYPE=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('type','document'))" 2>/dev/null || echo "document")
+
+      # 経理記録（請求書）
+      if [ "$FILE_TYPE" = "invoice" ]; then
+        INV_FROM=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['from'])" 2>/dev/null)
+        INV_AMOUNT=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['amount'])" 2>/dev/null)
+        INV_DUE=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('due_date',''))" 2>/dev/null)
+        INV_DESC=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('description',''))" 2>/dev/null)
+
+        INV_FILE="$COMPANY_DIR/finance/invoices/received-$(date '+%Y-%m').md"
+        mkdir -p "$(dirname "$INV_FILE")"
+        if [ ! -f "$INV_FILE" ]; then
+          echo "# 受領請求書 $(date '+%Y年%m月')" > "$INV_FILE"
+          echo "" >> "$INV_FILE"
+          echo "| 受領日 | 送り元 | 金額 | 支払期限 | 内容 | 備考 |" >> "$INV_FILE"
+          echo "|--------|--------|------|----------|------|------|" >> "$INV_FILE"
+        fi
+        echo "| $(date '+%Y-%m-%d') | $INV_FROM | ¥${INV_AMOUNT} | $INV_DUE | $INV_DESC | LINE受信 |" >> "$INV_FILE"
+        echo "[line-agent] 📄 請求書記録: ¥${INV_AMOUNT} ${INV_FROM}"
+
+        # 仕訳帳にも追記（買掛金）
+        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        mkdir -p "$(dirname "$JOURNAL_FILE")"
+        if [ ! -f "$JOURNAL_FILE" ]; then
+          echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
+          echo "" >> "$JOURNAL_FILE"
+          echo "| 日付 | 摘要 | 借方科目 | 借方金額 | 貸方科目 | 貸方金額 |" >> "$JOURNAL_FILE"
+          echo "|------|------|---------|---------|---------|---------|" >> "$JOURNAL_FILE"
+        fi
+        echo "| $(date '+%m-%d') | $INV_FROM $INV_DESC 請求書受領 | 外注費 | $INV_AMOUNT | 買掛金 | $INV_AMOUNT |" >> "$JOURNAL_FILE"
+      fi
+
+      # 経理記録（領収書・ファイル版）
+      if [ "$FILE_TYPE" = "receipt" ]; then
+        EXPENSE_DATE=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['date'])" 2>/dev/null)
+        EXPENSE_AMOUNT=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['amount'])" 2>/dev/null)
+        EXPENSE_STORE=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['store'])" 2>/dev/null)
+        EXPENSE_ITEMS=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['items'])" 2>/dev/null)
+        EXPENSE_CAT=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['category'])" 2>/dev/null)
+
+        EXPENSE_FILE="$COMPANY_DIR/finance/expenses/$(date '+%Y-%m').md"
+        mkdir -p "$(dirname "$EXPENSE_FILE")"
+        if [ ! -f "$EXPENSE_FILE" ]; then
+          echo "| 日付 | 内容 | 金額 | 区分 | 備考 |" > "$EXPENSE_FILE"
+          echo "|------|------|------|------|------|" >> "$EXPENSE_FILE"
+        fi
+        echo "| $EXPENSE_DATE | $EXPENSE_STORE $EXPENSE_ITEMS | ¥${EXPENSE_AMOUNT} | $EXPENSE_CAT | LINE受信(ファイル) |" >> "$EXPENSE_FILE"
+        echo "[line-agent] 📊 経費記録: ¥${EXPENSE_AMOUNT} ${EXPENSE_STORE}"
+
+        # 仕訳帳にも追記
+        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        mkdir -p "$(dirname "$JOURNAL_FILE")"
+        if [ ! -f "$JOURNAL_FILE" ]; then
+          echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
+          echo "" >> "$JOURNAL_FILE"
+          echo "| 日付 | 摘要 | 借方科目 | 借方金額 | 貸方科目 | 貸方金額 |" >> "$JOURNAL_FILE"
+          echo "|------|------|---------|---------|---------|---------|" >> "$JOURNAL_FILE"
+        fi
+        echo "| $(date '+%m-%d') | $EXPENSE_STORE $EXPENSE_ITEMS | $EXPENSE_CAT | $EXPENSE_AMOUNT | 現金 | $EXPENSE_AMOUNT |" >> "$JOURNAL_FILE"
+      fi
+
+      # 経理記録（見積書）
+      if [ "$FILE_TYPE" = "estimate" ]; then
+        EST_FROM=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['from'])" 2>/dev/null)
+        EST_AMOUNT=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['amount'])" 2>/dev/null)
+        EST_DESC=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('description',''))" 2>/dev/null)
+        echo "[line-agent] 📝 見積書受領: ¥${EST_AMOUNT} ${EST_FROM}"
+      fi
+
+      # 返信メッセージ
+      REPLY=$(echo "$FILE_RESULT" | sed '/```json/,/```/d' | sed '/^$/d' | head -5)
+      if [ -n "$PREVIEW_URL" ]; then
+        REPLY="${REPLY}
+プレビュー: $PREVIEW_URL"
+      fi
+      if [ -z "$REPLY" ]; then
+        REPLY="📎 ファイル「$FNAME」を受信しました。"
+        if [ -n "$PREVIEW_URL" ]; then
+          REPLY="${REPLY}
+プレビュー: $PREVIEW_URL"
+        fi
+      fi
+    fi
+
+    # LINE返信
+    REPLY_ESCAPED=$(echo "$REPLY" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
+    curl -s -X POST https://api.line.me/v2/bot/message/push \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $LINE_ACCESS_TOKEN" \
+      -d "{\"to\":\"$USER_ID\",\"messages\":[{\"type\":\"text\",\"text\":$REPLY_ESCAPED}]}" > /dev/null
+
+    # 会話ログ
+    CONV_LOG="$SCRIPT_DIR/inbox/conversation.log"
+    echo "U:$MESSAGE" >> "$CONV_LOG"
+    REPLY_COMPACT=$(echo "$REPLY" | tr '\n' '|' | sed 's/|$//')
+    echo "B:$REPLY_COMPACT" >> "$CONV_LOG"
+
+    echo "[line-agent] ✅ メディア処理完了"
+    continue
+  fi
 
   # === コマンド処理 ===
   if [[ "$MESSAGE" == /* ]]; then
@@ -50,6 +304,14 @@ tail -n +$((SKIP_LINES + 1)) -f "$QUEUE" | while IFS= read -r line; do
 /note — 最新のnote記事を確認
 /threads [テキスト] — Threadsに投稿
 /meeting [議題] — 部門横断会議を開催
+
+【経理】
+/finance — 経理ダッシュボード
+/journal — 仕訳帳（今月）
+/expenses — 経費一覧（今月）
+/invoices — 請求書管理
+/cash — 出納帳（今月）
+/report — 月次レポート
 
 【部署メンション】
 @秘書 — スケジュール管理、TODO、相談
@@ -137,6 +399,108 @@ ${SUMMARY}
 例: /meeting noteの有料記事の価格戦略
 例: /meeting 来月のSNS施策について"
         fi
+        ;;
+      /journal)
+        JOURNAL_FILE="$SCRIPT_DIR/../../.company/finance/journal/$(date '+%Y-%m').md"
+        if [ -f "$JOURNAL_FILE" ]; then
+          PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
+            <(echo "仕訳帳 $(date '+%Y年%m月')") "$JOURNAL_FILE" 2>/dev/null)
+          REPLY="📒 仕訳帳（今月）
+$PREVIEW_URL"
+        else
+          REPLY="📒 今月の仕訳帳はまだありません。"
+        fi
+        ;;
+      /expenses)
+        EXPENSE_FILE="$SCRIPT_DIR/../../.company/finance/expenses/$(date '+%Y-%m').md"
+        if [ -f "$EXPENSE_FILE" ]; then
+          TOTAL=$(grep "^|" "$EXPENSE_FILE" | grep -v "日付" | grep -v "---" | python3 -c "
+import sys,re
+total=0
+for line in sys.stdin:
+    m=re.search(r'¥([0-9,]+)',line)
+    if m: total+=int(m.group(1).replace(',',''))
+print(f'{total:,}')
+" 2>/dev/null)
+          PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
+            <(echo "経費一覧 $(date '+%Y年%m月')") "$EXPENSE_FILE" 2>/dev/null)
+          REPLY="💰 経費（今月）合計: ¥${TOTAL}
+$PREVIEW_URL"
+        else
+          REPLY="💰 今月の経費はまだありません。"
+        fi
+        ;;
+      /invoice|/invoices)
+        INV_DIR="$SCRIPT_DIR/../../.company/finance/invoices"
+        RECV_FILE="$INV_DIR/received-$(date '+%Y-%m').md"
+        # 発行・受領をまとめたMarkdownを作成
+        TMP_INV="/tmp/line_invoices_$(date '+%Y%m').md"
+        echo "## 発行済み請求書" > "$TMP_INV"
+        echo "" >> "$TMP_INV"
+        SENT=$(ls "$INV_DIR"/*.pdf 2>/dev/null | xargs -I{} basename {} | grep -v "サンプル" | head -10)
+        if [ -n "$SENT" ]; then
+          echo "$SENT" | while read f; do echo "- $f"; done >> "$TMP_INV"
+        else
+          echo "なし" >> "$TMP_INV"
+        fi
+        echo "" >> "$TMP_INV"
+        if [ -f "$RECV_FILE" ]; then
+          echo "## 受領請求書（今月）" >> "$TMP_INV"
+          echo "" >> "$TMP_INV"
+          cat "$RECV_FILE" >> "$TMP_INV"
+        fi
+        PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
+          <(echo "請求書管理 $(date '+%Y年%m月')") "$TMP_INV" 2>/dev/null)
+        REPLY="📄 請求書管理
+$PREVIEW_URL"
+        ;;
+      /cash)
+        CASH_FILE="$SCRIPT_DIR/../../.company/finance/cash/$(date '+%Y-%m').md"
+        if [ -f "$CASH_FILE" ]; then
+          PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
+            <(echo "出納帳 $(date '+%Y年%m月')") "$CASH_FILE" 2>/dev/null)
+          REPLY="🏦 出納帳（今月）
+$PREVIEW_URL"
+        else
+          REPLY="🏦 今月の出納帳はまだありません。"
+        fi
+        ;;
+      /report)
+        REPORT_FILE="$SCRIPT_DIR/../../.company/finance/reports/report-$(date '+%Y-%m').md"
+        if [ -f "$REPORT_FILE" ]; then
+          PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
+            <(echo "月次レポート $(date '+%Y年%m月')") "$REPORT_FILE" 2>/dev/null)
+          REPLY="📊 月次レポート
+$PREVIEW_URL"
+        else
+          REPLY="📊 今月の月次レポートはまだありません。月末に作成されます。"
+        fi
+        ;;
+      /finance)
+        FIN_DIR="$SCRIPT_DIR/../../.company/finance"
+        EXP_TOTAL=$(grep "^|" "$FIN_DIR/expenses/$(date '+%Y-%m').md" 2>/dev/null | grep -v "日付" | grep -v "---" | python3 -c "
+import sys,re
+total=0
+for line in sys.stdin:
+    m=re.search(r'¥([0-9,]+)',line)
+    if m: total+=int(m.group(1).replace(',',''))
+print(f'{total:,}')
+" 2>/dev/null || echo "0")
+        JNL_COUNT=$(grep "^|" "$FIN_DIR/journal/$(date '+%Y-%m').md" 2>/dev/null | grep -v "日付" | grep -v "---" | wc -l | tr -d ' ')
+        UNPAID=$(grep "^|" "$FIN_DIR/invoices/received-$(date '+%Y-%m').md" 2>/dev/null | grep -v "受領日" | grep -v "---" | wc -l | tr -d ' ')
+
+        REPLY="💼 経理ダッシュボード（$(date '+%Y年%m月')）
+
+📒 仕訳: ${JNL_COUNT}件
+💰 経費合計: ¥${EXP_TOTAL}
+📄 未払い請求書: ${UNPAID}件
+
+【コマンド】タップで詳細表示↓
+/journal — 仕訳帳
+/expenses — 経費一覧
+/invoices — 請求書管理
+/cash — 出納帳
+/report — 月次レポート"
         ;;
       *)
         REPLY="❓ 不明なコマンドです。/help でコマンド一覧を確認できます。"
