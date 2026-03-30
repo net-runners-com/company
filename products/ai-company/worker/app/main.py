@@ -626,6 +626,32 @@ async def upsert_employee(payload: dict):
         except Exception as e:
             print(f"[employees] R2 profile write error: {e}")
 
+        # CLAUDE.md（個人ルール）テンプレート
+        claude_md = f"""# {name} の個人ルール
+
+## 性格・口調
+- {tone}な口調で話す
+- {role}としての専門性を活かして回答する
+
+## 専門知識
+{chr(10).join(f'- {s}' for s in skills) if skills else '- （自由に追加してください）'}
+
+## 行動ルール
+- 作業フォルダ内のファイルを活用して業務を遂行する
+- 分からないことは正直に伝える
+- 報告は簡潔に、要点をまとめる
+
+## 学んだこと
+<!-- オーナーとの会話で学んだことを追記していく -->
+
+## やってはいけないこと
+<!-- 禁止事項があれば追記 -->
+"""
+        try:
+            _r2_write(emp_id, "CLAUDE.md", claude_md.encode("utf-8"), "text/markdown; charset=utf-8")
+        except Exception as e:
+            print(f"[employees] R2 CLAUDE.md write error: {e}")
+
     return employees[emp_id]
 
 
@@ -652,7 +678,28 @@ def _build_employee_system_prompt(emp: dict) -> str:
     dept = emp.get("department", "")
     emp_workdir = _get_employee_workdir(emp)
 
+    # 現在時刻・季節情報
+    import datetime
+    now = datetime.datetime.now()
+    month = now.month
+    hour = now.hour
+    season_map = {1:"冬",2:"冬",3:"春",4:"春",5:"春",6:"梅雨/初夏",7:"夏",8:"夏",9:"秋",10:"秋",11:"秋",12:"冬"}
+    season = season_map.get(month, "")
+    if hour < 6: time_period = "深夜"
+    elif hour < 10: time_period = "朝"
+    elif hour < 12: time_period = "午前"
+    elif hour < 14: time_period = "お昼"
+    elif hour < 17: time_period = "午後"
+    elif hour < 20: time_period = "夕方"
+    else: time_period = "夜"
+
     prompt = f"""あなたは「{name}」です。{role}として働いています。
+
+# 現在の状況
+- 今日: {now.strftime('%Y年%m月%d日（%A）')}
+- 現在時刻: {now.strftime('%H:%M')}（{time_period}）
+- 季節: {season}（{month}月）
+- 挨拶や会話では時間帯・季節を意識して自然に応答すること
 
 # 基本設定
 - 名前: {name}
@@ -682,9 +729,35 @@ def _build_employee_system_prompt(emp: dict) -> str:
 4. 出力されたPDFのパスを報告
 
 納品書はgenerate_invoice.pyをベースにタイトルを「納品書」に変更して作成。
+
+# 外部サービス連携（Nango API）
+Googleカレンダー、Gmail等の外部サービスには curl で Nango proxy API を使ってアクセスする。
+
+## Googleカレンダーの予定取得
+```bash
+curl -s -X POST http://localhost:8000/nango/proxy -H "Content-Type: application/json" -d '{{"method":"GET","endpoint":"/calendar/v3/calendars/primary/events?timeMin=YYYY-MM-DDT00:00:00%2B09:00&timeMax=YYYY-MM-DDT23:59:59%2B09:00&singleEvents=true&orderBy=startTime","connectionId":"__auto__","provider":"google-calendar"}}'
+```
+
+## Googleカレンダーに予定追加
+```bash
+curl -s -X POST http://localhost:8000/nango/proxy -H "Content-Type: application/json" -d '{{"method":"POST","endpoint":"/calendar/v3/calendars/primary/events","connectionId":"__auto__","provider":"google-calendar","data":{{"summary":"タイトル","start":{{"dateTime":"YYYY-MM-DDTHH:MM:00+09:00"}},"end":{{"dateTime":"YYYY-MM-DDTHH:MM:00+09:00"}}}}}}'
+```
+
+connectionId が "__auto__" の場合、サーバーが自動で最新の接続IDを使う。
+接続されていないサービスは使えない。使えない場合はその旨を伝えること。
 """
     if custom:
         prompt += f"\n# カスタム指示\n{custom}\n"
+
+    # 社員固有の CLAUDE.md を読み込み（育成ルール）
+    emp_id = emp.get("id", "")
+    if emp_id:
+        try:
+            claude_md = _r2_read(emp_id, "CLAUDE.md")
+            if claude_md:
+                prompt += f"\n# 個人ルール（CLAUDE.md）\n以下はオーナーが設定したあなた固有のルールです。必ず従ってください。\n\n{claude_md.decode('utf-8')}\n"
+        except Exception:
+            pass
 
     return prompt
 
@@ -2014,6 +2087,106 @@ async def employee_reset_session(emp_id: str):
 
 
 # ============================================
+# ============================================
+# News — ニュース取得・自動更新
+# ============================================
+
+_news_update_lock = False
+
+async def _fetch_news():
+    """Claude CLI でニュースを取得してSQLiteに保存"""
+    global _news_update_lock
+    if _news_update_lock:
+        return
+    _news_update_lock = True
+
+    prompt = f"""今日は{_time.strftime('%Y年%m月%d日')}です。
+以下のカテゴリから最新ニュースを6件取得してJSON配列で返してください。
+カテゴリ: tech（テック）, business（ビジネス）, industry（業界）, market（マーケット）
+
+Web検索やブラウザを使って実際の最新ニュースを取得してください。
+
+出力形式（JSONのみ、他の文字不要）:
+```json
+[
+  {{"title":"ニュースタイトル","source":"ソース名","category":"tech","summary":"要約2-3文","publishedAt":"{_time.strftime('%Y-%m-%d')}T06:00:00Z"}}
+]
+```"""
+
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "claude", "--dangerously-skip-permissions", "-p", prompt, "--max-turns", "5",
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=60)
+        output = stdout.decode().strip()
+
+        import re
+        match = re.search(r'```json\s*(\[.*?\])\s*```', output, re.DOTALL)
+        if not match:
+            match = re.search(r'\[.*\]', output, re.DOTALL)
+        if match:
+            news = json.loads(match.group(1) if '```' in output else match.group(0))
+            conn = _get_db()
+            try:
+                # 古いニュースを削除して新しいのを保存
+                conn.execute("DELETE FROM data_store WHERE collection = 'news'")
+                for i, item in enumerate(news):
+                    conn.execute(
+                        "INSERT INTO data_store (id, collection, data) VALUES (?, ?, ?)",
+                        [f"news-{i}", "news", json.dumps(item, ensure_ascii=False)]
+                    )
+                conn.commit()
+                print(f"[news] Updated: {len(news)} articles")
+            finally:
+                conn.close()
+    except Exception as e:
+        print(f"[news] Error: {e}")
+    finally:
+        _news_update_lock = False
+
+
+@app.post("/news/update")
+async def update_news():
+    """ニュースを手動更新"""
+    asyncio.create_task(_fetch_news())
+    return {"status": "updating"}
+
+
+@app.get("/news")
+async def get_news():
+    """保存済みニュース取得"""
+    conn = _get_db()
+    try:
+        rows = conn.execute(
+            "SELECT data FROM data_store WHERE collection = 'news' ORDER BY created_at DESC"
+        ).fetchall()
+        return {"news": [json.loads(r["data"]) for r in rows]}
+    finally:
+        conn.close()
+
+
+# 毎朝7時にニュース自動更新
+async def _news_scheduler():
+    import datetime
+    while True:
+        now = datetime.datetime.now()
+        # 次の7:00までの秒数を計算
+        target = now.replace(hour=7, minute=0, second=0, microsecond=0)
+        if now >= target:
+            target += datetime.timedelta(days=1)
+        wait = (target - now).total_seconds()
+        print(f"[news] Next update at {target}, waiting {int(wait)}s")
+        await asyncio.sleep(wait)
+        await _fetch_news()
+
+
+@app.on_event("startup")
+async def start_news_scheduler():
+    asyncio.create_task(_news_scheduler())
+
+
+# ============================================
 # Nango Integration (サービス連携)
 # ============================================
 
@@ -2078,8 +2251,27 @@ async def nango_proxy(request: Request):
     provider = body.get("provider", "")
     data = body.get("data")
 
-    if not endpoint or not connection_id or not provider:
-        return {"error": "endpoint, connectionId, provider are required"}
+    if not endpoint or not provider:
+        return {"error": "endpoint and provider are required"}
+
+    # __auto__ の場合、最新の接続IDを自動取得
+    if not connection_id or connection_id == "__auto__":
+        secret_tmp = os.environ.get("NANGO_SECRET_KEY", "")
+        if secret_tmp:
+            import httpx
+            async with httpx.AsyncClient() as client:
+                try:
+                    resp = await client.get(f"{NANGO_BASE}/connections", headers={"Authorization": f"Bearer {secret_tmp}"}, timeout=10)
+                    conns = resp.json().get("connections", [])
+                    match = next((c for c in conns if c.get("provider") == provider or c.get("provider_config_key") == provider), None)
+                    if match:
+                        connection_id = match["connection_id"]
+                    else:
+                        return {"error": f"No connection found for provider: {provider}"}
+                except Exception as e:
+                    return {"error": f"Auto-connect failed: {e}"}
+        if not connection_id or connection_id == "__auto__":
+            return {"error": "No connection available"}
 
     secret = os.environ.get("NANGO_SECRET_KEY", "")
     if not secret:

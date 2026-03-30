@@ -32,6 +32,8 @@ services:
     environment:
       # Database
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/aicompany
+      # Timezone
+      - TZ=Asia/Tokyo
       # Claude Code CLI (OAuth)
       - CLAUDE_CODE_USE_BEDROCK=${CLAUDE_CODE_USE_BEDROCK:-0}
       - IS_SANDBOX=${IS_SANDBOX:-1}

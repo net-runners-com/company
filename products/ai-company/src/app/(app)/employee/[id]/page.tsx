@@ -25,6 +25,10 @@ export default function EmployeeDetailPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const [profileContent, setProfileContent] = useState<string | null>(null);
+  const [claudeMd, setClaudeMd] = useState<string>("");
+  const [claudeMdLoaded, setClaudeMdLoaded] = useState(false);
+  const [claudeMdSaving, setClaudeMdSaving] = useState(false);
+  const [claudeMdSaved, setClaudeMdSaved] = useState(false);
 
   const tabs: { key: TabKey; label: string }[] = [
     { key: "chat", label: t.employee.chat },
@@ -49,6 +53,11 @@ export default function EmployeeDetailPage() {
     fetch(`/api/employee-files?employeeId=${id}&action=read&path=${encodeURIComponent("自己紹介.md")}`)
       .then(r => r.json())
       .then(d => { if (d.content) setProfileContent(d.content); })
+      .catch(() => {});
+    // CLAUDE.md を取得
+    fetch(`/api/employee-files?employeeId=${id}&action=read&path=${encodeURIComponent("CLAUDE.md")}`)
+      .then(r => r.json())
+      .then(d => { if (d.content) { setClaudeMd(d.content); setClaudeMdLoaded(true); } })
       .catch(() => {});
     api.getEmployee(id).then(setEmployee);
     api.getTasks(id).then(setTasks);
@@ -277,6 +286,53 @@ export default function EmployeeDetailPage() {
               <button className="px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors">
                 {t.common.save}
               </button>
+            </div>
+
+            {/* CLAUDE.md Editor */}
+            <div className="bg-white border border-[var(--color-border)] rounded-lg p-6 mt-4">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="font-semibold text-[var(--color-text)] text-sm">
+                    {locale === "ja" ? "個人ルール（CLAUDE.md）" : "Personal Rules (CLAUDE.md)"}
+                  </h3>
+                  <p className="text-xs text-[var(--color-subtext)] mt-0.5">
+                    {locale === "ja" ? "この社員の行動ルール・性格・知識を自由に編集できます" : "Customize this employee's behavior, personality, and knowledge"}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  {claudeMdSaved && (
+                    <span className="text-xs text-green-600">{locale === "ja" ? "保存しました" : "Saved"}</span>
+                  )}
+                  <button
+                    onClick={async () => {
+                      setClaudeMdSaving(true);
+                      setClaudeMdSaved(false);
+                      try {
+                        await fetch("/api/employee-files", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ employeeId: employee.id, _action: "writeFile", path: "CLAUDE.md", content: claudeMd }),
+                        });
+                        setClaudeMdSaved(true);
+                        setTimeout(() => setClaudeMdSaved(false), 2000);
+                      } catch {}
+                      setClaudeMdSaving(false);
+                    }}
+                    disabled={claudeMdSaving}
+                    className="px-4 py-1.5 bg-[var(--color-primary)] text-white text-xs font-medium rounded-lg hover:bg-[var(--color-primary-dark)] disabled:opacity-50 transition-colors"
+                  >
+                    {claudeMdSaving ? (locale === "ja" ? "保存中..." : "Saving...") : (locale === "ja" ? "保存" : "Save")}
+                  </button>
+                </div>
+              </div>
+              <textarea
+                value={claudeMd}
+                onChange={(e) => setClaudeMd(e.target.value)}
+                rows={15}
+                className="w-full px-4 py-3 font-mono text-sm text-[var(--color-text)] bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent resize-y"
+                placeholder={locale === "ja" ? "# 個人ルール\n\n## 性格\n- 丁寧で親しみやすい\n\n## 知識\n- ...\n\n## やってはいけないこと\n- ..." : "# Personal Rules\n\n## Personality\n..."}
+                spellCheck={false}
+              />
             </div>
           </div>
         )}

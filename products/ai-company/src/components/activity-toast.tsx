@@ -72,6 +72,10 @@ export function ActivityToast() {
         if (newToasts.length > 0) {
           lastCheck.current = new Date().toISOString().replace("Z", "");
           setToasts((prev) => [...newToasts.slice(0, 3), ...prev].slice(0, 5));
+          // 3秒後に自動で閉じる
+          for (const t of newToasts) {
+            setTimeout(() => setToasts((prev) => prev.filter((x) => x.id !== t.id)), 3000);
+          }
         }
       } catch {}
     };

@@ -86,12 +86,16 @@ export default function SecretaryPage() {
 
   const secretary = mockEmployees.find((e) => e.id === "emp-1")!;
   const [profileContent, setProfileContent] = useState<string | null>(null);
+  const [news, setNews] = useState<{ title: string; source: string; category: string; summary: string; publishedAt: string }[]>([]);
+  const [newsUpdating, setNewsUpdating] = useState(false);
 
   useEffect(() => {
     fetch(`/api/employee-files?employeeId=emp-1&action=read&path=${encodeURIComponent("自己紹介.md")}`)
       .then(r => r.json())
       .then(d => { if (d.content) setProfileContent(d.content); })
       .catch(() => {});
+    // ニュース取得
+    fetch("/api/news").then(r => r.json()).then(d => { if (d.news) setNews(d.news); }).catch(() => {});
   }, []);
 
   const today = new Date().toISOString().split("T")[0];
@@ -106,7 +110,7 @@ export default function SecretaryPage() {
     { key: "todos", label: locale === "ja" ? "TODO" : "TODOs", badge: pendingTasks.length },
     { key: "notes", label: locale === "ja" ? "メモ" : "Notes" },
     { key: "inbox", label: locale === "ja" ? "受信箱" : "Inbox", badge: unreadInbox > 0 ? unreadInbox : undefined },
-    { key: "news", label: locale === "ja" ? "ニュース" : "News", badge: mockNews.length },
+    { key: "news", label: locale === "ja" ? "ニュース" : "News", badge: news.length > 0 ? news.length : undefined },
   ];
 
   if (activeTab === "profile" || activeTab === "chat") {
@@ -471,27 +475,54 @@ export default function SecretaryPage() {
 
       {/* News */}
       {activeTab === "news" && (
-        <div className="space-y-4">
-          {mockNews.map((item) => {
-            const cat = newsCategoryConfig[item.category];
-            return (
-              <div key={item.id} className="bg-white rounded-xl border border-[var(--color-border)] p-5 hover:border-[var(--color-primary)] transition-colors">
-                <div className="flex items-center gap-2 mb-2">
-                  <span
-                    className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: cat.bg, color: cat.color }}
-                  >
-                    {locale === "ja" ? cat.label : cat.labelEn}
-                  </span>
-                  <span className="text-[10px] text-[var(--color-subtext)]">{item.source}</span>
-                  <span className="text-[10px] text-[var(--color-subtext)]">・</span>
-                  <span className="text-[10px] text-[var(--color-subtext)]">{getTimeLabel(item.publishedAt, locale)}</span>
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs text-[var(--color-subtext)]">
+              {locale === "ja" ? "毎朝7時に自動更新" : "Auto-updated daily at 7am"}
+            </p>
+            <button
+              onClick={async () => {
+                setNewsUpdating(true);
+                try {
+                  await fetch("/api/news", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ _action: "update" }) });
+                  // 少し待ってから再取得
+                  setTimeout(async () => {
+                    const res = await fetch("/api/news");
+                    const d = await res.json();
+                    if (d.news) setNews(d.news);
+                    setNewsUpdating(false);
+                  }, 10000);
+                } catch { setNewsUpdating(false); }
+              }}
+              disabled={newsUpdating}
+              className="px-3 py-1.5 text-xs font-medium border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-border-light)] disabled:opacity-50 transition-colors flex items-center gap-1.5"
+            >
+              {newsUpdating ? <div className="w-3 h-3 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" /> : null}
+              {locale === "ja" ? "今すぐ更新" : "Update Now"}
+            </button>
+          </div>
+          <div className="space-y-4">
+            {news.length === 0 && !newsUpdating && (
+              <p className="text-sm text-[var(--color-subtext)] text-center py-8">
+                {locale === "ja" ? "ニュースがありません。「今すぐ更新」を押してください。" : "No news. Click 'Update Now'."}
+              </p>
+            )}
+            {news.map((item, i) => {
+              const cat = newsCategoryConfig[item.category] || newsCategoryConfig.business;
+              return (
+                <div key={i} className="bg-white rounded-xl border border-[var(--color-border)] p-5 hover:border-[var(--color-primary)] transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: cat.bg, color: cat.color }}>
+                      {locale === "ja" ? cat.label : cat.labelEn}
+                    </span>
+                    <span className="text-[10px] text-[var(--color-subtext)]">{item.source}</span>
+                  </div>
+                  <h3 className="font-medium text-[var(--color-text)] mb-1.5 leading-snug">{item.title}</h3>
+                  <p className="text-sm text-[var(--color-subtext)] leading-relaxed">{item.summary}</p>
                 </div>
-                <h3 className="font-medium text-[var(--color-text)] mb-1.5 leading-snug">{item.title}</h3>
-                <p className="text-sm text-[var(--color-subtext)] leading-relaxed">{item.summary}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
