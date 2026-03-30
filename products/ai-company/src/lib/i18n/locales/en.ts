@@ -27,9 +27,12 @@ const en = {
     documents: "Documents",
     settings: "Settings",
     secretary: "Secretary",
+    organization: "Organization",
     employees: "Employees",
     finance: "Finance",
     sales: "Sales",
+    automation: "Automation",
+    test: "Test",
   },
 
   // Landing
@@ -205,6 +208,49 @@ const en = {
     upTo: "Up to {n} employees",
     upgrade: "Upgrade",
     data: "Data",
+    tabs: {
+      general: "General",
+      connectors: "Connectors",
+    },
+    connectors: {
+      title: "Connectors",
+      subtitle: "Connect external services to your AI team",
+      connected: "Connected",
+      notConnected: "Not connected",
+      configure: "Configure",
+      connect: "Connect",
+      disconnect: "Disconnect",
+      webhookUrl: "Webhook URL",
+      channelId: "Channel ID",
+      accessToken: "Access Token",
+      secretKey: "Secret Key",
+      botToken: "Bot Token",
+      serverId: "Server ID",
+      line: {
+        name: "LINE",
+        description: "Connect LINE Official Account for customer messaging and notifications",
+      },
+      slack: {
+        name: "Slack",
+        description: "Integrate with Slack workspace for team communication and alerts",
+      },
+      discord: {
+        name: "Discord",
+        description: "Connect Discord server for community management and bot interactions",
+      },
+      "google-calendar": {
+        name: "Google Calendar",
+        description: "Connect Google Calendar to manage schedules and events",
+      },
+      "google-drive": {
+        name: "Google Drive",
+        description: "Connect Google Drive to access and manage files",
+      },
+      gmail: {
+        name: "Gmail",
+        description: "Connect Gmail to send and receive emails",
+      },
+    },
   },
 
   // Onboarding

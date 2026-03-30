@@ -36,39 +36,73 @@ export async function createCompany(
   return { ...mockCompany, ...data };
 }
 
-// --- Employees ---
+// --- Employees (Worker API) ---
 export async function getEmployees(): Promise<Employee[]> {
-  return mockEmployees;
+  try {
+    const res = await fetch("/api/employees");
+    const data = await res.json();
+    if (data && typeof data === "object" && !Array.isArray(data)) {
+      // Worker returns { "emp-1": {...}, ... } → convert to array
+      return Object.values(data) as Employee[];
+    }
+    return [];
+  } catch {
+    return [];
+  }
 }
 
 export async function getEmployee(id: string): Promise<Employee | null> {
-  return mockEmployees.find((e) => e.id === id) ?? null;
+  try {
+    const employees = await getEmployees();
+    return employees.find((e) => e.id === id) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function createEmployee(
   data: Partial<Employee>
 ): Promise<Employee> {
-  return {
-    ...mockEmployees[0],
-    id: `emp-${Date.now()}`,
-    ...data,
-  } as Employee;
+  const res = await fetch("/api/employees", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
 }
 
 export async function updateEmployee(
   id: string,
   data: Partial<Employee>
 ): Promise<Employee> {
-  const employee = mockEmployees.find((e) => e.id === id);
-  return { ...employee!, ...data };
+  const res = await fetch("/api/employees", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, ...data }),
+  });
+  return res.json();
 }
 
 // --- Tasks ---
 export async function getTasks(employeeId?: string): Promise<Task[]> {
-  if (employeeId) {
-    return mockTasks.filter((t) => t.employeeId === employeeId);
-  }
-  return mockTasks;
+  if (!employeeId) return [];
+  try {
+    const res = await fetch(`/api/data/tasks_${employeeId}`);
+    const data = await res.json();
+    if (data.entries) {
+      return data.entries.map((e: Record<string, string>) => ({
+        id: e._id || "",
+        title: e.title || "",
+        description: e.project || "",
+        status: e.status === "done" ? "completed" : e.status === "error" ? "cancelled" : "in-progress",
+        priority: "medium" as const,
+        employeeId,
+        createdAt: e.assignedAt || e._created_at || "",
+        completedAt: e.completedAt || null,
+      }));
+    }
+  } catch {}
+  return [];
 }
 
 export async function createTask(data: Partial<Task>): Promise<Task> {
@@ -148,5 +182,21 @@ export async function getProject(id: string): Promise<Project | null> {
 
 // --- Schedule ---
 export async function getScheduleEvents(): Promise<ScheduleEvent[]> {
-  return mockScheduleEvents;
+  try {
+    const res = await fetch("/api/data/calendar_events");
+    const data = await res.json();
+    if (data.entries) {
+      return data.entries.map((e: Record<string, string>) => ({
+        id: e._id || e.id || "",
+        title: e.title || "",
+        description: e.description || "",
+        date: e.date || "",
+        startTime: e.startTime || "",
+        endTime: e.endTime || "",
+        type: e.type || "other",
+        employeeIds: e.employeeIds || [],
+      }));
+    }
+  } catch {}
+  return [];
 }

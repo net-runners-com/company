@@ -24,16 +24,27 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+      - "6080:6080"
     volumes:
       - ./worker/app:/app/app
+      - ./worker/project-context/company:/workspace/company
+      - worker-data:/workspace/data
     environment:
       # Database
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/aicompany
-      # Claude Code CLI (OAuth or API key)
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      # Claude Code CLI (OAuth)
       - CLAUDE_CODE_USE_BEDROCK=${CLAUDE_CODE_USE_BEDROCK:-0}
+      - IS_SANDBOX=${IS_SANDBOX:-1}
       # Google (gws + gemini)
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      # Google OAuth2
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      # Webhook public URL (ngrok etc.)
+      - PUBLIC_URL=${PUBLIC_URL:-}
+      # LINE/Slack/Discord — コネクタ設定は Web UI から管理
+      # Nango (サービス連携用)
+      - NANGO_SECRET_KEY=${NANGO_SECRET_KEY:-}
       # Cloudflare R2
       - R2_ACCOUNT_ID=${R2_ACCOUNT_ID:-8a3d80a1153c0958366bccdbaa70e7b4}
       - R2_ENDPOINT=${R2_ENDPOINT:-https://8a3d80a1153c0958366bccdbaa70e7b4.r2.cloudflarestorage.com}
@@ -64,3 +75,4 @@ services:
 
 volumes:
   pgdata:
+  worker-data:

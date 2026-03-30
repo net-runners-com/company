@@ -10,6 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     gnupg \
     ca-certificates \
+    procps \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    websockify \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================
@@ -20,7 +25,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================
-# Claude Code CLI
+# Claude Code CLI + SDK
 # ============================================
 RUN npm install -g @anthropic-ai/claude-code
 
@@ -39,9 +44,13 @@ RUN npm install -g @google/gemini-cli
 # ============================================
 RUN pip install --no-cache-dir browser-use
 
-# Playwright browsers (Chromium)
+# Playwright browsers (Chromium) — Python版
 RUN pip install --no-cache-dir playwright \
     && playwright install --with-deps chromium
+
+# Playwright browsers (Chromium) — Node.js版 (MCP server用)
+RUN npx -y @anthropic-ai/mcp-server-playwright --help 2>/dev/null || true \
+    && npx -y playwright install --with-deps chromium
 
 # ============================================
 # Python deps
@@ -53,7 +62,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Tool config directories
 # ============================================
 RUN mkdir -p /root/.gemini \
-    && echo '{}' > /root/.gemini/projects.json
+    && echo '{}' > /root/.gemini/projects.json \
+    && mkdir -p /root/.claude
 
 # ============================================
 # Project context (products/ 以外のプロジェクトファイル)
@@ -65,13 +75,28 @@ COPY project-context/features /workspace/features
 COPY project-context/SPEC.md /workspace/SPEC.md
 COPY project-context/HANDOFF.md /workspace/HANDOFF.md
 COPY project-context/.mcp.json /workspace/.mcp.json
+COPY project-context/.mcp.json /root/.claude/.mcp.json
 COPY project-context/package.json /workspace/package.json
+COPY connector-plugins /app/connector-plugins
 
 # ============================================
 # Copy app
 # ============================================
 COPY . .
 
-EXPOSE 8000
+# Claude Agent SDK (for employee chat streaming)
+RUN cd /app && npm init -y --silent 2>/dev/null; npm install @anthropic-ai/claude-agent-sdk
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+# ============================================
+# noVNC (web-based VNC client)
+# ============================================
+RUN git clone --depth 1 https://github.com/novnc/noVNC.git /opt/noVNC \
+    && ln -s /opt/noVNC/vnc.html /opt/noVNC/index.html
+
+EXPOSE 8000 6080
+
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]

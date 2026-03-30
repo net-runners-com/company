@@ -50,15 +50,33 @@ export default function SchedulePage() {
   const [view, setView] = useState<ViewMode>("calendar");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const { t, locale } = useI18n();
+  const [showAdd, setShowAdd] = useState(false);
+  const [newEvent, setNewEvent] = useState({ title: "", description: "", date: "", startTime: "10:00", endTime: "11:00", type: "meeting" });
+  const [saving, setSaving] = useState(false);
 
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
 
-  useEffect(() => {
-    api.getScheduleEvents().then(setEvents);
-  }, []);
+  const refreshEvents = () => api.getScheduleEvents().then(setEvents);
+  useEffect(() => { refreshEvents(); }, []);
+
+  const addEvent = async () => {
+    if (!newEvent.title || !newEvent.date) return;
+    setSaving(true);
+    try {
+      await fetch("/api/data/calendar_events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newEvent),
+      });
+      await refreshEvents();
+      setShowAdd(false);
+      setNewEvent({ title: "", description: "", date: "", startTime: "10:00", endTime: "11:00", type: "meeting" });
+    } catch {}
+    setSaving(false);
+  };
 
   const eventsByDate = useMemo(() => {
     return events.reduce<Record<string, ScheduleEvent[]>>((acc, evt) => {
@@ -102,6 +120,11 @@ export default function SchedulePage() {
           <p className="text-sm text-[var(--color-subtext)] mt-0.5">{t.schedule.subtitle}</p>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => { setShowAdd(true); setNewEvent({ ...newEvent, date: selectedDate || todayStr }); }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-primary)] text-white text-xs font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+            {locale === "ja" ? "予定を追加" : "Add Event"}
+          </button>
           {/* View Toggle */}
           <div className="flex bg-[var(--color-border-light)] rounded-lg p-0.5">
             <button
@@ -321,6 +344,63 @@ export default function SchedulePage() {
             })}
           </div>
         )
+      )}
+      {/* Add Event Modal */}
+      {showAdd && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowAdd(false)}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+              <h3 className="font-semibold text-[var(--color-text)]">{locale === "ja" ? "予定を追加" : "Add Event"}</h3>
+              <button onClick={() => setShowAdd(false)} className="p-1 text-[var(--color-subtext)] hover:text-[var(--color-text)]">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="px-6 py-5 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "タイトル" : "Title"}</label>
+                <input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "日付" : "Date"}</label>
+                <input type="date" value={newEvent.date} onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+                  className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "開始" : "Start"}</label>
+                  <input type="time" value={newEvent.startTime} onChange={(e) => setNewEvent({ ...newEvent, startTime: e.target.value })}
+                    className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "終了" : "End"}</label>
+                  <input type="time" value={newEvent.endTime} onChange={(e) => setNewEvent({ ...newEvent, endTime: e.target.value })}
+                    className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "種類" : "Type"}</label>
+                <select value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
+                  className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]">
+                  <option value="meeting">{locale === "ja" ? "会議" : "Meeting"}</option>
+                  <option value="deadline">{locale === "ja" ? "締切" : "Deadline"}</option>
+                  <option value="review">{locale === "ja" ? "レビュー" : "Review"}</option>
+                  <option value="other">{locale === "ja" ? "その他" : "Other"}</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "説明" : "Description"}</label>
+                <input value={newEvent.description} onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                  className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+              </div>
+              <button onClick={addEvent} disabled={saving || !newEvent.title || !newEvent.date}
+                className="w-full py-2.5 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-dark)] disabled:opacity-50 transition-colors">
+                {saving ? (locale === "ja" ? "保存中..." : "Saving...") : (locale === "ja" ? "追加" : "Add")}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

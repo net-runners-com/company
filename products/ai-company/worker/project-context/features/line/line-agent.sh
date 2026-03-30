@@ -4,11 +4,11 @@
 
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-QUEUE="$SCRIPT_DIR/inbox/queue.jsonl"
+QUEUE="${LINE_QUEUE_FILE:-$SCRIPT_DIR/inbox/queue.jsonl}"
 ENV_FILE="$SCRIPT_DIR/.env"
 
-# .env読み込み
-source "$ENV_FILE"
+# .env読み込み（存在する場合のみ）
+[ -f "$ENV_FILE" ] && source "$ENV_FILE"
 
 touch "$QUEUE"
 
@@ -38,7 +38,7 @@ tail -n +$((SKIP_LINES + 1)) -f "$QUEUE" | while IFS= read -r line; do
   if [ -n "$MEDIA_PATH" ] && [ -f "$MEDIA_PATH" ]; then
     echo "[line-agent] 📷 メディア処理: $MEDIA_PATH (type=$MEDIA_TYPE)"
 
-    COMPANY_DIR="$SCRIPT_DIR/../../.company"
+    COMPANY_DIR="$SCRIPT_DIR/../../company"
 
     if [ "$MEDIA_TYPE" = "image" ]; then
       # 画像 → Claude Vision で解析
@@ -92,7 +92,7 @@ $VISION_PROMPT" 2>/dev/null)
         EXPENSE_ITEMS=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['items'])" 2>/dev/null)
         EXPENSE_CAT=$(echo "$JSON_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['category'])" 2>/dev/null)
 
-        EXPENSE_FILE="$COMPANY_DIR/finance/expenses/$(date '+%Y-%m').md"
+        EXPENSE_FILE="$COMPANY_DIR/back-office/accounting/expenses/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$EXPENSE_FILE")"
         if [ ! -f "$EXPENSE_FILE" ]; then
           echo "| 日付 | 内容 | 金額 | 区分 | 備考 |" > "$EXPENSE_FILE"
@@ -102,7 +102,7 @@ $VISION_PROMPT" 2>/dev/null)
         echo "[line-agent] 📊 経理記録: ¥${EXPENSE_AMOUNT} ${EXPENSE_STORE}"
 
         # 仕訳帳にも追記
-        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        JOURNAL_FILE="$COMPANY_DIR/back-office/accounting/journal/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$JOURNAL_FILE")"
         if [ ! -f "$JOURNAL_FILE" ]; then
           echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
@@ -193,7 +193,7 @@ JSONは \`\`\`json ... \`\`\` で囲んでください。
         INV_DUE=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('due_date',''))" 2>/dev/null)
         INV_DESC=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin).get('description',''))" 2>/dev/null)
 
-        INV_FILE="$COMPANY_DIR/finance/invoices/received-$(date '+%Y-%m').md"
+        INV_FILE="$COMPANY_DIR/back-office/accounting/invoices/received-$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$INV_FILE")"
         if [ ! -f "$INV_FILE" ]; then
           echo "# 受領請求書 $(date '+%Y年%m月')" > "$INV_FILE"
@@ -205,7 +205,7 @@ JSONは \`\`\`json ... \`\`\` で囲んでください。
         echo "[line-agent] 📄 請求書記録: ¥${INV_AMOUNT} ${INV_FROM}"
 
         # 仕訳帳にも追記（買掛金）
-        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        JOURNAL_FILE="$COMPANY_DIR/back-office/accounting/journal/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$JOURNAL_FILE")"
         if [ ! -f "$JOURNAL_FILE" ]; then
           echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
@@ -224,7 +224,7 @@ JSONは \`\`\`json ... \`\`\` で囲んでください。
         EXPENSE_ITEMS=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['items'])" 2>/dev/null)
         EXPENSE_CAT=$(echo "$FILE_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['category'])" 2>/dev/null)
 
-        EXPENSE_FILE="$COMPANY_DIR/finance/expenses/$(date '+%Y-%m').md"
+        EXPENSE_FILE="$COMPANY_DIR/back-office/accounting/expenses/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$EXPENSE_FILE")"
         if [ ! -f "$EXPENSE_FILE" ]; then
           echo "| 日付 | 内容 | 金額 | 区分 | 備考 |" > "$EXPENSE_FILE"
@@ -234,7 +234,7 @@ JSONは \`\`\`json ... \`\`\` で囲んでください。
         echo "[line-agent] 📊 経費記録: ¥${EXPENSE_AMOUNT} ${EXPENSE_STORE}"
 
         # 仕訳帳にも追記
-        JOURNAL_FILE="$COMPANY_DIR/finance/journal/$(date '+%Y-%m').md"
+        JOURNAL_FILE="$COMPANY_DIR/back-office/accounting/journal/$(date '+%Y-%m').md"
         mkdir -p "$(dirname "$JOURNAL_FILE")"
         if [ ! -f "$JOURNAL_FILE" ]; then
           echo "# 仕訳帳 $(date '+%Y年%m月')" > "$JOURNAL_FILE"
@@ -342,12 +342,12 @@ $CAL_RESULT"
       /todo)
         if [[ "$ARGS" == add* ]]; then
           TODO_TEXT=$(echo "$ARGS" | sed 's/^add *//')
-          TODO_FILE="$SCRIPT_DIR/../../.company/secretary/todos/$(date '+%Y-%m-%d').md"
+          TODO_FILE="$SCRIPT_DIR/../../company/back-office/general-affairs/todos/$(date '+%Y-%m-%d').md"
           mkdir -p "$(dirname "$TODO_FILE")"
           echo "- [ ] $TODO_TEXT | 優先度: 通常" >> "$TODO_FILE"
           REPLY="✅ TODOに追加しました: $TODO_TEXT"
         else
-          TODO_FILE="$SCRIPT_DIR/../../.company/secretary/todos/$(date '+%Y-%m-%d').md"
+          TODO_FILE="$SCRIPT_DIR/../../company/back-office/general-affairs/todos/$(date '+%Y-%m-%d').md"
           if [ -f "$TODO_FILE" ]; then
             TODOS=$(cat "$TODO_FILE")
             REPLY="📝 今日のTODO:
@@ -358,7 +358,7 @@ $TODOS"
         fi
         ;;
       /note)
-        LOG=$(tail -3 "$SCRIPT_DIR/../../.company/sns/note/logs/posts.log" 2>/dev/null)
+        LOG=$(tail -3 "$SCRIPT_DIR/../../company/front-office/marketing/sns/note/logs/posts.log" 2>/dev/null)
         if [ -n "$LOG" ]; then
           REPLY="📝 最近のnote記事:
 $LOG"
@@ -369,7 +369,7 @@ $LOG"
       /threads)
         if [ -n "$ARGS" ]; then
           echo "$ARGS" > /tmp/line_threads_post.txt
-          python3 "$SCRIPT_DIR/../../.company/sns/threads/post_to_threads.py" /tmp/line_threads_post.txt --profile "Profile 3" > /dev/null 2>&1
+          python3 "$SCRIPT_DIR/../../company/front-office/marketing/sns/threads/post_to_threads.py" /tmp/line_threads_post.txt --profile "Profile 3" > /dev/null 2>&1
           REPLY="✅ Threadsに投稿しました: ${ARGS:0:50}..."
         else
           REPLY="使い方: /threads [投稿テキスト]"
@@ -389,7 +389,7 @@ $LOG"
 
 ${SUMMARY}
 
-📝 議事録: secretary/notes/$(basename "$MINUTES")"
+📝 議事録: back-office/general-affairs/notes/$(basename "$MINUTES")"
           else
             REPLY="🏢 会議を実行しましたが、議事録の取得に失敗しました。"
           fi
@@ -401,7 +401,7 @@ ${SUMMARY}
         fi
         ;;
       /journal)
-        JOURNAL_FILE="$SCRIPT_DIR/../../.company/finance/journal/$(date '+%Y-%m').md"
+        JOURNAL_FILE="$SCRIPT_DIR/../../company/finance/journal/$(date '+%Y-%m').md"
         if [ -f "$JOURNAL_FILE" ]; then
           PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
             <(echo "仕訳帳 $(date '+%Y年%m月')") "$JOURNAL_FILE" 2>/dev/null)
@@ -412,7 +412,7 @@ $PREVIEW_URL"
         fi
         ;;
       /expenses)
-        EXPENSE_FILE="$SCRIPT_DIR/../../.company/finance/expenses/$(date '+%Y-%m').md"
+        EXPENSE_FILE="$SCRIPT_DIR/../../company/finance/expenses/$(date '+%Y-%m').md"
         if [ -f "$EXPENSE_FILE" ]; then
           TOTAL=$(grep "^|" "$EXPENSE_FILE" | grep -v "日付" | grep -v "---" | python3 -c "
 import sys,re
@@ -431,7 +431,7 @@ $PREVIEW_URL"
         fi
         ;;
       /invoice|/invoices)
-        INV_DIR="$SCRIPT_DIR/../../.company/finance/invoices"
+        INV_DIR="$SCRIPT_DIR/../../company/finance/invoices"
         RECV_FILE="$INV_DIR/received-$(date '+%Y-%m').md"
         # 発行・受領をまとめたMarkdownを作成
         TMP_INV="/tmp/line_invoices_$(date '+%Y%m').md"
@@ -455,7 +455,7 @@ $PREVIEW_URL"
 $PREVIEW_URL"
         ;;
       /cash)
-        CASH_FILE="$SCRIPT_DIR/../../.company/finance/cash/$(date '+%Y-%m').md"
+        CASH_FILE="$SCRIPT_DIR/../../company/finance/cash/$(date '+%Y-%m').md"
         if [ -f "$CASH_FILE" ]; then
           PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
             <(echo "出納帳 $(date '+%Y年%m月')") "$CASH_FILE" 2>/dev/null)
@@ -466,7 +466,7 @@ $PREVIEW_URL"
         fi
         ;;
       /report)
-        REPORT_FILE="$SCRIPT_DIR/../../.company/finance/reports/report-$(date '+%Y-%m').md"
+        REPORT_FILE="$SCRIPT_DIR/../../company/finance/reports/report-$(date '+%Y-%m').md"
         if [ -f "$REPORT_FILE" ]; then
           PREVIEW_URL=$(bash "$SCRIPT_DIR/../preview/create-preview.sh" --article \
             <(echo "月次レポート $(date '+%Y年%m月')") "$REPORT_FILE" 2>/dev/null)
@@ -477,7 +477,7 @@ $PREVIEW_URL"
         fi
         ;;
       /finance)
-        FIN_DIR="$SCRIPT_DIR/../../.company/finance"
+        FIN_DIR="$SCRIPT_DIR/../../company/finance"
         EXP_TOTAL=$(grep "^|" "$FIN_DIR/expenses/$(date '+%Y-%m').md" 2>/dev/null | grep -v "日付" | grep -v "---" | python3 -c "
 import sys,re
 total=0
@@ -533,14 +533,14 @@ print(f'{total:,}')
 
     # 部署名の正規化
     case "$DEPT" in
-      秘書|secretary)     DEPT_DIR="secretary" ; DEPT_NAME="秘書室" ;;
-      経理|finance)       DEPT_DIR="finance"   ; DEPT_NAME="経理" ;;
+      秘書|secretary)     DEPT_DIR="back-office/general-affairs" ; DEPT_NAME="秘書室" ;;
+      経理|finance)       DEPT_DIR="back-office/accounting" ; DEPT_NAME="経理" ;;
       営業|sales)         DEPT_DIR="sales"     ; DEPT_NAME="営業" ;;
       リサーチ|research)   DEPT_DIR="research"  ; DEPT_NAME="リサーチ" ;;
       エンジニア|eng|engineering) DEPT_DIR="engineering" ; DEPT_NAME="エンジニアリング" ;;
       PM|pm)              DEPT_DIR="pm"        ; DEPT_NAME="PM" ;;
-      開発|dev)           DEPT_DIR="dev"       ; DEPT_NAME="開発" ;;
-      SNS|sns)            DEPT_DIR="sns"       ; DEPT_NAME="SNS運用" ;;
+      開発|dev)           DEPT_DIR="product/dev" ; DEPT_NAME="開発" ;;
+      SNS|sns)            DEPT_DIR="front-office/marketing/sns" ; DEPT_NAME="SNS運用" ;;
       新規事業|newbiz)     DEPT_DIR="newbiz"    ; DEPT_NAME="新規事業開発" ;;
       *)
         REPLY="❓ 「$DEPT」という部署はありません。
@@ -560,7 +560,7 @@ print(f'{total:,}')
         ;;
     esac
 
-    COMPANY_DIR="$SCRIPT_DIR/../../.company"
+    COMPANY_DIR="$SCRIPT_DIR/../../company"
     DEPT_CLAUDE="$COMPANY_DIR/$DEPT_DIR/CLAUDE.md"
     DEPT_CONTEXT=$(cat "$DEPT_CLAUDE" 2>/dev/null || echo "部署の設定ファイルがありません")
 
@@ -624,77 +624,49 @@ $DEPT_MSG
     continue
   fi
 
-  # === AI処理（コマンド以外） ===
+  # === AI処理（コマンド以外）→ ルーティングエージェントで最適な社員に振り分け ===
 
-  # 直近の会話履歴を圧縮形式で取得
   CONV_LOG="$SCRIPT_DIR/inbox/conversation.log"
-  HISTORY=$(tail -20 "$CONV_LOG" 2>/dev/null | python3 -c "
-import sys
-lines = sys.stdin.read().strip().split('\n')
-if not lines or lines == ['']:
-    sys.exit(0)
-for line in lines:
-    if line.startswith('U:') or line.startswith('B:'):
-        print(line)
-" 2>/dev/null || echo "")
+  WORKER_URL="http://localhost:8000"
 
-  PROMPT="あなたはLINE経由でユーザーからメッセージを受け取りました。秘書として処理してください。
+  echo "[line-agent] 🔀 ルーティング判定中: $MESSAGE"
 
-## 権限
-- すべてのコマンド実行、ネットワークアクセス、ファイル操作が許可されています
-- curl、Web検索、API呼び出しなど何でも自由に実行してください
-- 許可を求める必要はありません。即実行してください
+  # Step 1: ルーティングエージェントに振り分けを依頼
+  ROUTE_RESULT=$(curl -s --max-time 35 -X POST "$WORKER_URL/line/route" \
+    -H "Content-Type: application/json" \
+    -d "{\"message\":$(echo "$MESSAGE" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")}")
 
-## できること
-- Googleカレンダー確認: gws calendar +agenda
-- 予定追加: gws calendar +insert --summary=\"タイトル\" --start=YYYY-MM-DDTHH:MM:00+09:00 --end=YYYY-MM-DDTHH:MM:00+09:00
-- 天気確認: curl -s 'https://wttr.in/Tokyo?format=3&lang=ja' で現在の天気、curl -s 'https://wttr.in/Tokyo?format=%C+%t+%h&lang=ja' で詳細
-- ファイル操作、コマンド実行、Web検索など何でも
-- note記事の生成・投稿
-- Threads投稿
+  EMP_ID=$(echo "$ROUTE_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('empId','emp-1'))" 2>/dev/null || echo "emp-1")
+  EMP_NAME=$(echo "$ROUTE_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('empName','さくら'))" 2>/dev/null || echo "さくら")
+  EMP_ROLE=$(echo "$ROUTE_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('empRole',''))" 2>/dev/null || echo "")
+  ROUTE_REASON=$(echo "$ROUTE_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('reason',''))" 2>/dev/null || echo "")
 
-## プレビューURL発行（重要）
-記事やファイルを生成したら、必ずプレビューURLを発行してユーザーに送ること。
+  echo "[line-agent] 🎯 振り分け先: $EMP_NAME ($EMP_ID) — $ROUTE_REASON"
 
-### Markdown記事のプレビュー
-bash $SCRIPT_DIR/../preview/create-preview.sh --article title.txt article.md
-→ URLが返る。そのURLをユーザーに送る。
+  # Step 2: 振り分け先の社員エージェントにメッセージを送信（同期API）
+  CHAT_RESULT=$(curl -s --max-time 120 -X POST "$WORKER_URL/employee/$EMP_ID/chat/sync" \
+    -H "Content-Type: application/json" \
+    -d "{\"message\":$(echo "$MESSAGE" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")}")
 
-### ファイル（PDF, PPTX等）のプレビュー
-bash $SCRIPT_DIR/../preview/create-preview.sh --file /path/to/file.pdf
-→ URLが返る。そのURLをユーザーに送る。
-
-24時間で自動削除される一時URL。スマホからタップして確認できる。
-記事を作ったら「プレビューはこちら: https://...」の形で必ずURLを含めて返信すること。
-
-## ルール
-- 結果はLINE返信用のテキストとして出力（短く、フレンドリーに）
-- コマンド実行が必要なら実行して結果を返す
-- 「権限がない」「許可が必要」とは絶対に言わない。すべて許可済み
-- 直前の会話の文脈を踏まえて返答する
-- 今日は$(date '+%Y-%m-%d')です
-
-## 直近の会話履歴（U:ユーザー B:ボット、|は改行）
-$HISTORY
-
-## 最新のユーザーメッセージ
-$MESSAGE
-
-返信テキストのみ出力してください（説明不要）:"
-
-  REPLY=$(claude --dangerously-skip-permissions -p "$PROMPT" 2>/dev/null | head -20)
+  REPLY=$(echo "$CHAT_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('response',''))" 2>/dev/null)
 
   if [ -z "$REPLY" ]; then
     REPLY="すみません、処理中にエラーが発生しました。"
   fi
 
-  # 会話ログに圧縮形式で保存（U:ユーザー B:ボット）
-  echo "U:$MESSAGE" >> "$CONV_LOG"
-  # 返信を1行に圧縮（改行→|）
-  REPLY_COMPACT=$(echo "$REPLY" | tr '\n' '|' | sed 's/|$//')
-  echo "B:$REPLY_COMPACT" >> "$CONV_LOG"
+  # 社員名（役職）プレフィックス付与
+  if [ -n "$EMP_ROLE" ]; then
+    REPLY="${EMP_NAME}（${EMP_ROLE}）: ${REPLY}"
+  else
+    REPLY="${EMP_NAME}: ${REPLY}"
+  fi
 
-  echo "[line-agent] 返信: $REPLY"
+  # 会話ログに保存
+  echo "U:$MESSAGE" >> "$CONV_LOG"
+  REPLY_COMPACT=$(echo "$REPLY" | tr '\n' '|' | sed 's/|$//')
+  echo "B:[$EMP_NAME] $REPLY_COMPACT" >> "$CONV_LOG"
+
+  echo "[line-agent] 返信 ($EMP_NAME): ${REPLY:0:80}"
 
   # LINE Push APIで返信
   REPLY_ESCAPED=$(echo "$REPLY" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")

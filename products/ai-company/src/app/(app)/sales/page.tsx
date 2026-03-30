@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
 
-type TabKey = "leads" | "clients" | "proposals";
+type TabKey = "leads" | "clients" | "proposals" | "email";
 type LeadStatus = "new" | "contacted" | "meeting" | "proposal" | "negotiation" | "won" | "lost";
 type ProposalStatus = "draft" | "sent" | "accepted" | "rejected";
 
@@ -100,7 +100,14 @@ export default function SalesPage() {
     { key: "leads", label: locale === "ja" ? "リード" : "Leads", count: mockLeads.filter((l) => !["won", "lost"].includes(l.status)).length },
     { key: "clients", label: locale === "ja" ? "クライアント" : "Clients", count: mockClients.filter((c) => c.status === "active").length },
     { key: "proposals", label: locale === "ja" ? "提案書" : "Proposals", count: mockProposals.filter((p) => ["draft", "sent"].includes(p.status)).length },
+    { key: "email", label: locale === "ja" ? "メール" : "Email", count: 0 },
   ];
+
+  const [emailTo, setEmailTo] = useState("");
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailResult, setEmailResult] = useState<string | null>(null);
 
   const filteredLeads = leadFilter === "all" ? mockLeads : mockLeads.filter((l) => l.status === leadFilter);
 
@@ -119,21 +126,6 @@ export default function SalesPage() {
         <p className="text-sm text-[var(--color-subtext)] mt-0.5">
           {locale === "ja" ? "リード管理・顧客・提案書" : "Lead management, clients & proposals"}
         </p>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {[
-          { label: locale === "ja" ? "パイプライン" : "Pipeline", value: formatCurrency(pipelineValue, locale), color: "var(--color-primary)" },
-          { label: locale === "ja" ? "成約済" : "Won", value: formatCurrency(wonValue, locale), color: "var(--color-success)" },
-          { label: locale === "ja" ? "月額収益" : "MRR", value: formatCurrency(monthlyRecurring, locale), color: "var(--color-info)" },
-          { label: locale === "ja" ? "提案中金額" : "Pending", value: formatCurrency(proposalPending, locale), color: "var(--color-warning)" },
-        ].map((card) => (
-          <div key={card.label} className="bg-white rounded-xl border border-[var(--color-border)] p-5">
-            <p className="text-xs text-[var(--color-subtext)] mb-1">{card.label}</p>
-            <p className="text-xl font-bold" style={{ color: card.color }}>{card.value}</p>
-          </div>
-        ))}
       </div>
 
       {/* Tabs */}
@@ -289,6 +281,79 @@ export default function SalesPage() {
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Email */}
+      {activeTab === "email" && (
+        <div className="bg-white rounded-xl border border-[var(--color-border)] p-6">
+          <div className="space-y-4 max-w-2xl">
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "宛先" : "To"}</label>
+              <input
+                type="email" value={emailTo} onChange={(e) => setEmailTo(e.target.value)}
+                placeholder="client@example.com"
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "件名" : "Subject"}</label>
+              <input
+                type="text" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder={locale === "ja" ? "例: ご提案の件について" : "e.g. Regarding our proposal"}
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "本文" : "Body"}</label>
+              <textarea
+                value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={8}
+                placeholder={locale === "ja" ? "メール本文を入力、または営業エージェントに下書きを依頼..." : "Type email body or ask the sales agent to draft..."}
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent resize-none"
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={async () => {
+                  if (!emailTo || !emailSubject) return;
+                  setEmailSending(true);
+                  setEmailResult(null);
+                  try {
+                    // Nango proxy で Gmail 送信（接続済みの場合）
+                    const res = await fetch("/api/nango/proxy", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ method: "POST", endpoint: "/gmail/v1/users/me/messages/send", provider: "gmail", connectionId: "", data: { to: emailTo, subject: emailSubject, body: emailBody } }),
+                    });
+                    const data = await res.json();
+                    setEmailResult(data.error ? `Error: ${data.error}` : (locale === "ja" ? "送信しました" : "Sent"));
+                  } catch {
+                    setEmailResult(locale === "ja" ? "送信に失敗しました。Gmailを接続してください。" : "Failed. Connect Gmail first.");
+                  }
+                  setEmailSending(false);
+                }}
+                disabled={emailSending || !emailTo || !emailSubject}
+                className="px-6 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {emailSending ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                  </svg>
+                )}
+                {locale === "ja" ? "送信" : "Send"}
+              </button>
+              {emailResult && (
+                <span className={`text-sm ${emailResult.startsWith("Error") || emailResult.includes("失敗") ? "text-red-500" : "text-green-600"}`}>
+                  {emailResult}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-[var(--color-subtext)]">
+              {locale === "ja" ? "Gmail連携（設定 → アプリ連携）が必要です。営業エージェントにチャットで下書き依頼もできます。" : "Requires Gmail connection (Settings → Apps). You can also ask the sales agent to draft emails in chat."}
+            </p>
+          </div>
         </div>
       )}
     </div>

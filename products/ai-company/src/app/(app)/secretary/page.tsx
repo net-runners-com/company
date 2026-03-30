@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
 import { mockTasks, mockScheduleEvents, mockActivityLogs, mockEmployees } from "@/data/mock";
 import { EmployeeAvatar } from "@/components/employee-avatar";
+import { ChatView } from "@/components/chat-view";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Link from "next/link";
 
-type TabKey = "today" | "todos" | "notes" | "inbox";
+type TabKey = "chat" | "profile" | "today" | "todos" | "notes" | "inbox" | "news";
 
 interface Note {
   id: string;
@@ -39,6 +42,32 @@ const mockInbox: InboxItem[] = [
   { id: "inbox-5", from: "LINE Notify", subject: "新着メッセージ (3件)", preview: "LINEに3件の未読メッセージがあります。", read: true, createdAt: "2026-03-26T15:00:00Z" },
 ];
 
+interface NewsItem {
+  id: string;
+  title: string;
+  source: string;
+  category: "industry" | "tech" | "business" | "market";
+  summary: string;
+  url: string;
+  publishedAt: string;
+}
+
+const mockNews: NewsItem[] = [
+  { id: "news-1", title: "生成AI市場、2026年に10兆円規模へ — 国内企業の導入率が50%突破", source: "日経新聞", category: "tech", summary: "IDC Japanの最新調査によると、国内の生成AI市場規模は前年比65%増の1兆2000億円に達する見込み。中小企業での導入加速が寄与。", url: "#", publishedAt: "2026-03-28T06:00:00Z" },
+  { id: "news-2", title: "EC業界：サブスク型モデルへの移行が加速、月額課金売上が前年比40%増", source: "ECzine", category: "industry", summary: "定期購入やメンバーシップ型ECの売上が急増。消費者の購買行動がサブスク寄りにシフトしている傾向が鮮明に。", url: "#", publishedAt: "2026-03-28T05:00:00Z" },
+  { id: "news-3", title: "Claude 4.6リリース — 1Mコンテキスト対応、コーディング精度が大幅向上", source: "TechCrunch", category: "tech", summary: "Anthropicが最新モデルClaude 4.6を発表。100万トークンのコンテキストウィンドウと高精度なコード生成で開発者ワークフローを変革。", url: "#", publishedAt: "2026-03-27T22:00:00Z" },
+  { id: "news-4", title: "中小企業のDX支援、政府が補助金上限を500万円に引き上げ", source: "経済産業省", category: "business", summary: "2026年度のIT導入補助金の上限額が350万円から500万円に拡大。AIツール導入も対象に含まれる。", url: "#", publishedAt: "2026-03-27T18:00:00Z" },
+  { id: "news-5", title: "SNSマーケティング最新トレンド: ショート動画よりテキスト回帰の兆し", source: "MarkeZine", category: "market", summary: "Threads、Blueskyなどテキスト主体SNSの利用者が増加。長文投稿のエンゲージメント率が短尺動画を上回るケースも。", url: "#", publishedAt: "2026-03-27T14:00:00Z" },
+  { id: "news-6", title: "フリーランス保護新法が4月施行 — 発注企業に契約書面の交付義務", source: "日経新聞", category: "business", summary: "フリーランスへの業務委託に書面交付を義務付ける新法が来月施行。違反企業には罰則も。外注先との契約書確認が必要。", url: "#", publishedAt: "2026-03-27T10:00:00Z" },
+];
+
+const newsCategoryConfig: Record<string, { label: string; labelEn: string; color: string; bg: string }> = {
+  industry: { label: "業界", labelEn: "Industry", color: "#0ea5e9", bg: "#f0f9ff" },
+  tech: { label: "テック", labelEn: "Tech", color: "#8b5cf6", bg: "#f5f3ff" },
+  business: { label: "ビジネス", labelEn: "Business", color: "#f59e0b", bg: "#fffbeb" },
+  market: { label: "マーケット", labelEn: "Market", color: "#10b981", bg: "#ecfdf5" },
+};
+
 function getTimeLabel(dateStr: string, locale: string): string {
   const d = new Date(dateStr);
   const now = new Date();
@@ -55,17 +84,135 @@ export default function SecretaryPage() {
   const { t, locale } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("today");
 
+  const secretary = mockEmployees.find((e) => e.id === "emp-1")!;
+  const [profileContent, setProfileContent] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/employee-files?employeeId=emp-1&action=read&path=${encodeURIComponent("自己紹介.md")}`)
+      .then(r => r.json())
+      .then(d => { if (d.content) setProfileContent(d.content); })
+      .catch(() => {});
+  }, []);
+
   const today = new Date().toISOString().split("T")[0];
   const todayEvents = mockScheduleEvents.filter((e) => e.date === today);
   const pendingTasks = mockTasks.filter((tk) => tk.status !== "done" && tk.status !== "cancelled");
   const unreadInbox = mockInbox.filter((i) => !i.read).length;
 
   const tabs: { key: TabKey; label: string; badge?: number }[] = [
+    { key: "chat", label: locale === "ja" ? "チャット" : "Chat" },
+    { key: "profile", label: locale === "ja" ? "プロフィール" : "Profile" },
     { key: "today", label: locale === "ja" ? "今日の概要" : "Today" },
     { key: "todos", label: locale === "ja" ? "TODO" : "TODOs", badge: pendingTasks.length },
     { key: "notes", label: locale === "ja" ? "メモ" : "Notes" },
     { key: "inbox", label: locale === "ja" ? "受信箱" : "Inbox", badge: unreadInbox > 0 ? unreadInbox : undefined },
+    { key: "news", label: locale === "ja" ? "ニュース" : "News", badge: mockNews.length },
   ];
+
+  if (activeTab === "profile" || activeTab === "chat") {
+    const isProfile = activeTab === "profile";
+    if (isProfile) {
+      return (
+        <div className="flex flex-col h-screen animate-fade-in">
+          <div className="bg-white border-b border-[var(--color-border)] px-6 py-4">
+            <div className="flex items-center gap-4 max-w-5xl mx-auto">
+              <EmployeeAvatar seed="emp-1" size="3rem" />
+              <div className="flex-1">
+                <h1 className="font-semibold text-lg text-[var(--color-text)]">
+                  {locale === "ja" ? "秘書室" : "Secretary"}
+                </h1>
+                <p className="text-sm text-[var(--color-subtext)] mt-0.5">
+                  {locale === "ja" ? "さくらがお手伝いします" : "Sakura is here to help"}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-0 mt-4 max-w-5xl mx-auto border-b border-transparent -mb-[1px]">
+              {tabs.map((tab) => (
+                <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+                  className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.key ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-[var(--color-subtext)] hover:text-[var(--color-text)]"}`}>
+                  {tab.label}
+                  {tab.badge !== undefined && <span className="ml-1.5 text-[10px] font-medium px-1.5 py-0.5 bg-[var(--color-primary)] text-white rounded-full">{tab.badge}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            <div className="max-w-3xl mx-auto px-6 py-8">
+              <div className="flex items-center gap-5 mb-8">
+                <EmployeeAvatar seed="emp-1" size="5rem" />
+                <div>
+                  <h2 className="text-2xl font-bold text-[var(--color-text)]">さくら</h2>
+                  <p className="text-sm text-[var(--color-subtext)] mt-1">ひしょ ・ 総務部</p>
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {(secretary?.skills || []).map((s) => (
+                      <span key={s} className="px-2 py-0.5 text-xs bg-[var(--color-primary-light)] text-[var(--color-primary)] rounded-full">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {profileContent ? (
+                <article className="prose prose-sm max-w-none prose-headings:text-[var(--color-text)] prose-p:text-[var(--color-text)] prose-a:text-[var(--color-primary)] prose-strong:text-[var(--color-text)] prose-code:text-[var(--color-primary)] prose-code:bg-[var(--color-primary-light)] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-table:text-sm">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{profileContent}</ReactMarkdown>
+                </article>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-sm text-[var(--color-subtext)]">
+                    {locale === "ja" ? "チャットで「自己紹介を作成して」と頼んでみましょう" : "Ask in chat to create a profile"}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  if (activeTab === "chat") {
+    return (
+      <div className="flex flex-col h-screen animate-fade-in">
+        {/* Header */}
+        <div className="bg-white border-b border-[var(--color-border)] px-6 py-4">
+          <div className="flex items-center gap-4 max-w-5xl mx-auto">
+            <EmployeeAvatar seed="emp-1" size="3rem" />
+            <div className="flex-1">
+              <h1 className="font-semibold text-lg text-[var(--color-text)]">
+                {locale === "ja" ? "秘書室" : "Secretary"}
+              </h1>
+              <p className="text-sm text-[var(--color-subtext)] mt-0.5">
+                {locale === "ja" ? "さくらがお手伝いします" : "Sakura is here to help"}
+              </p>
+            </div>
+          </div>
+          {/* Tabs */}
+          <div className="flex gap-0 mt-4 max-w-5xl mx-auto border-b border-transparent -mb-[1px]">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === tab.key
+                    ? "border-[var(--color-primary)] text-[var(--color-primary)]"
+                    : "border-transparent text-[var(--color-subtext)] hover:text-[var(--color-text)]"
+                }`}
+              >
+                {tab.label}
+                {tab.badge !== undefined && (
+                  <span className="ml-1.5 text-[10px] font-medium px-1.5 py-0.5 bg-[var(--color-primary)] text-white rounded-full">
+                    {tab.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* Chat */}
+        <div className="flex-1 overflow-hidden">
+          <ChatView employee={secretary} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-8 py-8 animate-fade-in">
@@ -319,6 +466,32 @@ export default function SecretaryPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* News */}
+      {activeTab === "news" && (
+        <div className="space-y-4">
+          {mockNews.map((item) => {
+            const cat = newsCategoryConfig[item.category];
+            return (
+              <div key={item.id} className="bg-white rounded-xl border border-[var(--color-border)] p-5 hover:border-[var(--color-primary)] transition-colors">
+                <div className="flex items-center gap-2 mb-2">
+                  <span
+                    className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: cat.bg, color: cat.color }}
+                  >
+                    {locale === "ja" ? cat.label : cat.labelEn}
+                  </span>
+                  <span className="text-[10px] text-[var(--color-subtext)]">{item.source}</span>
+                  <span className="text-[10px] text-[var(--color-subtext)]">・</span>
+                  <span className="text-[10px] text-[var(--color-subtext)]">{getTimeLabel(item.publishedAt, locale)}</span>
+                </div>
+                <h3 className="font-medium text-[var(--color-text)] mb-1.5 leading-snug">{item.title}</h3>
+                <p className="text-sm text-[var(--color-subtext)] leading-relaxed">{item.summary}</p>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

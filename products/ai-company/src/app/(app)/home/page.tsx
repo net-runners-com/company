@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useEmployeesStore } from "@/stores/employees";
-import { EmployeeCard } from "@/components/employee-card";
-import { mockTasks, mockActivityLogs, mockDepartments } from "@/data/mock";
 import { useI18n } from "@/lib/i18n";
+import { useSession } from "next-auth/react";
+import { EmployeeAvatar } from "@/components/employee-avatar";
+import { getStatusConfig } from "@/lib/constants";
 import Link from "next/link";
+import { SkeletonDashboard } from "@/components/skeleton";
+
 function getGreeting(t: { night: string; morning: string; afternoon: string; evening: string }): string {
   const hour = new Date().getHours();
   if (hour < 6) return t.night;
@@ -14,240 +18,212 @@ function getGreeting(t: { night: string; morning: string; afternoon: string; eve
   return t.evening;
 }
 
-const categoryOrder = ["front-office", "back-office", "management"] as const;
-
-const categoryIcons: Record<string, React.ReactNode> = {
-  "front-office": (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-    </svg>
-  ),
-  "back-office": (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.58-3.22A1.5 1.5 0 015 10.62V6.5a2 2 0 012-2h10a2 2 0 012 2v4.12a1.5 1.5 0 01-.84 1.33l-5.58 3.22a1.5 1.5 0 01-1.16 0z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15.17V21" />
-    </svg>
-  ),
-  "management": (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-    </svg>
-  ),
+const deptNames: Record<string, { ja: string; en: string; color: string; descJa: string; descEn: string }> = {
+  "general-affairs": { ja: "総務部", en: "General Affairs", color: "#8b5cf6", descJa: "スケジュール管理・秘書業務・社内調整を担当", descEn: "Scheduling, secretary duties, internal coordination" },
+  marketing:         { ja: "マーケティング部", en: "Marketing", color: "#ec4899", descJa: "記事執筆・SNS運用・コンテンツ企画を推進", descEn: "Content creation, SNS management, marketing strategy" },
+  research:          { ja: "リサーチ部", en: "Research", color: "#06b6d4", descJa: "市場調査・競合分析・データ収集を実施", descEn: "Market research, competitive analysis, data collection" },
+  sales:             { ja: "営業部", en: "Sales", color: "#f59e0b", descJa: "リード管理・提案書作成・顧客フォローアップ", descEn: "Lead management, proposals, customer follow-up" },
+  dev:               { ja: "開発部", en: "Development", color: "#10b981", descJa: "インフラ構築・CI/CD・システム監視を運用", descEn: "Infrastructure, CI/CD, system monitoring" },
+  accounting:        { ja: "経理部", en: "Accounting", color: "#f97316", descJa: "経費処理・仕訳入力・請求書発行を管理", descEn: "Expense processing, bookkeeping, invoicing" },
+  pm:                { ja: "PM部", en: "PM", color: "#3b82f6", descJa: "要件定義・進捗管理・プロジェクト推進", descEn: "Requirements, progress tracking, project management" },
+  strategy:          { ja: "戦略部", en: "Strategy", color: "#14b8a6", descJa: "市場分析・KPI設計・事業計画を策定", descEn: "Market analysis, KPI design, business planning" },
+  hr:                { ja: "人事部", en: "HR", color: "#a855f7", descJa: "採用計画・面接対応・オンボーディング支援", descEn: "Recruitment, interviews, onboarding support" },
+  engineering:       { ja: "エンジニアリング部", en: "Engineering", color: "#22c55e", descJa: "フロントエンド・バックエンド・API設計開発", descEn: "Frontend, backend, API development" },
+  newbiz:            { ja: "新規事業部", en: "New Business", color: "#ef4444", descJa: "ピッチ資料・MVP検証・顧客ヒアリング", descEn: "Pitch decks, MVP validation, customer interviews" },
+  finance:           { ja: "財務部", en: "Finance", color: "#64748b", descJa: "財務分析・資金繰り・予算管理を統括", descEn: "Financial analysis, cash flow, budget management" },
 };
 
 export default function HomePage() {
   const { employees, loading, fetch } = useEmployeesStore();
   const { t, locale } = useI18n();
+  const { data: session } = useSession();
 
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
+  useEffect(() => { fetch(); }, [fetch]);
 
+  const userName = session?.user?.name || session?.user?.email?.split("@")[0] || "User";
+  const [expandedDept, setExpandedDept] = useState<string | null>(null);
   const activeEmployees = employees.filter((e) => e.status !== "archived");
-  const tasksDone = mockTasks.filter((t) => t.status === "done").length;
-  const tasksInProgress = mockTasks.filter((t) => t.status === "in_progress").length;
-  const totalTasks = mockTasks.length;
 
-  // Group employees by category → department
-  const groupedByCategory = categoryOrder.map((cat) => {
-    const depts = mockDepartments.filter((d) => d.category === cat);
-    const deptGroups = depts
-      .map((dept) => {
-        const members = activeEmployees.filter((e) => e.department === dept.id);
-        return { dept, members };
-      })
-      .filter((g) => g.members.length > 0);
-    return { category: cat, deptGroups };
-  }).filter((g) => g.deptGroups.length > 0);
-
-  const getDeptName = (dept: { name: string; nameJa: string }) =>
-    locale === "ja" ? dept.nameJa : dept.name;
-
-  const getCatName = (cat: string) =>
-    (t.departments?.categories as Record<string, string>)?.[cat] ?? cat;
+  // 部署でグループ化
+  const deptGroups: { deptId: string; members: typeof activeEmployees }[] = [];
+  const seen = new Set<string>();
+  for (const emp of activeEmployees) {
+    if (!seen.has(emp.department)) {
+      seen.add(emp.department);
+      deptGroups.push({ deptId: emp.department, members: activeEmployees.filter((e) => e.department === emp.department) });
+    }
+  }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <div className="px-8 py-8 animate-fade-in"><SkeletonDashboard /></div>;
   }
 
   return (
     <div className="px-8 py-8 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)]">{t.home.greeting.replace("{name}", "Hiroto")}</h1>
+          <h1 className="text-2xl font-bold text-[var(--color-text)]">
+            {t.home.greeting.replace("{name}", userName)}
+          </h1>
           <p className="text-sm text-[var(--color-subtext)] mt-0.5">{getGreeting(t.home)}</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/employees"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-[var(--color-border)] text-sm font-medium rounded-lg hover:bg-[var(--color-border-light)] transition-colors text-[var(--color-text)]"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-            </svg>
-            {t.nav.employees}
-          </Link>
+        <Link
+          href="/employee/create"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          {locale === "ja" ? "社員を追加" : "Add Employee"}
+        </Link>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="bg-white rounded-xl border border-[var(--color-border)] p-5">
+          <p className="text-2xl font-bold text-[var(--color-primary)]">{deptGroups.length}</p>
+          <p className="text-xs text-[var(--color-subtext)] mt-0.5">{locale === "ja" ? "稼働部署" : "Departments"}</p>
+        </div>
+        <div className="bg-white rounded-xl border border-[var(--color-border)] p-5">
+          <p className="text-2xl font-bold text-[var(--color-success)]">{activeEmployees.length}</p>
+          <p className="text-xs text-[var(--color-subtext)] mt-0.5">{locale === "ja" ? "総メンバー" : "Members"}</p>
+        </div>
+        <div className="bg-white rounded-xl border border-[var(--color-border)] p-5">
+          <p className="text-2xl font-bold text-[var(--color-info)]">{employees.filter((e) => e.status === "active").length}</p>
+          <p className="text-xs text-[var(--color-subtext)] mt-0.5">{locale === "ja" ? "稼働中" : "Active"}</p>
+        </div>
+      </div>
+
+      {/* Department Cards Grid */}
+      {deptGroups.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {deptGroups.map(({ deptId, members }) => {
+            const dept = deptNames[deptId] || { ja: deptId, en: deptId, color: "#6b7280" };
+            const deptLabel = locale === "ja" ? dept.ja : dept.en;
+            const activeCount = members.filter((m) => m.status === "active").length;
+
+            return (
+              <div
+                key={deptId}
+                onClick={() => setExpandedDept(deptId)}
+                className="bg-white rounded-xl border border-[var(--color-border)] p-5 cursor-pointer hover:shadow-md hover:border-[var(--color-primary)]/30 transition-all"
+              >
+                {/* Dept Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: dept.color }} />
+                    <h3 className="font-semibold text-sm text-[var(--color-text)]">{deptLabel}</h3>
+                  </div>
+                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-green-50 text-green-600">
+                    {locale === "ja" ? "稼働中" : "OPEN"}
+                  </span>
+                </div>
+
+                {/* Description */}
+                <p className="text-[11px] text-[var(--color-subtext)] mb-4 line-clamp-2 leading-relaxed">
+                  {locale === "ja" ? dept.descJa : dept.descEn}
+                </p>
+
+                {/* Avatar row */}
+                <div className="flex items-center justify-between">
+                  <div className="flex -space-x-2">
+                    {members.slice(0, 4).map((m) => {
+                      const st = getStatusConfig(m.status, t);
+                      return (
+                        <div key={m.id} className="relative" title={m.name}>
+                          <EmployeeAvatar seed={m.id} size="2rem" className="border-2 border-white rounded-full" />
+                          <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white" style={{ backgroundColor: st.color }} />
+                        </div>
+                      );
+                    })}
+                    {members.length > 4 && (
+                      <div className="w-8 h-8 rounded-full bg-[var(--color-border-light)] border-2 border-white flex items-center justify-center text-[10px] font-medium text-[var(--color-subtext)]">
+                        +{members.length - 4}
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-[10px] text-[var(--color-subtext)]">{activeCount}/{members.length}</span>
+                </div>
+              </div>
+            );
+          })}
+
+        </div>
+      ) : (
+        <div className="text-center py-16 bg-white rounded-xl border border-[var(--color-border)]">
+          <svg className="w-12 h-12 text-[var(--color-subtext)] mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+          </svg>
+          <p className="text-[var(--color-subtext)] mb-4">
+            {locale === "ja" ? "まだ社員がいません。最初の社員を追加しましょう。" : "No employees yet. Add your first one."}
+          </p>
           <Link
             href="/employee/create"
             className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            {t.home.addEmployee}
+            {locale === "ja" ? "社員を追加" : "Add Employee"}
           </Link>
         </div>
-      </div>
+      )}
+      {/* Department Members Modal — portal to body */}
+      {expandedDept && typeof document !== "undefined" && createPortal((() => {
+        const group = deptGroups.find((g) => g.deptId === expandedDept);
+        if (!group) return null;
+        const dept = deptNames[expandedDept] || { ja: expandedDept, en: expandedDept, color: "#6b7280", descJa: "", descEn: "" };
+        const deptLabel = locale === "ja" ? dept.ja : dept.en;
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          {
-            label: t.home.totalEmployees,
-            value: activeEmployees.length,
-            icon: (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-              </svg>
-            ),
-            color: "var(--color-primary)",
-            bg: "var(--color-primary-light)",
-          },
-          {
-            label: t.home.tasksDone,
-            value: tasksDone,
-            icon: (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            ),
-            color: "var(--color-success)",
-            bg: "var(--color-success-light)",
-          },
-          {
-            label: t.home.inProgress,
-            value: tasksInProgress,
-            icon: (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
-              </svg>
-            ),
-            color: "var(--color-warning)",
-            bg: "var(--color-warning-light)",
-          },
-          {
-            label: t.home.totalTasks,
-            value: totalTasks,
-            icon: (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
-              </svg>
-            ),
-            color: "var(--color-info)",
-            bg: "var(--color-info-light)",
-          },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-white rounded-xl border border-[var(--color-border)] p-5">
-            <div className="flex items-center gap-3 mb-3">
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: stat.bg, color: stat.color }}
-              >
-                {stat.icon}
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-[var(--color-text)]">{stat.value}</p>
-            <p className="text-xs text-[var(--color-subtext)] mt-0.5">{stat.label}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Organization by Category */}
-        <div className="lg:col-span-2 space-y-6">
-          {groupedByCategory.map(({ category, deptGroups }) => (
-            <div key={category}>
-              {/* Category Header */}
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-6 h-6 rounded flex items-center justify-center text-[var(--color-primary)]">
-                  {categoryIcons[category]}
-                </div>
-                <h2 className="text-sm font-semibold text-[var(--color-subtext)] uppercase tracking-wider">
-                  {getCatName(category)}
-                </h2>
-                <span className="text-[10px] font-medium px-2 py-0.5 bg-[var(--color-border-light)] text-[var(--color-subtext)] rounded-full">
-                  {deptGroups.reduce((sum, g) => sum + g.members.length, 0)}
-                </span>
-              </div>
-
-              {/* Departments in this category */}
-              <div className="space-y-3">
-                {deptGroups.map(({ dept, members }) => (
-                  <div key={dept.id} className="bg-white rounded-xl border border-[var(--color-border)] p-5">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-[var(--color-text)]">{getDeptName(dept)}</h3>
-                        <span className="text-[10px] font-medium px-2 py-0.5 bg-[var(--color-border-light)] text-[var(--color-subtext)] rounded-full">
-                          {members.length}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {members.map((employee) => {
-                        const taskCount = mockTasks.filter(
-                          (tk) => tk.employeeId === employee.id && tk.status !== "done"
-                        ).length;
-                        return (
-                          <EmployeeCard
-                            key={employee.id}
-                            employee={employee}
-                            taskCount={taskCount}
-                          />
-                        );
-                      })}
-                    </div>
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setExpandedDept(null)}>
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col animate-fade-in" onClick={(e) => e.stopPropagation()}>
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full" style={{ backgroundColor: dept.color }} />
+                  <div>
+                    <h3 className="font-semibold text-[var(--color-text)]">{deptLabel}</h3>
+                    <p className="text-xs text-[var(--color-subtext)]">{group.members.length} {locale === "ja" ? "名" : "members"}</p>
                   </div>
-                ))}
+                </div>
+                <button onClick={() => setExpandedDept(null)} className="p-1.5 text-[var(--color-subtext)] hover:text-[var(--color-text)] transition-colors">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Members */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                {group.members.map((m) => {
+                  const st = getStatusConfig(m.status, t);
+                  return (
+                    <Link key={m.id} href={`/employee/${m.id}`} onClick={() => setExpandedDept(null)}
+                      className="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-sm transition-all">
+                      <EmployeeAvatar seed={m.id} size="2.5rem" className="shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-medium text-sm text-[var(--color-text)]">{m.name}</span>
+                          <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: st.color }} />
+                        </div>
+                        <p className="text-xs text-[var(--color-subtext)]">{m.role}</p>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        {(m.skills || []).slice(0, 2).map((s) => (
+                          <span key={s} className="text-[9px] px-1.5 py-0.5 bg-[var(--color-border-light)] text-[var(--color-subtext)] rounded">{s}</span>
+                        ))}
+                      </div>
+                      <svg className="w-4 h-4 text-[var(--color-subtext)] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Recent Activity */}
-        <div className="bg-white rounded-xl border border-[var(--color-border)] p-6 h-fit">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-semibold text-[var(--color-text)]">{t.home.recentActivity}</h2>
-            <Link href="/activity" className="text-xs text-[var(--color-primary)] hover:underline">
-              {t.common.viewAll}
-            </Link>
           </div>
-          <div className="space-y-4">
-            {mockActivityLogs.slice(0, 5).map((log) => (
-              <div key={log.id} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center shrink-0 mt-0.5">
-                  <div className="w-2 h-2 rounded-full bg-[var(--color-primary)]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-[var(--color-text)] leading-snug">{log.summary}</p>
-                  <p className="text-xs text-[var(--color-subtext)] mt-1">
-                    {new Date(log.createdAt).toLocaleDateString(locale === "ja" ? "ja-JP" : "en-US", {
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+        );
+      })(), document.body)}
     </div>
   );
 }

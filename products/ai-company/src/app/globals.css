@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 @theme {
@@ -43,6 +44,30 @@ body {
 
 .animate-fade-in { animation: fade-in 200ms ease-out forwards; }
 .animate-slide-in { animation: slide-in 200ms ease-out forwards; }
+
+/* Wave streaming text */
+@keyframes waveIn {
+  0%   { opacity: 0; transform: translateY(0) scaleY(0.2); }
+  55%  { transform: translateY(-6px) scaleY(1.12); }
+  100% { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+
+.stream-char {
+  display: inline-block;
+  white-space: pre;
+  animation: waveIn 0.38s ease-out both;
+}
+
+@keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.stream-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--color-primary);
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: cursor-blink 0.75s infinite;
+}
 
 /* Global rich shadows for cards & surfaces */
 .bg-white {

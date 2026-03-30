@@ -1,14 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useEmployeesStore } from "@/stores/employees";
 import { useI18n } from "@/lib/i18n";
 
+const deptLabels: Record<string, { ja: string; en: string }> = {
+  "general-affairs": { ja: "総務部", en: "General Affairs" },
+  marketing:         { ja: "マーケティング部", en: "Marketing" },
+  research:          { ja: "リサーチ部", en: "Research" },
+  sales:             { ja: "営業部", en: "Sales" },
+  dev:               { ja: "開発部", en: "Development" },
+  accounting:        { ja: "経理部", en: "Accounting" },
+  pm:                { ja: "PM部", en: "PM" },
+  strategy:          { ja: "戦略部", en: "Strategy" },
+  hr:                { ja: "人事部", en: "HR" },
+  engineering:       { ja: "エンジニアリング部", en: "Engineering" },
+  newbiz:            { ja: "新規事業部", en: "New Business" },
+  finance:           { ja: "財務部", en: "Finance" },
+};
+
 export default function CreateEmployeePage() {
   const router = useRouter();
-  const create = useEmployeesStore((s) => s.create);
-  const { t } = useI18n();
+  const { create, fetch: fetchEmployees, employees } = useEmployeesStore();
+  const { t, locale } = useI18n();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
     name: "",
@@ -18,6 +33,21 @@ export default function CreateEmployeePage() {
     skills: [] as string[],
   });
   const [skillInput, setSkillInput] = useState("");
+  const [newDept, setNewDept] = useState(false);
+  const [customDeptId, setCustomDeptId] = useState("");
+  const [customDeptName, setCustomDeptName] = useState("");
+
+  useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
+
+  // 既存社員から部署を収集 + プリセット部署をマージ
+  const existingDepts = new Set(employees.map((e) => e.department).filter(Boolean));
+  const allDeptIds = new Set([...Object.keys(deptLabels), ...existingDepts]);
+
+  const getDeptLabel = (id: string) => {
+    const preset = deptLabels[id];
+    if (preset) return locale === "ja" ? preset.ja : preset.en;
+    return id;
+  };
 
   const addSkill = () => {
     if (skillInput.trim() && !form.skills.includes(skillInput.trim())) {
@@ -27,15 +57,16 @@ export default function CreateEmployeePage() {
   };
 
   const handleFinish = async () => {
+    const dept = newDept ? customDeptId : form.department;
     await create({
       name: form.name,
       role: form.role,
-      department: form.department,
+      department: dept,
       tone: form.tone,
       skills: form.skills,
-      greeting: `Hi, I'm ${form.name}. Looking forward to working with you!`,
+      greeting: `${form.name}です。よろしくお願いします！`,
     });
-    router.push("/home");
+    router.push("/employees");
   };
 
   return (
@@ -60,23 +91,64 @@ export default function CreateEmployeePage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-[var(--color-text)] mb-1.5">{t.employee.role}</label>
-                  <select
+                  <input
                     value={form.role}
                     onChange={(e) => setForm({ ...form, role: e.target.value })}
+                    placeholder={locale === "ja" ? "例: ライター、エンジニア、営業" : "e.g. Writer, Engineer, Sales"}
                     className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-                  >
-                    <option value="">{t.employee.selectRole}</option>
-                    {Object.entries(t.employee.roles).map(([key, label]) => <option key={key} value={key}>{label}</option>)}
-                  </select>
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-[var(--color-text)] mb-1.5">{t.employee.department}</label>
-                  <input
-                    value={form.department}
-                    onChange={(e) => setForm({ ...form, department: e.target.value })}
-                    placeholder={t.employee.departmentPlaceholder}
-                    className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-                  />
+                  {!newDept ? (
+                    <>
+                      <select
+                        value={form.department}
+                        onChange={(e) => {
+                          if (e.target.value === "__new__") {
+                            setNewDept(true);
+                            setForm({ ...form, department: "" });
+                          } else {
+                            setForm({ ...form, department: e.target.value });
+                          }
+                        }}
+                        className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                      >
+                        <option value="">{locale === "ja" ? "部署を選択" : "Select department"}</option>
+                        {[...allDeptIds].map((id) => (
+                          <option key={id} value={id}>{getDeptLabel(id)}</option>
+                        ))}
+                        <option value="__new__">{locale === "ja" ? "＋ 新しい部署を作成" : "+ Create new department"}</option>
+                      </select>
+                    </>
+                  ) : (
+                    <div className="space-y-2">
+                      <input
+                        value={customDeptName}
+                        onChange={(e) => {
+                          setCustomDeptName(e.target.value);
+                          // 自動でID生成（英数ハイフン）
+                          setCustomDeptId(e.target.value.toLowerCase().replace(/[^a-z0-9\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf]/g, "-").replace(/-+/g, "-"));
+                        }}
+                        placeholder={locale === "ja" ? "部署名（例: カスタマーサポート部）" : "Department name"}
+                        className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                      />
+                      <div className="flex items-center gap-2">
+                        <input
+                          value={customDeptId}
+                          onChange={(e) => setCustomDeptId(e.target.value)}
+                          placeholder="ID (例: cs-support)"
+                          className="flex-1 px-3 py-2 border border-[var(--color-border)] rounded-lg text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                        />
+                        <button
+                          onClick={() => { setNewDept(false); setCustomDeptId(""); setCustomDeptName(""); }}
+                          className="px-3 py-2 text-xs text-[var(--color-subtext)] hover:text-[var(--color-text)] transition-colors"
+                        >
+                          {locale === "ja" ? "戻る" : "Back"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -116,11 +188,8 @@ export default function CreateEmployeePage() {
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {form.skills.map((s) => (
-                      <span
-                        key={s}
-                        onClick={() => setForm({ ...form, skills: form.skills.filter((x) => x !== s) })}
-                        className="px-2.5 py-1 bg-[var(--color-primary-light)] text-[var(--color-primary)] text-xs font-medium rounded-full cursor-pointer hover:bg-[var(--color-danger-light)] hover:text-[var(--color-danger)] transition-colors"
-                      >
+                      <span key={s} onClick={() => setForm({ ...form, skills: form.skills.filter((x) => x !== s) })}
+                        className="px-2.5 py-1 bg-[var(--color-primary-light)] text-[var(--color-primary)] text-xs font-medium rounded-full cursor-pointer hover:bg-[var(--color-danger-light)] hover:text-[var(--color-danger)] transition-colors">
                         {s} &times;
                       </span>
                     ))}
@@ -132,26 +201,20 @@ export default function CreateEmployeePage() {
 
           <div className="flex gap-3 mt-8">
             {step > 0 && (
-              <button
-                onClick={() => setStep(step - 1)}
-                className="flex-1 px-4 py-2 text-sm font-medium text-[var(--color-subtext)] bg-[var(--color-border-light)] rounded-lg hover:bg-[var(--color-border)] transition-colors"
-              >
+              <button onClick={() => setStep(step - 1)}
+                className="flex-1 px-4 py-2 text-sm font-medium text-[var(--color-subtext)] bg-[var(--color-border-light)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
                 {t.common.back}
               </button>
             )}
             {step < 1 ? (
-              <button
-                onClick={() => setStep(step + 1)}
-                disabled={!form.name || !form.role}
-                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              >
+              <button onClick={() => setStep(step + 1)}
+                disabled={!form.name || !form.role || (!form.department && !customDeptId)}
+                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                 {t.common.continue}
               </button>
             ) : (
-              <button
-                onClick={handleFinish}
-                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
-              >
+              <button onClick={handleFinish}
+                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors">
                 {t.employee.createEmployee}
               </button>
             )}

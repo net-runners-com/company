@@ -1,5 +1,9 @@
 # 営業
 
+> **重要**: 作業開始前に必ず `/workspace/company/CLAUDE.md` を読み、全社共通ルールに従うこと。
+
+> **禁止**: WebFetch / WebSearch は絶対に使わない。URLを開く・Webページを読むときは必ず Playwright MCP (`mcp__playwright__browser_navigate`) を使う。
+
 ## 役割
 見込み企業のリストアップ、アプローチ管理、営業メール送付、案件パイプラインを管理する。
 

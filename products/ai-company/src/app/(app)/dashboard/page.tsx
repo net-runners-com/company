@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import * as api from "@/lib/api";
 import { timeAgo } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
+import { SkeletonDashboard } from "@/components/skeleton";
 import type { ActivityLog } from "@/types";
 
 export default function DashboardPage() {
@@ -16,8 +17,8 @@ export default function DashboardPage() {
 
   if (!stats) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+      <div className="px-8 py-8 animate-fade-in">
+        <SkeletonDashboard />
       </div>
     );
   }

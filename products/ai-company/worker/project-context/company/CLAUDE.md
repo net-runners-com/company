@@ -110,6 +110,12 @@ company/
 - [x] 完了タスク | 完了: YYYY-MM-DD
 ```
 
+### ブラウザ操作（必須）
+- **WebFetch、WebSearch ツールの使用を禁止する。** URL を開く・Webページを読む・フォーム操作・検索、すべて Playwright MCP を使うこと
+- 手順: `mcp__playwright__browser_navigate` でURLを開く → `mcp__playwright__browser_snapshot` で内容を確認 → 必要に応じて click / fill 等で操作
+- Playwright はコンテナ内の仮想ディスプレイ (DISPLAY=:99) で動作し、VNC経由でオーナーがリアルタイムに確認できる
+- ToolSearch で `select:mcp__playwright__browser_navigate` を呼んでからツールを使うこと
+
 ### コンテンツルール
 1. 迷ったら `back-office/general-affairs/inbox/` に入れる
 2. 既存ファイルは上書きしない（追記のみ）

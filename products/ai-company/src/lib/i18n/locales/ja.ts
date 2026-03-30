@@ -29,9 +29,12 @@ const ja: Translations = {
     documents: "書類",
     settings: "設定",
     secretary: "秘書室",
+    organization: "組織",
     employees: "社員",
     finance: "財務",
     sales: "営業",
+    automation: "自動化",
+    test: "テスト",
   },
 
   // Landing
@@ -207,6 +210,49 @@ const ja: Translations = {
     upTo: "社員{n}人まで",
     upgrade: "アップグレード",
     data: "データ",
+    tabs: {
+      general: "基本設定",
+      connectors: "コネクタ",
+    },
+    connectors: {
+      title: "コネクタ",
+      subtitle: "外部サービスをAIチームに接続",
+      connected: "接続中",
+      notConnected: "未接続",
+      configure: "設定",
+      connect: "接続する",
+      disconnect: "切断する",
+      webhookUrl: "Webhook URL",
+      channelId: "チャンネルID",
+      accessToken: "アクセストークン",
+      secretKey: "シークレットキー",
+      botToken: "Botトークン",
+      serverId: "サーバーID",
+      line: {
+        name: "LINE",
+        description: "LINE公式アカウントを接続して顧客対応・通知を自動化",
+      },
+      slack: {
+        name: "Slack",
+        description: "Slackワークスペースと連携してチーム通知・アラートを管理",
+      },
+      discord: {
+        name: "Discord",
+        description: "Discordサーバーを接続してコミュニティ管理・Bot運用",
+      },
+      "google-calendar": {
+        name: "Google カレンダー",
+        description: "Googleカレンダーを接続してスケジュール・予定を管理",
+      },
+      "google-drive": {
+        name: "Google ドライブ",
+        description: "Googleドライブを接続してファイルの閲覧・管理",
+      },
+      gmail: {
+        name: "Gmail",
+        description: "Gmailを接続してメールの送受信を自動化",
+      },
+    },
   },
 
   // Onboarding
