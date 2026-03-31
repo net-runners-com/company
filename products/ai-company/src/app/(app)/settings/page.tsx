@@ -340,6 +340,9 @@ export default function SettingsPage() {
             <h2 className="font-semibold text-[var(--color-text)] mb-4">{t.settings.data}</h2>
             <button className="px-4 py-2 bg-white border border-[var(--color-border)] text-[var(--color-text)] text-sm font-medium rounded-lg hover:bg-[var(--color-border-light)] transition-colors">{t.common.export}</button>
           </div>
+
+          {/* AI Profile */}
+          <ProfileSection locale={locale} />
         </>
       )}
 
@@ -850,5 +853,100 @@ export default function SettingsPage() {
         );
     })()}
     </>
+  );
+}
+
+// --- AI Profile Section ---
+function ProfileSection({ locale }: { locale: string }) {
+  const [profile, setProfile] = useState<Record<string, unknown>>({});
+  const [loaded, setLoaded] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editJson, setEditJson] = useState("");
+
+  useEffect(() => {
+    fetch("/api/user/profile").then(r => r.json()).then(d => {
+      setProfile(d);
+      setLoaded(true);
+    }).catch(() => setLoaded(true));
+  }, []);
+
+  const save = async () => {
+    try {
+      const parsed = JSON.parse(editJson);
+      await fetch("/api/user/profile", { method: "PUT", headers: { "Content-Type": "application/json" }, body: editJson });
+      setProfile(parsed);
+      setEditing(false);
+    } catch {}
+  };
+
+  const reset = async () => {
+    await fetch("/api/user/profile", { method: "DELETE" });
+    setProfile({});
+  };
+
+  const keys = Object.keys(profile).filter(k => !k.startsWith("_"));
+
+  return (
+    <div className="bg-white rounded-xl border border-[var(--color-border)] p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="font-semibold text-[var(--color-text)]">
+            {locale === "ja" ? "AIが学んだあなたの情報" : "What AI learned about you"}
+          </h2>
+          <p className="text-xs text-[var(--color-subtext)] mt-0.5">
+            {locale === "ja" ? "会話を通じて自動的に蓄積されます（5回ごとに更新）" : "Automatically learned through conversations"}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          {!editing && keys.length > 0 && (
+            <button onClick={() => { setEditJson(JSON.stringify(profile, null, 2)); setEditing(true); }}
+              className="px-3 py-1.5 text-xs font-medium border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-border-light)] transition-colors">
+              {locale === "ja" ? "編集" : "Edit"}
+            </button>
+          )}
+          {keys.length > 0 && (
+            <button onClick={reset}
+              className="px-3 py-1.5 text-xs font-medium text-[var(--color-danger)] border border-[var(--color-border)] rounded-lg hover:bg-red-50 transition-colors">
+              {locale === "ja" ? "リセット" : "Reset"}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {!loaded ? (
+        <div className="text-sm text-[var(--color-subtext)]">{locale === "ja" ? "読み込み中..." : "Loading..."}</div>
+      ) : editing ? (
+        <div>
+          <textarea value={editJson} onChange={(e) => setEditJson(e.target.value)} rows={12}
+            className="w-full px-3 py-2 font-mono text-xs border border-[var(--color-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] resize-y" />
+          <div className="flex gap-2 mt-2">
+            <button onClick={save} className="px-3 py-1.5 bg-[var(--color-primary)] text-white text-xs font-medium rounded-lg">{locale === "ja" ? "保存" : "Save"}</button>
+            <button onClick={() => setEditing(false)} className="px-3 py-1.5 text-xs border border-[var(--color-border)] rounded-lg">{locale === "ja" ? "キャンセル" : "Cancel"}</button>
+          </div>
+        </div>
+      ) : keys.length === 0 ? (
+        <p className="text-sm text-[var(--color-subtext)] py-4 text-center">
+          {locale === "ja" ? "まだ情報がありません。社員とチャットすると自動で蓄積されます。" : "No data yet. Chat with employees to start learning."}
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {keys.map(k => {
+            const v = profile[k];
+            return (
+              <div key={k} className="flex items-start gap-3 py-1.5">
+                <span className="text-xs font-medium text-[var(--color-subtext)] w-28 shrink-0">{k}</span>
+                <span className="text-sm text-[var(--color-text)]">
+                  {Array.isArray(v) ? (v as unknown[]).map((item, i) => (
+                    typeof item === "object" && item !== null
+                      ? <span key={i} className="block text-xs text-[var(--color-subtext)]">{JSON.stringify(item)}</span>
+                      : <span key={i} className="inline-block mr-1.5 px-2 py-0.5 bg-[var(--color-border-light)] text-xs rounded">{String(item)}</span>
+                  )) : String(v)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }

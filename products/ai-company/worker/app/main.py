@@ -879,7 +879,173 @@ curl -s -X POST http://localhost:8000/share -H "Content-Type: application/json" 
         except Exception:
             pass
 
+    # ユーザープロファイル（AIが学んだ情報）を注入
+    conn = _get_db()
+    try:
+        rows = conn.execute("SELECT data FROM data_store WHERE collection = 'user_profile' ORDER BY updated_at DESC LIMIT 1").fetchall()
+        if rows:
+            profile = json.loads(rows[0]["data"])
+            profile_lines = []
+            for k, v in profile.items():
+                if k.startswith("_"):
+                    continue
+                if isinstance(v, list):
+                    profile_lines.append(f"- {k}: {', '.join(str(x) for x in v)}")
+                else:
+                    profile_lines.append(f"- {k}: {v}")
+            if profile_lines:
+                prompt += "\n# オーナー情報（AIが学んだ傾向）\n以下はこれまでの会話から学んだオーナーの情報です。対応に反映してください。\n\n"
+                prompt += "\n".join(profile_lines) + "\n"
+    except Exception:
+        pass
+    finally:
+        conn.close()
+
     return prompt
+
+
+# ============================================
+# User Profile — AIが学ぶユーザー情報
+# ============================================
+
+_profile_update_lock = False
+_profile_update_count = 0
+
+@app.get("/user/profile")
+async def get_user_profile():
+    """AIが学んだユーザー情報を取得"""
+    conn = _get_db()
+    try:
+        rows = conn.execute("SELECT data FROM data_store WHERE collection = 'user_profile' LIMIT 1").fetchall()
+        if rows:
+            return json.loads(rows[0]["data"])
+        return {}
+    finally:
+        conn.close()
+
+
+@app.put("/user/profile")
+async def update_user_profile_manual(request: Request):
+    """ユーザーが手動でプロファイル編集"""
+    body = await request.json()
+    conn = _get_db()
+    try:
+        rows = conn.execute("SELECT id FROM data_store WHERE collection = 'user_profile' LIMIT 1").fetchall()
+        profile_id = rows[0]["id"] if rows else "profile-main"
+        conn.execute(
+            "INSERT OR REPLACE INTO data_store (id, collection, data, updated_at) VALUES (?, ?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
+            [profile_id, "user_profile", json.dumps(body, ensure_ascii=False)]
+        )
+        conn.commit()
+        return {"status": "updated"}
+    finally:
+        conn.close()
+
+
+@app.delete("/user/profile")
+async def reset_user_profile():
+    """プロファイルリセット"""
+    conn = _get_db()
+    try:
+        conn.execute("DELETE FROM data_store WHERE collection = 'user_profile'")
+        conn.commit()
+        return {"status": "reset"}
+    finally:
+        conn.close()
+
+
+async def _update_user_profile(user_msg: str, assistant_reply: str):
+    """会話からユーザー情報を抽出してプロファイル更新（5回に1回実行）"""
+    global _profile_update_lock, _profile_update_count
+    _profile_update_count += 1
+    if _profile_update_count % 5 != 0:
+        return
+    if _profile_update_lock:
+        return
+    _profile_update_lock = True
+
+    try:
+        # 既存プロファイル取得
+        conn = _get_db()
+        try:
+            rows = conn.execute("SELECT id, data FROM data_store WHERE collection = 'user_profile' LIMIT 1").fetchall()
+            existing = json.loads(rows[0]["data"]) if rows else {}
+            profile_id = rows[0]["id"] if rows else "profile-main"
+        finally:
+            conn.close()
+
+        existing_text = json.dumps(existing, ensure_ascii=False) if existing else "{}"
+
+        extract_prompt = f"""以下の会話からユーザーの傾向・好み・属性を抽出してください。
+
+既存プロファイル:
+{existing_text}
+
+ユーザーの発言: {user_msg[:300]}
+AIの応答: {assistant_reply[:300]}
+
+ルール:
+- 既存プロファイルとマージ（新情報だけ追加・更新）
+- 変更がなければそのまま返す
+- 推測は控えめに。明確な情報のみ
+- learningsは最新5件まで
+
+JSON形式のみ出力:
+```json
+{{
+  "industry": "業種",
+  "role": "役職",
+  "style": "コミュニケーションスタイル",
+  "interests": ["関心事"],
+  "preferences": ["好み"],
+  "dislikes": ["嫌いなこと"],
+  "workPattern": "業務パターン",
+  "learnings": [{{"date":"YYYY-MM-DD","insight":"学んだこと"}}]
+}}
+```"""
+
+        proc = await asyncio.create_subprocess_exec(
+            "claude", "--dangerously-skip-permissions", "-p", extract_prompt, "--max-turns", "1",
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=20)
+        output = stdout.decode().strip()
+
+        import re
+        match = re.search(r'```json\s*(\{.*?\})\s*```', output, re.DOTALL)
+        if not match:
+            match = re.search(r'\{.*\}', output, re.DOTALL)
+        if match:
+            new_profile = json.loads(match.group(1) if '```' in output else match.group(0))
+            # 既存とマージ
+            merged = {**existing, **{k: v for k, v in new_profile.items() if v}}
+            # learnings はマージ（重複排除、最新5件）
+            old_learnings = existing.get("learnings", [])
+            new_learnings = new_profile.get("learnings", [])
+            if new_learnings:
+                all_learnings = old_learnings + new_learnings
+                seen = set()
+                unique = []
+                for l in all_learnings:
+                    key = l.get("insight", "")
+                    if key not in seen:
+                        seen.add(key)
+                        unique.append(l)
+                merged["learnings"] = unique[-5:]
+
+            conn = _get_db()
+            try:
+                conn.execute(
+                    "INSERT OR REPLACE INTO data_store (id, collection, data, updated_at) VALUES (?, ?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
+                    [profile_id, "user_profile", json.dumps(merged, ensure_ascii=False)]
+                )
+                conn.commit()
+            finally:
+                conn.close()
+    except Exception as e:
+        print(f"[profile] Update error: {e}")
+    finally:
+        _profile_update_lock = False
 
 
 # ============================================
@@ -1100,6 +1266,9 @@ async def employee_chat_stream(emp_id: str, payload: dict):
                 _append_chat_log(emp_id, "assistant", full_reply, thread_id)
             # R2にローカル変更を同期（エージェント作業後）
             _r2_sync_from_local(emp_id, workdir)
+            # バックグラウンドでユーザープロファイル更新
+            if full_reply.strip() and message:
+                asyncio.ensure_future(_update_user_profile(message, full_reply))
             yield "data: [DONE]\n\n"
 
     return StreamingResponse(generate(), media_type="text/event-stream")
