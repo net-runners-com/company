@@ -10,6 +10,16 @@ export async function GET(req: NextRequest) {
 
   if (!employeeId) return Response.json({ error: "employeeId required" }, { status: 400 });
 
+  // Presigned URL for Office files
+  if (action === "presign") {
+    try {
+      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/files/presign?path=${encodeURIComponent(path)}`);
+      return Response.json(await res.json());
+    } catch {
+      return Response.json({ error: "Worker not reachable" }, { status: 502 });
+    }
+  }
+
   // Serve file (binary proxy for images etc.)
   if (action === "serve") {
     try {

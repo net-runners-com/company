@@ -28,12 +28,26 @@ export function FilePreviewModal({ employeeId, filePath, onClose }: FilePreviewM
   const isPdf = ext === "pdf";
   const isImage = ["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(ext);
   const isMarkdown = ext === "md" || ext === "mdx";
+  const isOffice = ["pptx", "docx", "xlsx"].includes(ext);
 
   const serveUrl = `/api/employee-files?employeeId=${employeeId}&action=serve&path=${encodeURIComponent(relativePath)}`;
 
+  const [officeViewUrl, setOfficeViewUrl] = useState<string | null>(null);
+
   useEffect(() => {
+    if (isOffice) {
+      // presigned URL を取得して Google Docs Viewer で表示
+      fetch(`/api/employee-files?employeeId=${employeeId}&action=presign&path=${encodeURIComponent(relativePath)}`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.url) setOfficeViewUrl(`https://docs.google.com/gview?url=${encodeURIComponent(d.url)}&embedded=true`);
+          else setError("Presigned URL failed");
+        })
+        .catch(() => setError("Failed to get preview URL"))
+        .finally(() => setLoading(false));
+      return;
+    }
     if (isPdf || isImage) {
-      // PDF/画像はserve URLで直接表示
       setLoading(false);
       return;
     }
@@ -62,7 +76,7 @@ export function FilePreviewModal({ employeeId, filePath, onClose }: FilePreviewM
 
       <div
         className={`relative bg-white rounded-2xl shadow-2xl w-full flex flex-col animate-fade-in ${
-          isPdf ? "max-w-4xl max-h-[90vh]" : "max-w-2xl max-h-[80vh]"
+          isPdf || isOffice ? "max-w-4xl max-h-[90vh]" : "max-w-2xl max-h-[80vh]"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -75,10 +89,10 @@ export function FilePreviewModal({ employeeId, filePath, onClose }: FilePreviewM
             <span className="text-sm font-medium text-[var(--color-text)] truncate">{fileName}</span>
           </div>
           <div className="flex items-center gap-2">
-            {(isPdf || isImage) && (
+            {(isPdf || isImage || isOffice) && (
               <a href={serveUrl} target="_blank" rel="noopener noreferrer"
                 className="px-2.5 py-1 text-xs text-[var(--color-primary)] border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-border-light)] transition-colors">
-                {isPdf ? "新しいタブで開く" : "原寸表示"}
+                {isOffice ? "ダウンロード" : isPdf ? "新しいタブで開く" : "原寸表示"}
               </a>
             )}
             <button onClick={onClose} className="p-1 text-[var(--color-subtext)] hover:text-[var(--color-text)] transition-colors">
@@ -105,6 +119,11 @@ export function FilePreviewModal({ employeeId, filePath, onClose }: FilePreviewM
           {/* PDF */}
           {isPdf && !loading && (
             <iframe src={serveUrl} className="w-full h-full min-h-[70vh] border-0" />
+          )}
+
+          {/* Office (pptx, docx, xlsx) */}
+          {isOffice && !loading && officeViewUrl && (
+            <iframe src={officeViewUrl} className="w-full h-full min-h-[70vh] border-0" />
           )}
 
           {/* Image */}

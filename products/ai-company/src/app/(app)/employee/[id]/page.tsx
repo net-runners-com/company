@@ -15,7 +15,7 @@ import remarkGfm from "remark-gfm";
 
 import type { Employee, Task } from "@/types";
 
-type TabKey = "profile" | "chat" | "tasks" | "skills" | "files" | "settings";
+type TabKey = "profile" | "chat" | "tasks" | "schedules" | "skills" | "files" | "settings";
 
 export default function EmployeeDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,11 +29,13 @@ export default function EmployeeDetailPage() {
   const [claudeMdLoaded, setClaudeMdLoaded] = useState(false);
   const [claudeMdSaving, setClaudeMdSaving] = useState(false);
   const [claudeMdSaved, setClaudeMdSaved] = useState(false);
+  const [empSchedules, setEmpSchedules] = useState<{ _id: string; name: string; cron: string; task: string; nextRun: string | null }[]>([]);
 
   const tabs: { key: TabKey; label: string }[] = [
     { key: "chat", label: t.employee.chat },
     { key: "profile", label: locale === "ja" ? "プロフィール" : "Profile" },
     { key: "tasks", label: t.employee.tasks },
+    { key: "schedules", label: locale === "ja" ? "定期実行" : "Schedules" },
     { key: "skills", label: locale === "ja" ? "スキル" : "Skills" },
     { key: "files", label: locale === "ja" ? "フォルダ" : "Files" },
     { key: "settings", label: t.settings.title },
@@ -61,6 +63,10 @@ export default function EmployeeDetailPage() {
       .catch(() => {});
     api.getEmployee(id).then(setEmployee);
     api.getTasks(id).then(setTasks);
+    // この社員のスケジュール取得
+    fetch("/api/schedules").then(r => r.json()).then(d => {
+      setEmpSchedules((d.schedules || []).filter((s: { empId: string }) => s.empId === id));
+    }).catch(() => {});
   }, [id]);
 
   // ブラウザプロセスをポーリングで監視
@@ -233,6 +239,37 @@ export default function EmployeeDetailPage() {
                   </div>
                 );
               })
+            )}
+          </div>
+        )}
+
+        {activeTab === "schedules" && (
+          <div className="max-w-5xl mx-auto px-6 py-6 overflow-y-auto h-full">
+            {empSchedules.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-sm text-[var(--color-subtext)]">
+                  {locale === "ja" ? "定期実行はありません。チャットで「毎朝9時に〇〇して」と頼んでみてください。" : "No schedules. Ask in chat to create one."}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {empSchedules.map((s) => (
+                  <div key={s._id} className="bg-white border border-[var(--color-border)] rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-medium text-sm text-[var(--color-text)]">{s.name || s.task.slice(0, 30)}</h3>
+                      <span className="text-xs font-medium text-[var(--color-primary)] bg-[var(--color-primary-light)] px-2 py-0.5 rounded-full">
+                        {s.cron}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[var(--color-subtext)] mt-1">{s.task}</p>
+                    {s.nextRun && (
+                      <p className="text-[10px] text-[var(--color-subtext)] mt-2">
+                        {locale === "ja" ? "次回実行:" : "Next:"} {s.nextRun.slice(0, 16)}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}

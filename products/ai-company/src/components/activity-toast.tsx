@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { EmployeeAvatar } from "@/components/employee-avatar";
 
 interface Toast {
@@ -85,6 +86,8 @@ export function ActivityToast() {
     return () => clearInterval(interval);
   }, []);
 
+  const router = useRouter();
+
   const dismiss = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
@@ -96,7 +99,8 @@ export function ActivityToast() {
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className="bg-white rounded-xl border border-[var(--color-border)] shadow-lg p-4 animate-fade-in"
+          onClick={() => { router.push(`/employee/${toast.empId}`); dismiss(toast.id); }}
+          className="bg-white rounded-xl border border-[var(--color-border)] shadow-lg p-4 animate-fade-in cursor-pointer hover:border-[var(--color-primary)] transition-colors"
         >
           <div className="flex items-start gap-3">
             <EmployeeAvatar seed={toast.empId} size="2rem" className="shrink-0 mt-0.5" />
@@ -104,7 +108,7 @@ export function ActivityToast() {
               <div className="flex items-center justify-between">
                 <span className="font-medium text-xs text-[var(--color-text)]">{toast.empName}</span>
                 <button
-                  onClick={() => dismiss(toast.id)}
+                  onClick={(e) => { e.stopPropagation(); dismiss(toast.id); }}
                   className="p-0.5 text-[var(--color-subtext)] hover:text-[var(--color-text)] transition-colors shrink-0 ml-2"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

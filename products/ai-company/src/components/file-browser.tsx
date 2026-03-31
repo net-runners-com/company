@@ -12,6 +12,18 @@ interface FileItem {
   size: number | null;
 }
 
+function OfficePreview({ employeeId, path }: { employeeId: string; path: string }) {
+  const [viewUrl, setViewUrl] = useState<string | null>(null);
+  useEffect(() => {
+    fetch(`/api/employee-files?employeeId=${employeeId}&action=presign&path=${encodeURIComponent(path)}`)
+      .then(r => r.json())
+      .then(d => { if (d.url) setViewUrl(`https://docs.google.com/gview?url=${encodeURIComponent(d.url)}&embedded=true`); })
+      .catch(() => {});
+  }, [employeeId, path]);
+  if (!viewUrl) return <div className="p-8 text-center text-sm text-[var(--color-subtext)]">読み込み中...</div>;
+  return <iframe src={viewUrl} className="w-full flex-1 min-h-[70vh] border-0" />;
+}
+
 export function FileBrowser({ employeeId }: { employeeId: string }) {
   const [currentPath, setCurrentPath] = useState("");
   const [items, setItems] = useState<FileItem[]>([]);
@@ -38,7 +50,7 @@ export function FileBrowser({ employeeId }: { employeeId: string }) {
 
   const openFile = async (path: string) => {
     const ext = path.split(".").pop()?.toLowerCase() || "";
-    const isBinary = ["pdf", "png", "jpg", "jpeg", "gif", "webp", "svg", "xlsx", "zip"].includes(ext);
+    const isBinary = ["pdf", "png", "jpg", "jpeg", "gif", "webp", "svg", "pptx", "docx", "xlsx", "zip"].includes(ext);
 
     if (isBinary) {
       // PDF/画像はプレビューモードで開く
@@ -75,6 +87,7 @@ export function FileBrowser({ employeeId }: { employeeId: string }) {
   const fileExt = editingFile?.name.split(".").pop()?.toLowerCase() || "";
   const isPdf = fileExt === "pdf";
   const isImage = ["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(fileExt);
+  const isOffice = ["pptx", "docx", "xlsx"].includes(fileExt);
   const isBinaryFile = editingFile?.content === "__binary__";
   const serveUrl = editingFile ? `/api/employee-files?employeeId=${employeeId}&action=serve&path=${encodeURIComponent(editingFile.path)}` : "";
 
@@ -126,6 +139,8 @@ export function FileBrowser({ employeeId }: { employeeId: string }) {
         {/* PDF */}
         {isBinaryFile && isPdf ? (
           <iframe src={serveUrl} className="w-full flex-1 min-h-[70vh] border-0" />
+        ) : isBinaryFile && isOffice ? (
+          <OfficePreview employeeId={employeeId} path={editingFile.path} />
         ) : isBinaryFile && isImage ? (
           <div className="p-6 flex items-center justify-center">
             <img src={serveUrl} alt={editingFile.name} className="max-w-full max-h-[65vh] rounded-lg" />

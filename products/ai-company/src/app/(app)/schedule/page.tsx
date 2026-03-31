@@ -54,13 +54,16 @@ export default function SchedulePage() {
   const [newEvent, setNewEvent] = useState({ title: "", description: "", date: "", startTime: "10:00", endTime: "11:00", type: "meeting" });
   const [saving, setSaving] = useState(false);
 
-  const today = new Date();
-  const todayStr = today.toISOString().split("T")[0];
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [todayStr] = useState(() => new Date().toISOString().split("T")[0]);
+  const today = new Date(todayStr + "T00:00:00");
+  const [currentYear, setCurrentYear] = useState(() => new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(() => new Date().getMonth());
 
-  const refreshEvents = () => api.getScheduleEvents().then(setEvents);
-  useEffect(() => { refreshEvents(); }, []);
+  const refreshEvents = () => {
+    const m = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}`;
+    api.getScheduleEvents(m).then(setEvents);
+  };
+  useEffect(() => { refreshEvents(); }, [currentYear, currentMonth]);
 
   const addEvent = async () => {
     if (!newEvent.title || !newEvent.date) return;

@@ -180,21 +180,22 @@ export async function getProject(id: string): Promise<Project | null> {
   return mockProjects.find((p) => p.id === id) ?? null;
 }
 
-// --- Schedule ---
-export async function getScheduleEvents(): Promise<ScheduleEvent[]> {
+// --- Schedule (Google Calendar → fallback to local) ---
+export async function getScheduleEvents(month?: string): Promise<ScheduleEvent[]> {
   try {
-    const res = await fetch("/api/data/calendar_events");
+    const q = month ? `?month=${month}` : "";
+    const res = await fetch(`/api/calendar${q}`);
     const data = await res.json();
-    if (data.entries) {
-      return data.entries.map((e: Record<string, string>) => ({
-        id: e._id || e.id || "",
+    if (data.events) {
+      return data.events.map((e: Record<string, string>) => ({
+        id: e.id || "",
         title: e.title || "",
         description: e.description || "",
         date: e.date || "",
         startTime: e.startTime || "",
         endTime: e.endTime || "",
         type: e.type || "other",
-        employeeIds: e.employeeIds || [],
+        employeeIds: [],
       }));
     }
   } catch {}

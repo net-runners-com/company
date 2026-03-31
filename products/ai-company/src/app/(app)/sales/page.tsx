@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useI18n } from "@/lib/i18n";
 
 type TabKey = "leads" | "clients" | "proposals" | "email";
@@ -103,11 +104,18 @@ export default function SalesPage() {
     { key: "email", label: locale === "ja" ? "メール" : "Email", count: 0 },
   ];
 
+  interface Email { _id?: string; to: string; subject: string; body: string; status: string; sentAt?: string; _created_at?: string }
+  const [emails, setEmails] = useState<Email[]>([]);
+  const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
+  const [showCompose, setShowCompose] = useState(false);
   const [emailTo, setEmailTo] = useState("");
   const [emailSubject, setEmailSubject] = useState("");
   const [emailBody, setEmailBody] = useState("");
-  const [emailSending, setEmailSending] = useState(false);
-  const [emailResult, setEmailResult] = useState<string | null>(null);
+  const [emailSaving, setEmailSaving] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/data/emails").then(r => r.json()).then(d => setEmails(d.entries || [])).catch(() => {});
+  }, []);
 
   const filteredLeads = leadFilter === "all" ? mockLeads : mockLeads.filter((l) => l.status === leadFilter);
 
@@ -286,75 +294,115 @@ export default function SalesPage() {
 
       {/* Email */}
       {activeTab === "email" && (
-        <div className="bg-white rounded-xl border border-[var(--color-border)] p-6">
-          <div className="space-y-4 max-w-2xl">
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "宛先" : "To"}</label>
-              <input
-                type="email" value={emailTo} onChange={(e) => setEmailTo(e.target.value)}
-                placeholder="client@example.com"
-                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "件名" : "Subject"}</label>
-              <input
-                type="text" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)}
-                placeholder={locale === "ja" ? "例: ご提案の件について" : "e.g. Regarding our proposal"}
-                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-1">{locale === "ja" ? "本文" : "Body"}</label>
-              <textarea
-                value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={8}
-                placeholder={locale === "ja" ? "メール本文を入力、または営業エージェントに下書きを依頼..." : "Type email body or ask the sales agent to draft..."}
-                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent resize-none"
-              />
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={async () => {
-                  if (!emailTo || !emailSubject) return;
-                  setEmailSending(true);
-                  setEmailResult(null);
-                  try {
-                    // Nango proxy で Gmail 送信（接続済みの場合）
-                    const res = await fetch("/api/nango/proxy", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ method: "POST", endpoint: "/gmail/v1/users/me/messages/send", provider: "gmail", connectionId: "", data: { to: emailTo, subject: emailSubject, body: emailBody } }),
-                    });
-                    const data = await res.json();
-                    setEmailResult(data.error ? `Error: ${data.error}` : (locale === "ja" ? "送信しました" : "Sent"));
-                  } catch {
-                    setEmailResult(locale === "ja" ? "送信に失敗しました。Gmailを接続してください。" : "Failed. Connect Gmail first.");
-                  }
-                  setEmailSending(false);
-                }}
-                disabled={emailSending || !emailTo || !emailSubject}
-                className="px-6 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-50 flex items-center gap-2"
-              >
-                {emailSending ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                  </svg>
-                )}
-                {locale === "ja" ? "送信" : "Send"}
-              </button>
-              {emailResult && (
-                <span className={`text-sm ${emailResult.startsWith("Error") || emailResult.includes("失敗") ? "text-red-500" : "text-green-600"}`}>
-                  {emailResult}
-                </span>
-              )}
-            </div>
+        <div>
+          <div className="flex items-center justify-between mb-4">
             <p className="text-xs text-[var(--color-subtext)]">
-              {locale === "ja" ? "Gmail連携（設定 → アプリ連携）が必要です。営業エージェントにチャットで下書き依頼もできます。" : "Requires Gmail connection (Settings → Apps). You can also ask the sales agent to draft emails in chat."}
+              {locale === "ja" ? "営業エージェントにチャットで下書き・送信を依頼できます" : "Ask the sales agent to draft or send emails"}
             </p>
+            <button onClick={() => { setShowCompose(true); setEmailTo(""); setEmailSubject(""); setEmailBody(""); }}
+              className="px-3 py-1.5 bg-[var(--color-primary)] text-white text-xs font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+              {locale === "ja" ? "新規作成" : "Compose"}
+            </button>
           </div>
+
+          {emails.length === 0 ? (
+            <div className="bg-white rounded-xl border border-[var(--color-border)] p-8 text-center text-sm text-[var(--color-subtext)]">
+              {locale === "ja" ? "メールがありません。営業エージェントに「メール下書きして」と依頼してみてください。" : "No emails. Ask the sales agent to draft one."}
+            </div>
+          ) : (
+            <div className="bg-white rounded-xl border border-[var(--color-border)] overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-[var(--color-bg)] border-b border-[var(--color-border)]">
+                    <th className="text-left px-5 py-3 font-medium text-[var(--color-subtext)]">{locale === "ja" ? "ステータス" : "Status"}</th>
+                    <th className="text-left px-5 py-3 font-medium text-[var(--color-subtext)]">{locale === "ja" ? "宛先" : "To"}</th>
+                    <th className="text-left px-5 py-3 font-medium text-[var(--color-subtext)]">{locale === "ja" ? "件名" : "Subject"}</th>
+                    <th className="text-left px-5 py-3 font-medium text-[var(--color-subtext)]">{locale === "ja" ? "日時" : "Date"}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {emails.map((em, i) => (
+                    <tr key={i} onClick={() => setSelectedEmail(em)}
+                      className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-border-light)] cursor-pointer transition-colors">
+                      <td className="px-5 py-3">
+                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${em.status === "sent" ? "bg-green-50 text-green-600" : em.status === "draft" ? "bg-yellow-50 text-yellow-600" : "bg-gray-100 text-gray-500"}`}>
+                          {em.status === "sent" ? (locale === "ja" ? "送信済" : "Sent") : em.status === "draft" ? (locale === "ja" ? "下書き" : "Draft") : em.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-[var(--color-text)]">{em.to}</td>
+                      <td className="px-5 py-3 text-[var(--color-text)]">{em.subject}</td>
+                      <td className="px-5 py-3 text-[var(--color-subtext)] text-xs">{em._created_at || em.sentAt || ""}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* Email Detail Modal */}
+      {selectedEmail && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setSelectedEmail(null)}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col animate-fade-in" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+              <div>
+                <h3 className="font-semibold text-[var(--color-text)]">{selectedEmail.subject}</h3>
+                <p className="text-xs text-[var(--color-subtext)] mt-0.5">{locale === "ja" ? "宛先" : "To"}: {selectedEmail.to}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${selectedEmail.status === "sent" ? "bg-green-50 text-green-600" : "bg-yellow-50 text-yellow-600"}`}>
+                  {selectedEmail.status === "sent" ? (locale === "ja" ? "送信済" : "Sent") : (locale === "ja" ? "下書き" : "Draft")}
+                </span>
+                <button onClick={() => setSelectedEmail(null)} className="p-1 text-[var(--color-subtext)] hover:text-[var(--color-text)]">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              <pre className="text-sm text-[var(--color-text)] whitespace-pre-wrap font-sans">{selectedEmail.body}</pre>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Compose Modal */}
+      {showCompose && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowCompose(false)}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg animate-fade-in" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+              <h3 className="font-semibold text-[var(--color-text)]">{locale === "ja" ? "メール作成" : "Compose"}</h3>
+              <button onClick={() => setShowCompose(false)} className="p-1 text-[var(--color-subtext)] hover:text-[var(--color-text)]">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="px-6 py-4 space-y-3">
+              <input type="email" value={emailTo} onChange={(e) => setEmailTo(e.target.value)} placeholder={locale === "ja" ? "宛先" : "To"}
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+              <input type="text" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} placeholder={locale === "ja" ? "件名" : "Subject"}
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
+              <textarea value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={8} placeholder={locale === "ja" ? "本文" : "Body"}
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] resize-none" />
+              <div className="flex gap-2">
+                <button onClick={async () => {
+                  if (!emailTo || !emailSubject) return;
+                  setEmailSaving(true);
+                  await fetch("/api/data/emails", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ to: emailTo, subject: emailSubject, body: emailBody, status: "draft" }) });
+                  const r = await fetch("/api/data/emails"); const d = await r.json(); setEmails(d.entries || []);
+                  setEmailSaving(false); setShowCompose(false);
+                }} disabled={emailSaving || !emailTo || !emailSubject}
+                  className="px-4 py-2 border border-[var(--color-border)] text-sm font-medium rounded-lg hover:bg-[var(--color-border-light)] disabled:opacity-50 transition-colors">
+                  {locale === "ja" ? "下書き保存" : "Save Draft"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );

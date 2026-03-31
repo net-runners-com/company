@@ -86,8 +86,9 @@ export default function SecretaryPage() {
 
   const secretary = mockEmployees.find((e) => e.id === "emp-1")!;
   const [profileContent, setProfileContent] = useState<string | null>(null);
-  const [news, setNews] = useState<{ title: string; source: string; category: string; summary: string; publishedAt: string }[]>([]);
+  const [news, setNews] = useState<{ title: string; source: string; category: string; summary: string; url?: string; publishedAt: string }[]>([]);
   const [newsUpdating, setNewsUpdating] = useState(false);
+  const [expandedNews, setExpandedNews] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`/api/employee-files?employeeId=emp-1&action=read&path=${encodeURIComponent("自己紹介.md")}`)
@@ -509,16 +510,36 @@ export default function SecretaryPage() {
             )}
             {news.map((item, i) => {
               const cat = newsCategoryConfig[item.category] || newsCategoryConfig.business;
+              const isExpanded = expandedNews === i;
               return (
-                <div key={i} className="bg-white rounded-xl border border-[var(--color-border)] p-5 hover:border-[var(--color-primary)] transition-colors">
+                <div key={i}
+                  onClick={() => setExpandedNews(isExpanded ? null : i)}
+                  className={`bg-white rounded-xl border p-5 cursor-pointer transition-all ${isExpanded ? "border-[var(--color-primary)] shadow-md" : "border-[var(--color-border)] hover:border-[var(--color-primary)]"}`}
+                >
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: cat.bg, color: cat.color }}>
                       {locale === "ja" ? cat.label : cat.labelEn}
                     </span>
                     <span className="text-[10px] text-[var(--color-subtext)]">{item.source}</span>
+                    <svg className={`w-3 h-3 text-[var(--color-subtext)] ml-auto transition-transform ${isExpanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
                   </div>
-                  <h3 className="font-medium text-[var(--color-text)] mb-1.5 leading-snug">{item.title}</h3>
-                  <p className="text-sm text-[var(--color-subtext)] leading-relaxed">{item.summary}</p>
+                  <h3 className="font-medium text-[var(--color-text)] leading-snug">{item.title}</h3>
+                  {isExpanded && (
+                    <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
+                      <p className="text-sm text-[var(--color-text)] leading-relaxed">{item.summary}</p>
+                      {item.url && (
+                        <a href={item.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 mt-3 text-xs text-[var(--color-primary)] hover:underline">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                          </svg>
+                          {locale === "ja" ? "記事を読む" : "Read article"}
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
