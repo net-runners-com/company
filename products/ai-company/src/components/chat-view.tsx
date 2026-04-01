@@ -16,8 +16,15 @@ export function ChatView({ employee }: { employee: Employee }) {
   const { t, locale } = useI18n();
   const [previewFile, setPreviewFile] = useState<string | null>(null);
   const [input, setInput] = useState("");
+  const [stagedFiles, setStagedFiles] = useState<{ file: File; preview: string }[]>([]);
   const [attachedFiles, setAttachedFiles] = useState<{ name: string; path: string }[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [showPlusMenu, setShowPlusMenu] = useState(false);
+  const [showPromptPicker, setShowPromptPicker] = useState(false);
+  const [prompts, setPrompts] = useState<{ _id: string; name: string; content: string; category?: string }[]>([]);
+  const [attachedPrompts, setAttachedPrompts] = useState<{ name: string; content: string }[]>([]);
+  const [dragOver, setDragOver] = useState(false);
+  const plusMenuRef = useRef<HTMLDivElement>(null);
   const [showThreads, setShowThreads] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -56,35 +63,91 @@ export function ChatView({ employee }: { employee: Employee }) {
     prevLoadingRef.current = loading;
   }, [loading, chatMessages]);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files?.length) return;
-    setUploading(true);
-    for (const file of Array.from(files)) {
+  // プラスメニュー外クリックで閉じる
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (plusMenuRef.current && !plusMenuRef.current.contains(e.target as Node)) setShowPlusMenu(false);
+    };
+    if (showPlusMenu) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showPlusMenu]);
+
+  // ファイルをローカルにステージ（プレビュー付き）
+  const stageFiles = (files: FileList | File[]) => {
+    const newStaged = Array.from(files).map((file) => ({
+      file,
+      preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : "",
+    }));
+    setStagedFiles((prev) => [...prev, ...newStaged]);
+  };
+
+  // ドラッグ&ドロップ
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    if (e.dataTransfer.files?.length) stageFiles(e.dataTransfer.files);
+  };
+
+  // ステージ済みファイルをアップロード
+  const uploadStagedFiles = async (): Promise<{ name: string; path: string }[]> => {
+    const uploaded: { name: string; path: string }[] = [];
+    for (const { file } of stagedFiles) {
       const formData = new FormData();
       formData.append("employeeId", employee.id);
       formData.append("file", file);
       try {
         const res = await fetch("/api/employee-upload", { method: "POST", body: formData });
         const data = await res.json();
-        if (data.fullPath) {
-          setAttachedFiles((prev) => [...prev, { name: data.filename, path: data.fullPath }]);
-        }
+        if (data.fullPath) uploaded.push({ name: data.filename, path: data.fullPath });
       } catch {}
     }
-    setUploading(false);
+    return uploaded;
+  };
+
+  // プロンプト一覧取得
+  const fetchPrompts = () => {
+    fetch("/api/data/prompts?limit=100")
+      .then((r) => r.json())
+      .then((d) => setPrompts(d.entries || []))
+      .catch(() => {});
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) stageFiles(e.target.files);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleSend = async () => {
-    if (!input.trim() && attachedFiles.length === 0) return;
-    // ファイルが添付されてたらメッセージに追加
+    if (!input.trim() && stagedFiles.length === 0 && attachedFiles.length === 0 && attachedPrompts.length === 0) return;
     let text = input;
-    if (attachedFiles.length > 0) {
+
+    // プロンプトが添付されていたら先頭に追加
+    if (attachedPrompts.length > 0) {
+      const promptText = attachedPrompts.map((p) => p.content).join("\n\n");
+      text = text ? `${promptText}\n\n${text}` : promptText;
+      setAttachedPrompts([]);
+    }
+
+    // ステージ済みファイルをアップロード
+    if (stagedFiles.length > 0) {
+      setUploading(true);
+      const uploaded = await uploadStagedFiles();
+      const allFiles = [...attachedFiles, ...uploaded];
+      if (allFiles.length > 0) {
+        const fileRefs = allFiles.map((f) => `[添付ファイル: ${f.path}]`).join("\n");
+        text = text ? `${text}\n\n${fileRefs}` : fileRefs;
+      }
+      // プレビューURL解放
+      stagedFiles.forEach((s) => { if (s.preview) URL.revokeObjectURL(s.preview); });
+      setStagedFiles([]);
+      setAttachedFiles([]);
+      setUploading(false);
+    } else if (attachedFiles.length > 0) {
       const fileRefs = attachedFiles.map((f) => `[添付ファイル: ${f.path}]`).join("\n");
       text = text ? `${text}\n\n${fileRefs}` : fileRefs;
       setAttachedFiles([]);
     }
+
     setInput("");
     await sendMessage(employee.id, text);
   };
@@ -129,7 +192,19 @@ export function ChatView({ employee }: { employee: Employee }) {
       {/* Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+      <div
+        className={`flex-1 overflow-y-auto px-6 py-4 space-y-3 relative ${dragOver ? "bg-[var(--color-primary-light)]" : ""}`}
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+      >
+        {dragOver && (
+          <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-primary-light)]/80 z-10 pointer-events-none border-2 border-dashed border-[var(--color-primary)] rounded-lg">
+            <p className="text-sm font-medium text-[var(--color-primary)]">
+              {locale === "ja" ? "ファイルをドロップして添付" : "Drop files to attach"}
+            </p>
+          </div>
+        )}
         {chatMessages.length === 0 && (
           <div className="text-center text-[var(--color-subtext)] text-sm py-12">
             <EmployeeAvatar seed={employee.id} size="3rem" className="mx-auto mb-3" config={employee.avatarConfig as Record<string, string> | undefined} />
@@ -335,42 +410,36 @@ export function ChatView({ employee }: { employee: Employee }) {
       )}
 
       {/* Input */}
-      <div className="border-t border-[var(--color-border)] bg-white px-6 py-3">
-        {/* Attached files preview */}
-        {attachedFiles.length > 0 && (
-          <div className="flex gap-2 mb-2 max-w-3xl mx-auto flex-wrap">
-            {attachedFiles.map((f, i) => (
-              <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 bg-[var(--color-primary-light)] text-[var(--color-primary)] rounded-full text-xs">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
-                </svg>
-                <span className="max-w-[120px] truncate">{f.name}</span>
-                <button onClick={() => setAttachedFiles((prev) => prev.filter((_, j) => j !== i))} className="hover:text-red-500">
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="flex gap-2 max-w-3xl mx-auto">
-          {/* File upload button */}
-          <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileUpload} />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={loading || uploading}
-            className="p-2.5 text-[var(--color-subtext)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] rounded-lg transition-colors disabled:opacity-40"
-            title={locale === "ja" ? "ファイルを添付" : "Attach file"}
-          >
-            {uploading ? (
-              <span className="w-5 h-5 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin inline-block" />
-            ) : (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-            )}
-          </button>
+      <div className="bg-white px-6 py-3">
+        <div className="max-w-3xl mx-auto border border-[var(--color-border)] rounded-xl bg-[var(--color-bg)] focus-within:ring-2 focus-within:ring-[var(--color-primary)] focus-within:border-transparent transition-shadow">
+          {/* Staged files preview */}
+          {stagedFiles.length > 0 && (
+            <div className="flex gap-2 p-3 pb-0 flex-wrap">
+              {stagedFiles.map((s, i) => (
+                <div key={i} className="relative">
+                  {s.preview ? (
+                    <img src={s.preview} alt={s.file.name} className="w-20 h-20 object-cover rounded-lg border border-[var(--color-border)]" />
+                  ) : (
+                    <div className="w-20 h-20 rounded-lg border border-[var(--color-border)] bg-white flex flex-col items-center justify-center gap-1">
+                      <svg className="w-5 h-5 text-[var(--color-subtext)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                      </svg>
+                      <span className="text-[9px] text-[var(--color-subtext)] truncate max-w-[70px] px-1">{s.file.name}</span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => { if (s.preview) URL.revokeObjectURL(s.preview); setStagedFiles((prev) => prev.filter((_, j) => j !== i)); }}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-white border border-[var(--color-border)] text-[var(--color-subtext)] hover:text-[var(--color-danger)] hover:border-[var(--color-danger)] rounded-full flex items-center justify-center shadow-sm transition-colors"
+                  >
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Text input */}
           <input
             type="text"
             value={input}
@@ -380,27 +449,84 @@ export function ChatView({ employee }: { employee: Employee }) {
             placeholder={loading
               ? (locale === "ja" ? "応答中..." : "Responding...")
               : t.employee.messagePlaceholder.replace("{name}", employee.name)}
-            className="flex-1 px-3.5 py-2.5 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-text)] placeholder:text-[var(--color-subtext)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-shadow disabled:opacity-60"
+            className="w-full px-4 py-3 bg-transparent text-sm text-[var(--color-text)] placeholder:text-[var(--color-subtext)] focus:outline-none disabled:opacity-60"
           />
-          {loading ? (
-            <button
-              onClick={stopStream}
-              className="px-4 py-2.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors flex items-center gap-1.5"
-            >
-              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                <rect x="6" y="6" width="12" height="12" rx="2" />
-              </svg>
-              {locale === "ja" ? "停止" : "Stop"}
-            </button>
-          ) : (
-            <button
-              onClick={handleSend}
-              disabled={!input.trim()}
-              className="px-4 py-2.5 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {t.common.send}
-            </button>
-          )}
+          {/* Bottom bar: + menu, prompt badges, send */}
+          <div className="flex items-center justify-between px-2 pb-2">
+            <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
+            <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileSelect} />
+            <div className="relative" ref={plusMenuRef}>
+              <button
+                onClick={() => setShowPlusMenu(!showPlusMenu)}
+                disabled={loading || uploading}
+                className="p-2 text-[var(--color-subtext)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] rounded-lg transition-colors disabled:opacity-40"
+              >
+                {uploading ? (
+                  <span className="w-5 h-5 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin inline-block" />
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  </svg>
+                )}
+              </button>
+              {showPlusMenu && (
+                <div className="absolute bottom-full left-0 mb-2 w-52 bg-white rounded-xl border border-[var(--color-border)] shadow-lg py-1 z-50">
+                  <button
+                    onClick={() => { fileInputRef.current?.click(); setShowPlusMenu(false); }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--color-text)] hover:bg-[var(--color-border-light)] transition-colors"
+                  >
+                    <svg className="w-4 h-4 text-[var(--color-subtext)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+                    </svg>
+                    {locale === "ja" ? "ファイルを追加" : "Add file"}
+                  </button>
+                  <button
+                    onClick={() => { fetchPrompts(); setShowPromptPicker(true); setShowPlusMenu(false); }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--color-text)] hover:bg-[var(--color-border-light)] transition-colors"
+                  >
+                    <svg className="w-4 h-4 text-[var(--color-subtext)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                    {locale === "ja" ? "プロンプトを追加" : "Add prompt"}
+                  </button>
+                </div>
+              )}
+            </div>
+            {/* Prompt badges */}
+            {attachedPrompts.map((p, i) => (
+              <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-[var(--color-primary-light)] text-[var(--color-primary)] rounded-full text-xs max-w-[150px]">
+                <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
+                <span className="truncate">{p.name}</span>
+                <button onClick={() => setAttachedPrompts((prev) => prev.filter((_, j) => j !== i))} className="shrink-0 hover:text-[var(--color-danger)]">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </span>
+            ))}
+            </div>
+            {loading ? (
+              <button
+                onClick={stopStream}
+                className="px-3 py-1.5 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition-colors flex items-center gap-1.5"
+              >
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+                {locale === "ja" ? "停止" : "Stop"}
+              </button>
+            ) : (
+              <button
+                onClick={handleSend}
+                disabled={!input.trim() && stagedFiles.length === 0 && attachedPrompts.length === 0}
+                className="p-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -411,6 +537,45 @@ export function ChatView({ employee }: { employee: Employee }) {
           filePath={previewFile}
           onClose={() => setPreviewFile(null)}
         />
+      )}
+      {/* Prompt Picker Modal */}
+      {showPromptPicker && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40" onClick={() => setShowPromptPicker(false)}>
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-lg mx-4 max-h-[70vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)] shrink-0">
+              <h3 className="font-semibold text-[var(--color-text)]">{locale === "ja" ? "プロンプトを選択" : "Select Prompt"}</h3>
+              <button onClick={() => setShowPromptPicker(false)} className="p-1 text-[var(--color-subtext)] hover:text-[var(--color-text)]">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="overflow-y-auto flex-1 p-3 space-y-2">
+              {prompts.length === 0 ? (
+                <p className="text-sm text-[var(--color-subtext)] text-center py-8">
+                  {locale === "ja" ? "プロンプトがありません。プロンプトページから作成してください。" : "No prompts. Create one from the Prompts page."}
+                </p>
+              ) : prompts.map((p) => (
+                <button
+                  key={p._id}
+                  onClick={() => {
+                    setAttachedPrompts((prev) => [...prev, { name: p.name, content: p.content }]);
+                    setShowPromptPicker(false);
+                  }}
+                  className="w-full text-left p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-light)] transition-all"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-sm text-[var(--color-text)]">{p.name}</span>
+                    {p.category && (
+                      <span className="text-[10px] px-1.5 py-0.5 bg-[var(--color-border-light)] text-[var(--color-subtext)] rounded-full">{p.category}</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[var(--color-subtext)] mt-1 line-clamp-2">{p.content}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
       </div>{/* /Chat Area */}
     </div>

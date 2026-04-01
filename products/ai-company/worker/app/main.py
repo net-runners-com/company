@@ -1,6 +1,7 @@
 """AI Company Worker — FastAPI application entry point."""
 
 import asyncio
+import subprocess
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -81,3 +82,35 @@ async def start_news_cron():
         replace_existing=True,
     )
     print("[news] Scheduled daily at 7:00 JST")
+
+
+async def _cleanup_zombie_chrome():
+    """起動から5分経過したchromeプロセスを kill"""
+    try:
+        result = subprocess.run(
+            ["bash", "-c", "ps -eo pid,etimes,comm | grep chromium | grep -v grep"],
+            capture_output=True, text=True, timeout=5,
+        )
+        for line in result.stdout.strip().split("\n"):
+            if not line.strip():
+                continue
+            parts = line.split()
+            if len(parts) < 3:
+                continue
+            pid, elapsed = int(parts[0]), int(parts[1])
+            if elapsed > 300:  # 5分
+                subprocess.run(["kill", "-9", str(pid)], capture_output=True)
+                print(f"[cleanup] Killed chrome PID {pid} (alive {elapsed}s)")
+    except Exception:
+        pass
+
+
+@app.on_event("startup")
+async def start_chrome_cleaner():
+    """30秒ごとにアイドルchromeを掃除"""
+    async def loop():
+        while True:
+            await asyncio.sleep(30)
+            await _cleanup_zombie_chrome()
+    asyncio.create_task(loop())
+    print("[cleanup] Chrome cleaner started (every 30s)")

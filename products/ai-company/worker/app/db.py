@@ -54,6 +54,61 @@ def _init_db():
     conn.execute("CREATE INDEX IF NOT EXISTS idx_msgs_thread ON chat_messages(thread_id)")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_msgs_emp ON chat_messages(emp_id)")
 
+    # 社員マスタ
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS employees (
+            id TEXT PRIMARY KEY,
+            data JSON NOT NULL,
+            created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now','localtime')),
+            updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))
+        )
+    """)
+
+    # コネクタ設定
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS connectors (
+            id TEXT PRIMARY KEY,
+            data JSON NOT NULL,
+            created_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now','localtime')),
+            updated_at TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))
+        )
+    """)
+
     conn.commit()
+
+    # JSON → SQLite マイグレーション（初回のみ）
+    _migrate_json_to_sqlite(conn)
+
     conn.close()
     print(f"[startup] SQLite initialized: {SQLITE_PATH}")
+
+
+def _migrate_json_to_sqlite(conn):
+    """既存JSONファイルをSQLiteに移行（初回起動時のみ）"""
+    import os
+
+    # employees.json → employees テーブル
+    emp_file = Path("/workspace/data/employees.json")
+    if emp_file.exists():
+        count = conn.execute("SELECT COUNT(*) FROM employees").fetchone()[0]
+        if count == 0:
+            data = json.loads(emp_file.read_text())
+            for eid, emp in data.items():
+                conn.execute("INSERT OR IGNORE INTO employees (id, data) VALUES (?, ?)",
+                    [eid, json.dumps(emp, ensure_ascii=False)])
+            conn.commit()
+            print(f"[migrate] employees.json → SQLite ({len(data)} records)")
+            emp_file.rename(emp_file.with_suffix(".json.bak"))
+
+    # connectors.json → connectors テーブル
+    conn_file = Path("/workspace/data/connectors.json")
+    if conn_file.exists():
+        count = conn.execute("SELECT COUNT(*) FROM connectors").fetchone()[0]
+        if count == 0:
+            data = json.loads(conn_file.read_text())
+            for cid, c in data.items():
+                conn.execute("INSERT OR IGNORE INTO connectors (id, data) VALUES (?, ?)",
+                    [cid, json.dumps(c, ensure_ascii=False)])
+            conn.commit()
+            print(f"[migrate] connectors.json → SQLite ({len(data)} records)")
+            conn_file.rename(conn_file.with_suffix(".json.bak"))

@@ -24,7 +24,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-      - "6080:6080"
     volumes:
       - ./worker/app:/app/app
       - ./worker/project-context/company:/workspace/company

@@ -1,0 +1,15 @@
+{
+  "accounting": "dept-001",
+  "dev": "dept-002",
+  "engineering": "dept-003",
+  "finance": "dept-004",
+  "general-affairs": "dept-005",
+  "hr": "dept-006",
+  "marketing": "dept-007",
+  "newbiz": "dept-008",
+  "pm": "dept-009",
+  "research": "dept-010",
+  "sales": "dept-011",
+  "strategy": "dept-012",
+  "youtube部": "dept-013"
+}

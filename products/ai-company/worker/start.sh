@@ -1,10 +1,10 @@
 #!/bin/bash
-# Worker起動スクリプト: FastAPI + VNC + LINE Webhook + LINE Agent
+# Worker起動スクリプト: FastAPI + Xvfb (Playwright用)
 
 echo "[start] Starting worker services..."
 
 # ============================================
-# 1. Virtual Display + VNC (for Playwright browser monitoring)
+# 1. Virtual Display (for Playwright browser monitoring)
 # ============================================
 export DISPLAY=:99
 
@@ -15,15 +15,6 @@ sleep 1
 echo "[start] Starting fluxbox window manager..."
 fluxbox &
 sleep 1
-
-echo "[start] Starting x11vnc on port 5900..."
-x11vnc -display :99 -nopw -forever -shared -rfbport 5900 -bg -o /tmp/x11vnc.log
-sleep 1
-
-echo "[start] Starting noVNC on port 6080..."
-websockify --web /opt/noVNC 6080 localhost:5900 &
-NOVNC_PID=$!
-echo "[start] noVNC PID: $NOVNC_PID (http://localhost:6080)"
 
 # ============================================
 # 2. Connector Plugins (copy to data volume if not exists)

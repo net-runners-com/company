@@ -12,10 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     procps \
     xvfb \
-    x11vnc \
     ffmpeg \
     fluxbox \
-    websockify \
     && rm -rf /var/lib/apt/lists/*
 
 # ============================================
@@ -89,13 +87,7 @@ COPY . .
 RUN cd /app && npm init -y --silent 2>/dev/null; npm install @anthropic-ai/claude-agent-sdk
 
 
-# ============================================
-# noVNC (web-based VNC client)
-# ============================================
-RUN git clone --depth 1 https://github.com/novnc/noVNC.git /opt/noVNC \
-    && ln -s /opt/noVNC/vnc.html /opt/noVNC/index.html
-
-EXPOSE 8000 6080
+EXPOSE 8000
 
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh

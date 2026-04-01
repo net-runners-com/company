@@ -18,25 +18,38 @@ from app.plugin_loader import get_all_manifests, get_handler_class, get_manifest
 
 router = APIRouter()
 
-CONNECTORS_FILE = Path("/workspace/data/connectors.json")
-CONNECTORS_FILE.parent.mkdir(parents=True, exist_ok=True)
-
 # Agent processes managed by connector ID
 _agent_processes: dict[str, subprocess.Popen] = {}
 
 
 def load_connectors() -> dict:
-    if CONNECTORS_FILE.exists():
-        return json.loads(CONNECTORS_FILE.read_text())
-    return {}
+    conn = _get_db()
+    try:
+        rows = conn.execute("SELECT id, data FROM connectors").fetchall()
+        return {r["id"]: json.loads(r["data"]) for r in rows}
+    finally:
+        conn.close()
 
 
 def save_connectors(data: dict):
-    CONNECTORS_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+    conn = _get_db()
+    try:
+        for cid, c in data.items():
+            conn.execute(
+                "INSERT OR REPLACE INTO connectors (id, data, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
+                [cid, json.dumps(c, ensure_ascii=False)])
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def get_connector(connector_id: str) -> dict | None:
-    return load_connectors().get(connector_id)
+    conn = _get_db()
+    try:
+        row = conn.execute("SELECT data FROM connectors WHERE id = ?", [connector_id]).fetchone()
+        return json.loads(row["data"]) if row else None
+    finally:
+        conn.close()
 
 
 def _get_public_url() -> str | None:
