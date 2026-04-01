@@ -38,22 +38,22 @@ export function ChatView({ employee }: { employee: Employee }) {
   const prevLoadingRef = useRef(loading);
 
   useEffect(() => {
-    const init = async () => {
-      fetchThreads(employee.id);
-      registerEmployee({
-        id: employee.id,
-        name: employee.name,
-        role: employee.role,
-        department: employee.department,
-        tone: employee.tone,
-        skills: employee.skills,
-      });
-      await fetchMessages(employee.id);
-      // 履歴取得完了後にバックグラウンドrunがあれば再接続
-      reconnectIfActive(employee.id);
-    };
-    init();
-  }, [employee]);
+    fetchThreads(employee.id);
+    fetchMessages(employee.id);
+    registerEmployee({
+      id: employee.id,
+      name: employee.name,
+      role: employee.role,
+      department: employee.department,
+      tone: employee.tone,
+      skills: employee.skills,
+    });
+  }, [employee, fetchMessages, registerEmployee]);
+
+  // ページ復帰時: バックグラウンドで実行中のrunがあれば再接続
+  useEffect(() => {
+    reconnectIfActive(employee.id);
+  }, [employee.id, reconnectIfActive]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

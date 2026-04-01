@@ -5,6 +5,7 @@ import json
 import os
 import signal
 import re
+import subprocess
 import uuid
 import time as _time
 
@@ -209,6 +210,12 @@ async def _run_agent_background(run: AgentRun, sdk_input: str, emp_id: str,
     finally:
         _kill_proc_tree(run.proc)
         run.proc = None
+
+        # 残留chromeプロセスを掃除（ゾンビ防止）
+        try:
+            subprocess.run(["pkill", "-9", "-f", "chrome"], capture_output=True, timeout=5)
+        except Exception:
+            pass
 
         # チャットログ保存
         full_reply = "".join(assistant_text_chunks)
