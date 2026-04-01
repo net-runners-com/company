@@ -67,7 +67,7 @@ export default function SecretaryPage() {
   const { t, locale } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("chat");
 
-  const [secretary, setSecretary] = useState<{ id: string; name: string; role: string; skills?: string[]; avatarConfig?: Record<string, string> } | null>(null);
+  const [secretary, setSecretary] = useState<{ id: string; name: string; role: string; department?: string; tone?: string; skills?: string[]; avatarConfig?: Record<string, string> }>({ id: "emp-1", name: "さくら", role: "秘書", department: "総務部", tone: "polite", skills: [] });
   const [profileContent, setProfileContent] = useState<string | null>(null);
   const [news, setNews] = useState<{ title: string; source: string; category: string; summary: string; url?: string; publishedAt: string }[]>([]);
   const [newsUpdating, setNewsUpdating] = useState(false);
@@ -75,7 +75,7 @@ export default function SecretaryPage() {
   const [recentActivity, setRecentActivity] = useState<{ empId: string; empName: string; role: string; threadTitle: string; lastMessage: string; lastRole: string; timestamp: string }[]>([]);
 
   useEffect(() => {
-    fetch("/api/employees/emp-1").then(r => r.json()).then(d => { if (d.id) setSecretary(d); }).catch(() => {});
+    fetch("/api/employees").then(r => r.json()).then(d => { const s = d["emp-1"]; if (s) setSecretary({ ...s, id: "emp-1" }); }).catch(() => {});
     fetch(`/api/employee-files?employeeId=emp-1&action=read&path=${encodeURIComponent("自己紹介.md")}`)
       .then(r => r.json())
       .then(d => { if (d.content) setProfileContent(d.content); })
@@ -213,7 +213,7 @@ export default function SecretaryPage() {
         </div>
         {/* Chat */}
         <div className="flex-1 overflow-hidden">
-          {secretary && <ChatView employee={secretary as any} />}
+          <ChatView employee={secretary as any} />
         </div>
       </div>
     );
@@ -373,7 +373,7 @@ function InboxTab({ locale }: { locale: string }) {
   useEffect(() => {
     (async () => {
       try {
-        const WORKER = process.env.NEXT_PUBLIC_WORKER_URL || "";
+        const WORKER = "http://localhost:8000";
         const res = await fetch(`${WORKER}/nango/proxy`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
