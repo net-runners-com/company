@@ -320,18 +320,26 @@ async def execute_project_step(project_id: str, step_num: int):
             "--system-prompt", system_prompt, "--max-turns", "15",
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=workdir,
         )
-        stdout, _ = await asyncio.wait_for(proc.communicate(), timeout=180)
+        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=300)
         reply = stdout.decode().strip()
         _r2_sync_from_local(emp_id, workdir)
 
         if reply:
             _append_chat_log(emp_id, "assistant", reply, thread["id"])
-        step["status"] = "done"
-        step["result"] = reply[:300]
+            step["status"] = "done"
+            step["result"] = reply[:300]
+        else:
+            err_msg = stderr.decode().strip()[:200] if stderr else "No output"
+            step["status"] = "error"
+            step["result"] = f"エージェント出力なし: {err_msg}"
         step["threadId"] = thread["id"]
+    except asyncio.TimeoutError:
+        step["status"] = "error"
+        step["result"] = "タイムアウト（5分）"
+        print(f"[project] Step {step_num} timed out for {emp_id}")
     except Exception as e:
         step["status"] = "error"
-        step["result"] = str(e)
+        step["result"] = str(e) or type(e).__name__
 
     # タスクステータス更新
     conn = _get_db()
