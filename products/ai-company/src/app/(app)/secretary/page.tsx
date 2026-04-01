@@ -2,28 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
-import { mockTasks, mockScheduleEvents, mockActivityLogs, mockEmployees } from "@/data/mock";
 import { EmployeeAvatar } from "@/components/employee-avatar";
 import { ChatView } from "@/components/chat-view";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Link from "next/link";
 
-type TabKey = "chat" | "profile" | "today" | "todos" | "notes" | "inbox" | "news";
+type TabKey = "chat" | "profile" | "notes" | "inbox" | "news";
 
 interface Note {
   id: string;
   title: string;
   content: string;
-  createdAt: string;
-}
-
-interface InboxItem {
-  id: string;
-  from: string;
-  subject: string;
-  preview: string;
-  read: boolean;
   createdAt: string;
 }
 
@@ -34,13 +24,6 @@ const mockNotes: Note[] = [
   { id: "note-4", title: "経費締め切りリマインド", content: "3月分の経費精算は3/31まで。あおい（経理）に提出リマインドを送ること。", createdAt: "2026-03-26T10:00:00Z" },
 ];
 
-const mockInbox: InboxItem[] = [
-  { id: "inbox-1", from: "株式会社サンプル", subject: "デザイン修正依頼", preview: "先日お送りいただいたデザイン案について、一点修正をお願いしたく...", read: false, createdAt: "2026-03-27T14:30:00Z" },
-  { id: "inbox-2", from: "合同会社テスト", subject: "4月のコンサルスケジュール", preview: "来月のコンサルティング日程を確認させてください。第2週の火曜...", read: false, createdAt: "2026-03-27T11:00:00Z" },
-  { id: "inbox-3", from: "Google Workspace", subject: "ストレージ使用量通知", preview: "ストレージの75%を使用しています。アップグレードをご検討...", read: true, createdAt: "2026-03-27T08:00:00Z" },
-  { id: "inbox-4", from: "ノヴァ・デザイン", subject: "Re: ブランディング提案書", preview: "ご提案ありがとうございます。社内で検討の上、来週ご連絡...", read: true, createdAt: "2026-03-26T17:00:00Z" },
-  { id: "inbox-5", from: "LINE Notify", subject: "新着メッセージ (3件)", preview: "LINEに3件の未読メッセージがあります。", read: true, createdAt: "2026-03-26T15:00:00Z" },
-];
 
 interface NewsItem {
   id: string;
@@ -82,35 +65,52 @@ function getTimeLabel(dateStr: string, locale: string): string {
 
 export default function SecretaryPage() {
   const { t, locale } = useI18n();
-  const [activeTab, setActiveTab] = useState<TabKey>("today");
+  const [activeTab, setActiveTab] = useState<TabKey>("chat");
 
-  const secretary = mockEmployees.find((e) => e.id === "emp-1")!;
+  const [secretary, setSecretary] = useState<{ id: string; name: string; role: string; skills?: string[]; avatarConfig?: Record<string, string> } | null>(null);
   const [profileContent, setProfileContent] = useState<string | null>(null);
   const [news, setNews] = useState<{ title: string; source: string; category: string; summary: string; url?: string; publishedAt: string }[]>([]);
   const [newsUpdating, setNewsUpdating] = useState(false);
   const [expandedNews, setExpandedNews] = useState<number | null>(null);
+  const [recentActivity, setRecentActivity] = useState<{ empId: string; empName: string; role: string; threadTitle: string; lastMessage: string; lastRole: string; timestamp: string }[]>([]);
 
   useEffect(() => {
+    fetch("/api/employees/emp-1").then(r => r.json()).then(d => { if (d.id) setSecretary(d); }).catch(() => {});
     fetch(`/api/employee-files?employeeId=emp-1&action=read&path=${encodeURIComponent("自己紹介.md")}`)
       .then(r => r.json())
       .then(d => { if (d.content) setProfileContent(d.content); })
       .catch(() => {});
-    // ニュース取得
     fetch("/api/news").then(r => r.json()).then(d => { if (d.news) setNews(d.news); }).catch(() => {});
+    // 最近のアクティビティ取得
+    (async () => {
+      try {
+        const empRes = await fetch("/api/employees");
+        const empData = await empRes.json();
+        const employees = Object.values(empData) as { id: string; name: string; role: string }[];
+        const entries: typeof recentActivity = [];
+        for (const emp of employees) {
+          const threadRes = await fetch("/api/employee-chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ _action: "threads", employeeId: emp.id }) });
+          const { threads = [] } = await threadRes.json();
+          for (const thread of threads.slice(0, 3)) {
+            const histRes = await fetch("/api/employee-chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ _action: "history", employeeId: emp.id, threadId: thread.id }) });
+            const hist = await histRes.json();
+            if (Array.isArray(hist) && hist.length > 0) {
+              const last = hist[hist.length - 1];
+              entries.push({ empId: emp.id, empName: emp.name, role: emp.role, threadTitle: thread.title, lastMessage: last.content?.slice(0, 100) || "", lastRole: last.role, timestamp: last.timestamp });
+            }
+          }
+        }
+        entries.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+        setRecentActivity(entries.slice(0, 10));
+      } catch {}
+    })();
   }, []);
-
-  const today = new Date().toISOString().split("T")[0];
-  const todayEvents = mockScheduleEvents.filter((e) => e.date === today);
-  const pendingTasks = mockTasks.filter((tk) => tk.status !== "done" && tk.status !== "cancelled");
-  const unreadInbox = mockInbox.filter((i) => !i.read).length;
 
   const tabs: { key: TabKey; label: string; badge?: number }[] = [
     { key: "chat", label: locale === "ja" ? "チャット" : "Chat" },
     { key: "profile", label: locale === "ja" ? "プロフィール" : "Profile" },
-    { key: "today", label: locale === "ja" ? "今日の概要" : "Today" },
-    { key: "todos", label: locale === "ja" ? "TODO" : "TODOs", badge: pendingTasks.length },
     { key: "notes", label: locale === "ja" ? "メモ" : "Notes" },
-    { key: "inbox", label: locale === "ja" ? "受信箱" : "Inbox", badge: unreadInbox > 0 ? unreadInbox : undefined },
+    { key: "inbox", label: locale === "ja" ? "受信箱" : "Inbox" },
     { key: "news", label: locale === "ja" ? "ニュース" : "News", badge: news.length > 0 ? news.length : undefined },
   ];
 
@@ -213,7 +213,7 @@ export default function SecretaryPage() {
         </div>
         {/* Chat */}
         <div className="flex-1 overflow-hidden">
-          <ChatView employee={secretary} />
+          {secretary && <ChatView employee={secretary as any} />}
         </div>
       </div>
     );
@@ -237,9 +237,7 @@ export default function SecretaryPage() {
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: locale === "ja" ? "今日の予定" : "Today's Events", value: todayEvents.length, color: "var(--color-primary)" },
-          { label: locale === "ja" ? "未完了タスク" : "Pending Tasks", value: pendingTasks.length, color: "var(--color-warning)" },
-          { label: locale === "ja" ? "未読メール" : "Unread", value: unreadInbox, color: "var(--color-danger)" },
+          { label: locale === "ja" ? "最近の会話" : "Recent Chats", value: recentActivity.length, color: "var(--color-primary)" },
           { label: locale === "ja" ? "メモ" : "Notes", value: mockNotes.length, color: "var(--color-info)" },
         ].map((card) => (
           <div key={card.label} className="bg-white rounded-xl border border-[var(--color-border)] p-5">
@@ -271,162 +269,7 @@ export default function SecretaryPage() {
         ))}
       </div>
 
-      {/* Today */}
-      {activeTab === "today" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Schedule */}
-          <div className="bg-white rounded-xl border border-[var(--color-border)] p-6">
-            <h2 className="font-semibold text-[var(--color-text)] mb-4">
-              {locale === "ja" ? "今日のスケジュール" : "Today's Schedule"}
-            </h2>
-            {todayEvents.length === 0 ? (
-              <p className="text-sm text-[var(--color-subtext)] py-4 text-center">
-                {locale === "ja" ? "今日の予定はありません" : "No events today"}
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {todayEvents.map((evt) => (
-                  <div key={evt.id} className="flex gap-3 items-start">
-                    <div className="text-xs font-mono text-[var(--color-primary)] font-medium pt-0.5 w-12 shrink-0">
-                      {evt.startTime}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-[var(--color-text)]">{evt.title}</p>
-                      <p className="text-xs text-[var(--color-subtext)] mt-0.5">{evt.description}</p>
-                      <div className="flex items-center gap-1 mt-1.5">
-                        {evt.employeeIds.slice(0, 4).map((eid) => (
-                          <EmployeeAvatar key={eid} seed={eid} size="1.25rem" />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
 
-          {/* Recent Activity */}
-          <div className="bg-white rounded-xl border border-[var(--color-border)] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-[var(--color-text)]">
-                {locale === "ja" ? "最近のアクティビティ" : "Recent Activity"}
-              </h2>
-              <Link href="/activity" className="text-xs text-[var(--color-primary)] hover:underline">
-                {t.common.viewAll}
-              </Link>
-            </div>
-            <div className="space-y-3">
-              {mockActivityLogs.slice(0, 5).map((log) => {
-                const emp = log.employeeId ? mockEmployees.find((e) => e.id === log.employeeId) : null;
-                return (
-                  <div key={log.id} className="flex items-start gap-3">
-                    {emp ? (
-                      <EmployeeAvatar seed={emp.id} size="1.75rem" className="shrink-0 mt-0.5" />
-                    ) : (
-                      <div className="w-7 h-7 rounded-full bg-[var(--color-border-light)] flex items-center justify-center shrink-0 mt-0.5">
-                        <div className="w-2 h-2 rounded-full bg-[var(--color-subtext)]" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-[var(--color-text)] leading-snug">{log.summary}</p>
-                      <p className="text-[10px] text-[var(--color-subtext)] mt-0.5">
-                        {getTimeLabel(log.createdAt, locale)}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Urgent Tasks */}
-          <div className="bg-white rounded-xl border border-[var(--color-border)] p-6 lg:col-span-2">
-            <h2 className="font-semibold text-[var(--color-text)] mb-4">
-              {locale === "ja" ? "注目タスク" : "Priority Tasks"}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {pendingTasks.filter((tk) => tk.priority === "high" || tk.status === "in_progress").slice(0, 6).map((task) => {
-                const emp = mockEmployees.find((e) => e.id === task.employeeId);
-                return (
-                  <div key={task.id} className="border border-[var(--color-border)] rounded-lg p-4 hover:border-[var(--color-primary)] transition-colors">
-                    <div className="flex items-center gap-2 mb-2">
-                      {task.priority === "high" && (
-                        <span className="text-[10px] font-medium px-1.5 py-0.5 bg-red-50 text-red-600 rounded">
-                          {locale === "ja" ? "高" : "High"}
-                        </span>
-                      )}
-                      <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
-                        task.status === "in_progress"
-                          ? "bg-[var(--color-warning-light)] text-[var(--color-warning)]"
-                          : "bg-[var(--color-border-light)] text-[var(--color-subtext)]"
-                      }`}>
-                        {task.status === "in_progress"
-                          ? (locale === "ja" ? "進行中" : "In Progress")
-                          : (locale === "ja" ? "未着手" : "Pending")}
-                      </span>
-                    </div>
-                    <p className="text-sm font-medium text-[var(--color-text)] mb-1">{task.title}</p>
-                    {emp && (
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <EmployeeAvatar seed={emp.id} size="1.25rem" />
-                        <span className="text-xs text-[var(--color-subtext)]">{emp.name}</span>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* TODOs */}
-      {activeTab === "todos" && (
-        <div className="bg-white rounded-xl border border-[var(--color-border)] divide-y divide-[var(--color-border)]">
-          {pendingTasks.map((task) => {
-            const emp = mockEmployees.find((e) => e.id === task.employeeId);
-            return (
-              <div key={task.id} className="flex items-center gap-4 px-5 py-4 hover:bg-[var(--color-border-light)] transition-colors">
-                <div className={`w-5 h-5 rounded border-2 shrink-0 ${
-                  task.status === "in_progress"
-                    ? "border-[var(--color-warning)] bg-[var(--color-warning-light)]"
-                    : "border-[var(--color-border)]"
-                }`}>
-                  {task.status === "in_progress" && (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-[var(--color-warning)]" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-[var(--color-text)]">{task.title}</span>
-                    {task.priority === "high" && (
-                      <span className="text-[10px] font-medium px-1.5 py-0.5 bg-red-50 text-red-600 rounded">
-                        {locale === "ja" ? "高" : "High"}
-                      </span>
-                    )}
-                  </div>
-                  {task.description && (
-                    <p className="text-xs text-[var(--color-subtext)] mt-0.5 truncate">{task.description}</p>
-                  )}
-                </div>
-                {emp && (
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <EmployeeAvatar seed={emp.id} size="1.5rem" />
-                    <span className="text-xs text-[var(--color-subtext)]">{emp.name}</span>
-                  </div>
-                )}
-                {task.dueDate && (
-                  <span className="text-xs text-[var(--color-subtext)] shrink-0">
-                    {new Date(task.dueDate).toLocaleDateString(locale === "ja" ? "ja-JP" : "en-US", { month: "short", day: "numeric" })}
-                  </span>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
 
       {/* Notes */}
       {activeTab === "notes" && (
@@ -444,35 +287,7 @@ export default function SecretaryPage() {
       )}
 
       {/* Inbox */}
-      {activeTab === "inbox" && (
-        <div className="bg-white rounded-xl border border-[var(--color-border)] divide-y divide-[var(--color-border)]">
-          {mockInbox.map((item) => (
-            <div key={item.id} className={`flex items-start gap-4 px-5 py-4 hover:bg-[var(--color-border-light)] transition-colors cursor-pointer ${!item.read ? "bg-blue-50/30" : ""}`}>
-              <div className="mt-1.5 shrink-0">
-                {!item.read ? (
-                  <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)]" />
-                ) : (
-                  <div className="w-2.5 h-2.5" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className={`text-sm ${!item.read ? "font-semibold text-[var(--color-text)]" : "font-medium text-[var(--color-text)]"}`}>
-                    {item.from}
-                  </span>
-                  <span className="text-[10px] text-[var(--color-subtext)]">
-                    {getTimeLabel(item.createdAt, locale)}
-                  </span>
-                </div>
-                <p className={`text-sm ${!item.read ? "font-medium text-[var(--color-text)]" : "text-[var(--color-subtext)]"}`}>
-                  {item.subject}
-                </p>
-                <p className="text-xs text-[var(--color-subtext)] mt-0.5 truncate">{item.preview}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {activeTab === "inbox" && <InboxTab locale={locale} />}
 
       {/* News */}
       {activeTab === "news" && (
@@ -546,6 +361,104 @@ export default function SecretaryPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function InboxTab({ locale }: { locale: string }) {
+  const [emails, setEmails] = useState<{ id: string; from: string; subject: string; snippet: string; date: string; unread: boolean }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const WORKER = process.env.NEXT_PUBLIC_WORKER_URL || "";
+        const res = await fetch(`${WORKER}/nango/proxy`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            method: "GET",
+            endpoint: "/gmail/v1/users/me/messages?maxResults=15&labelIds=INBOX",
+            connectionId: "__auto__",
+            provider: "google-mail",
+          }),
+        });
+        if (!res.ok) throw new Error("Gmail API failed");
+        const data = await res.json();
+        const messages = data.messages || [];
+        const items: typeof emails = [];
+        for (const msg of messages.slice(0, 15)) {
+          const detailRes = await fetch(`${WORKER}/nango/proxy`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              method: "GET",
+              endpoint: `/gmail/v1/users/me/messages/${msg.id}?format=metadata&metadataHeaders=From&metadataHeaders=Subject`,
+              connectionId: "__auto__",
+              provider: "google-mail",
+            }),
+          });
+          const detail = await detailRes.json();
+          const headers = detail.payload?.headers || [];
+          const from = headers.find((h: { name: string }) => h.name === "From")?.value || "";
+          const subject = headers.find((h: { name: string }) => h.name === "Subject")?.value || "(no subject)";
+          const unread = (detail.labelIds || []).includes("UNREAD");
+          items.push({
+            id: msg.id,
+            from: from.replace(/<.*>/, "").trim(),
+            subject,
+            snippet: detail.snippet || "",
+            date: new Date(Number(detail.internalDate)).toISOString(),
+            unread,
+          });
+        }
+        setEmails(items);
+      } catch (e) {
+        setError(locale === "ja" ? "Gmailに接続できませんでした。設定からGoogleアカウントを連携してください。" : "Could not connect to Gmail. Please link your Google account in settings.");
+      }
+      setLoading(false);
+    })();
+  }, [locale]);
+
+  if (loading) return (
+    <div className="space-y-3">
+      {[1, 2, 3, 4, 5].map(i => (
+        <div key={i} className="bg-white rounded-xl border border-[var(--color-border)] p-4 animate-pulse">
+          <div className="h-4 w-40 bg-[var(--color-border-light)] rounded mb-2" />
+          <div className="h-3 w-full bg-[var(--color-border-light)] rounded" />
+        </div>
+      ))}
+    </div>
+  );
+
+  if (error) return (
+    <div className="bg-white rounded-xl border border-[var(--color-border)] p-8 text-center">
+      <p className="text-sm text-[var(--color-subtext)]">{error}</p>
+    </div>
+  );
+
+  return (
+    <div className="bg-white rounded-xl border border-[var(--color-border)] divide-y divide-[var(--color-border)]">
+      {emails.length === 0 ? (
+        <div className="p-8 text-center text-sm text-[var(--color-subtext)]">
+          {locale === "ja" ? "メールがありません" : "No emails"}
+        </div>
+      ) : emails.map(item => (
+        <div key={item.id} className={`flex items-start gap-4 px-5 py-4 hover:bg-[var(--color-border-light)] transition-colors cursor-pointer ${item.unread ? "bg-blue-50/30" : ""}`}>
+          <div className="mt-1.5 shrink-0">
+            {item.unread ? <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)]" /> : <div className="w-2.5 h-2.5" />}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className={`text-sm ${item.unread ? "font-semibold text-[var(--color-text)]" : "font-medium text-[var(--color-text)]"}`}>{item.from}</span>
+              <span className="text-[10px] text-[var(--color-subtext)]">{getTimeLabel(item.date, locale)}</span>
+            </div>
+            <p className={`text-sm ${item.unread ? "font-medium text-[var(--color-text)]" : "text-[var(--color-subtext)]"}`}>{item.subject}</p>
+            <p className="text-xs text-[var(--color-subtext)] mt-0.5 truncate">{item.snippet}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
