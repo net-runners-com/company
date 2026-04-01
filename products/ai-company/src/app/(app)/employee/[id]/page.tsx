@@ -105,35 +105,7 @@ export default function EmployeeDetailPage() {
 
   return (
     <div className="flex flex-col h-screen animate-fade-in">
-      {/* VNC Overlay when browser is active */}
-      {browserActive && (
-        <div className="fixed inset-0 z-40 flex flex-col bg-black/90 animate-fade-in">
-          <div className="flex items-center justify-between px-4 py-2 bg-black/50">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-white text-xs font-medium">
-                  {locale === "ja" ? "ブラウザ操作中" : "Browser Active"}
-                </span>
-              </div>
-              <span className="text-white/50 text-xs">{employee.name}</span>
-            </div>
-            <button
-              onClick={() => setBrowserActive(false)}
-              className="px-3 py-1 text-white/70 hover:text-white text-xs border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
-            >
-              {locale === "ja" ? "閉じる" : "Close"}
-            </button>
-          </div>
-          <div className="flex-1 overflow-hidden">
-            <iframe
-              src="http://localhost:6080/vnc.html?autoconnect=true&resize=scale&quality=6&compression=2"
-              className="w-full h-full border-0"
-              allow="clipboard-read; clipboard-write"
-            />
-          </div>
-        </div>
-      )}
+      {/* VNC Overlay removed — VNC is shown inline in chat area */}
 
       {/* Header */}
       <div className="bg-white border-b border-[var(--color-border)] px-6 py-4">
@@ -209,7 +181,12 @@ export default function EmployeeDetailPage() {
           </div>
         )}
 
-        {activeTab === "chat" && <ChatView employee={employee} />}
+        {activeTab === "chat" && (
+          <>
+            <ChatView employee={employee} />
+            {browserActive && <VncFloating onClose={() => setBrowserActive(false)} locale={locale} />}
+          </>
+        )}
 
         {activeTab === "tasks" && (
           <div className="max-w-5xl mx-auto px-6 py-6 space-y-3 overflow-y-auto h-full">
@@ -374,6 +351,81 @@ export default function EmployeeDetailPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// --- VNC Floating Window ---
+function VncFloating({ onClose, locale }: { onClose: () => void; locale: string }) {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState({ w: 480, h: 320 });
+  const [dragging, setDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [minimized, setMinimized] = useState(false);
+
+  useEffect(() => {
+    // 初期位置: 右上
+    setPos({ x: window.innerWidth - 800, y: 20 });
+  }, []);
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    setDragging(true);
+    setDragStart({ x: e.clientX - pos.x, y: e.clientY - pos.y });
+  };
+
+  useEffect(() => {
+    if (!dragging) return;
+    const onMove = (e: MouseEvent) => setPos({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+    const onUp = () => setDragging(false);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+  }, [dragging, dragStart]);
+
+  return (
+    <div
+      className="fixed z-50 rounded-xl overflow-hidden shadow-2xl border border-gray-700 animate-fade-in"
+      style={{ left: pos.x, top: pos.y, width: minimized ? 200 : size.w, height: minimized ? 36 : size.h }}
+    >
+      {/* Title bar */}
+      <div
+        onMouseDown={onMouseDown}
+        className="flex items-center justify-between px-3 py-1.5 bg-gray-900 cursor-move select-none"
+      >
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+          <span className="text-white text-[10px] font-medium">
+            {locale === "ja" ? "ブラウザ操作中" : "Browser"}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          {/* Size buttons */}
+          <button onClick={() => setSize({ w: 320, h: 240 })} className="text-white/40 hover:text-white text-[9px] px-1">S</button>
+          <button onClick={() => setSize({ w: 480, h: 320 })} className="text-white/40 hover:text-white text-[9px] px-1">M</button>
+          <button onClick={() => setSize({ w: 720, h: 480 })} className="text-white/40 hover:text-white text-[9px] px-1">L</button>
+          {/* Minimize */}
+          <button onClick={() => setMinimized(!minimized)} className="text-white/40 hover:text-white px-1">
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d={minimized ? "M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" : "M19 13H5v-2h14v2z"} />
+            </svg>
+          </button>
+          {/* Close */}
+          <button onClick={onClose} className="text-white/40 hover:text-white px-1">
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      {/* Screen stream */}
+      {!minimized && (
+        <img
+          src="http://localhost:8000/browser/stream"
+          alt="Browser"
+          className="w-full bg-black object-contain"
+          style={{ height: size.h - 36 }}
+        />
+      )}
     </div>
   );
 }

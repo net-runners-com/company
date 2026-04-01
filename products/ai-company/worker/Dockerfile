@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
     xvfb \
     x11vnc \
+    ffmpeg \
     fluxbox \
     websockify \
     && rm -rf /var/lib/apt/lists/*
