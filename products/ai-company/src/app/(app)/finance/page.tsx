@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useI18n } from "@/lib/i18n";
-import { EmployeeAvatar } from "@/components/employee-avatar";
 
 type TabKey = "upload" | "journal" | "expenses" | "balance-sheet" | "cashflow";
 
@@ -104,17 +103,9 @@ export default function FinancePage() {
   return (
     <div className="px-8 py-8 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <EmployeeAvatar seed="emp-6" size="3rem" />
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)]">
-            {locale === "ja" ? "財務" : "Finance"}
-          </h1>
-          <p className="text-sm text-[var(--color-subtext)] mt-0.5">
-            {locale === "ja" ? "あおいが自動で仕訳します" : "Aoi handles bookkeeping automatically"}
-          </p>
-        </div>
-      </div>
+      <h1 className="text-2xl font-bold text-[var(--color-text)] mb-6">
+        {locale === "ja" ? "財務" : "Finance"}
+      </h1>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

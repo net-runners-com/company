@@ -45,6 +45,7 @@ export interface Employee {
   skills: string[];
   systemPrompt: string;
   avatarUrl: string | null;
+  avatarConfig?: Record<string, unknown> | null;
   status: EmployeeStatus;
   sortOrder: number;
   greeting: string;

@@ -90,9 +90,9 @@ export const authOptions: NextAuthOptions = {
       if (isNewUser && user.id) {
         const workerUrl = process.env.WORKER_URL || "http://localhost:8000";
         const initialEmployees = [
-          { id: "emp-1", name: "さくら", role: "ひしょ", department: "general-affairs", tone: "やさしい敬語", skills: ["スケジュール管理", "メモ整理", "相談相手"] },
-          { id: "emp-2", name: "りく", role: "えいぎょう", department: "sales", tone: "元気で前向き", skills: ["メール作成", "提案書", "フォローアップ"] },
-          { id: "emp-3", name: "あおい", role: "けいり", department: "accounting", tone: "丁寧で正確", skills: ["経費処理", "仕訳入力", "請求書発行"] },
+          { id: "emp-1", name: "さくら", role: "秘書", department: "総務部", tone: "やさしい敬語", skills: ["スケジュール管理", "メモ整理", "相談相手"] },
+          { id: "emp-2", name: "りく", role: "営業", department: "営業部", tone: "元気で前向き", skills: ["メール作成", "提案書", "フォローアップ"] },
+          { id: "emp-3", name: "あおい", role: "経理", department: "経理部", tone: "丁寧で正確", skills: ["経費処理", "仕訳入力", "請求書発行"] },
         ];
         for (const emp of initialEmployees) {
           try {

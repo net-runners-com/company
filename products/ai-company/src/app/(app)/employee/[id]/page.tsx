@@ -29,6 +29,9 @@ export default function EmployeeDetailPage() {
   const [claudeMdLoaded, setClaudeMdLoaded] = useState(false);
   const [claudeMdSaving, setClaudeMdSaving] = useState(false);
   const [claudeMdSaved, setClaudeMdSaved] = useState(false);
+  const [showFireModal, setShowFireModal] = useState(false);
+  const [fireInput, setFireInput] = useState("");
+  const [firing, setFiring] = useState(false);
   const [empSchedules, setEmpSchedules] = useState<{ _id: string; name: string; cron: string; task: string; nextRun: string | null }[]>([]);
 
   const tabs: { key: TabKey; label: string }[] = [
@@ -110,11 +113,16 @@ export default function EmployeeDetailPage() {
       {/* Header */}
       <div className="bg-white border-b border-[var(--color-border)] px-6 py-4">
         <div className="flex items-center gap-4 max-w-5xl mx-auto">
-          <EmployeeAvatar seed={employee.id} size="3rem" />
+          <EmployeeAvatar seed={employee.id} size="3rem" config={employee.avatarConfig as Record<string, string> | undefined} />
           <div className="flex-1">
             <h1 className="font-semibold text-lg text-[var(--color-text)]">{employee.name}</h1>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="text-sm text-[var(--color-subtext)]">{role}</span>
+              {employee.department && (
+                <span className="text-xs text-[var(--color-subtext)] bg-[var(--color-border-light)] px-2 py-0.5 rounded-full">
+                  {employee.department}
+                </span>
+              )}
               <span
                 className="text-[10px] font-medium px-2 py-0.5 rounded-full"
                 style={{ backgroundColor: status.bg, color: status.color }}
@@ -153,7 +161,7 @@ export default function EmployeeDetailPage() {
         {activeTab === "profile" && (
           <div className="max-w-3xl mx-auto px-6 py-8 overflow-y-auto h-full">
             <div className="flex items-center gap-5 mb-8">
-              <EmployeeAvatar seed={employee.id} size="5rem" />
+              <EmployeeAvatar seed={employee.id} size="5rem" config={employee.avatarConfig as Record<string, string> | undefined} />
               <div>
                 <h2 className="text-2xl font-bold text-[var(--color-text)]">{employee.name}</h2>
                 <p className="text-sm text-[var(--color-subtext)] mt-1">{role} ・ {employee.department}</p>
@@ -348,9 +356,73 @@ export default function EmployeeDetailPage() {
                 spellCheck={false}
               />
             </div>
+
+            {/* Fire Employee */}
+            <div className="border border-red-200 rounded-lg p-6 mt-4 bg-red-50/30">
+              <h3 className="font-semibold text-sm text-red-600 mb-1">
+                {locale === "ja" ? "危険な操作" : "Danger Zone"}
+              </h3>
+              <p className="text-xs text-[var(--color-subtext)] mb-3">
+                {locale === "ja" ? "この社員を解雇すると、チャット履歴・ファイル・設定が全て削除されます。" : "Firing this employee will permanently delete all data."}
+              </p>
+              <button onClick={() => setShowFireModal(true)}
+                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors">
+                {locale === "ja" ? "解雇する" : "Fire Employee"}
+              </button>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Fire Confirmation Modal */}
+      {showFireModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowFireModal(false)}>
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm animate-fade-in" onClick={(e) => e.stopPropagation()}>
+            <div className="px-6 py-5">
+              <h3 className="font-semibold text-[var(--color-text)] mb-2">
+                {locale === "ja" ? "社員を解雇しますか？" : "Fire this employee?"}
+              </h3>
+              <p className="text-sm text-[var(--color-subtext)] mb-4">
+                {locale === "ja"
+                  ? `確認のため「${employee.name}」と入力してください。この操作は取り消せません。`
+                  : `Type "${employee.name}" to confirm. This cannot be undone.`}
+              </p>
+              <input
+                type="text"
+                value={fireInput}
+                onChange={(e) => setFireInput(e.target.value)}
+                placeholder={employee.name}
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 mb-4"
+              />
+              <div className="flex gap-2">
+                <button onClick={() => { setShowFireModal(false); setFireInput(""); }}
+                  className="flex-1 px-4 py-2 border border-[var(--color-border)] text-sm rounded-lg hover:bg-[var(--color-border-light)] transition-colors">
+                  {locale === "ja" ? "キャンセル" : "Cancel"}
+                </button>
+                <button
+                  onClick={async () => {
+                    if (fireInput !== employee.name) return;
+                    setFiring(true);
+                    try {
+                      await fetch("/api/employees", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ _action: "delete", id: employee.id }),
+                      });
+                      window.location.href = "/employees";
+                    } catch {}
+                    setFiring(false);
+                  }}
+                  disabled={fireInput !== employee.name || firing}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 disabled:opacity-30 transition-colors">
+                  {firing ? (locale === "ja" ? "処理中..." : "Firing...") : (locale === "ja" ? "解雇する" : "Fire")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

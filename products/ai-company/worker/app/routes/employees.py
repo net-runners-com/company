@@ -31,6 +31,7 @@ async def upsert_employee(payload: dict):
         "skills": payload.get("skills", existing.get("skills", [])),
         "systemPrompt": payload.get("systemPrompt", existing.get("systemPrompt", "")),
         "sessionId": existing.get("sessionId"),  # セッションは保持
+        "avatarConfig": payload.get("avatarConfig", existing.get("avatarConfig")),
         "updatedAt": _time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
     save_employees(employees)
@@ -108,3 +109,31 @@ async def get_employee_info(emp_id: str):
     if not emp:
         return {"error": "Not found"}
     return emp
+
+
+@router.delete("/employees/{emp_id}")
+async def delete_employee(emp_id: str):
+    """社員を削除（解雇）"""
+    from app.db import _get_db
+
+    conn = _get_db()
+    try:
+        # 社員データ削除
+        conn.execute("DELETE FROM employees WHERE id = ?", [emp_id])
+        # チャット履歴削除
+        conn.execute("DELETE FROM chat_messages WHERE emp_id = ?", [emp_id])
+        conn.execute("DELETE FROM chat_threads WHERE emp_id = ?", [emp_id])
+        # タスク削除
+        conn.execute("DELETE FROM data_store WHERE collection = ?", [f"tasks_{emp_id}"])
+        # スケジュール削除
+        rows = conn.execute("SELECT id, data FROM data_store WHERE collection = 'schedules'").fetchall()
+        import json
+        for r in rows:
+            d = json.loads(r["data"])
+            if d.get("empId") == emp_id:
+                conn.execute("DELETE FROM data_store WHERE id = ? AND collection = 'schedules'", [r["id"]])
+        conn.commit()
+    finally:
+        conn.close()
+
+    return {"status": "deleted", "id": emp_id}

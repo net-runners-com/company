@@ -18,20 +18,8 @@ function getGreeting(t: { night: string; morning: string; afternoon: string; eve
   return t.evening;
 }
 
-const deptNames: Record<string, { ja: string; en: string; color: string; descJa: string; descEn: string }> = {
-  "general-affairs": { ja: "総務部", en: "General Affairs", color: "#8b5cf6", descJa: "スケジュール管理・秘書業務・社内調整を担当", descEn: "Scheduling, secretary duties, internal coordination" },
-  marketing:         { ja: "マーケティング部", en: "Marketing", color: "#ec4899", descJa: "記事執筆・SNS運用・コンテンツ企画を推進", descEn: "Content creation, SNS management, marketing strategy" },
-  research:          { ja: "リサーチ部", en: "Research", color: "#06b6d4", descJa: "市場調査・競合分析・データ収集を実施", descEn: "Market research, competitive analysis, data collection" },
-  sales:             { ja: "営業部", en: "Sales", color: "#f59e0b", descJa: "リード管理・提案書作成・顧客フォローアップ", descEn: "Lead management, proposals, customer follow-up" },
-  dev:               { ja: "開発部", en: "Development", color: "#10b981", descJa: "インフラ構築・CI/CD・システム監視を運用", descEn: "Infrastructure, CI/CD, system monitoring" },
-  accounting:        { ja: "経理部", en: "Accounting", color: "#f97316", descJa: "経費処理・仕訳入力・請求書発行を管理", descEn: "Expense processing, bookkeeping, invoicing" },
-  pm:                { ja: "PM部", en: "PM", color: "#3b82f6", descJa: "要件定義・進捗管理・プロジェクト推進", descEn: "Requirements, progress tracking, project management" },
-  strategy:          { ja: "戦略部", en: "Strategy", color: "#14b8a6", descJa: "市場分析・KPI設計・事業計画を策定", descEn: "Market analysis, KPI design, business planning" },
-  hr:                { ja: "人事部", en: "HR", color: "#a855f7", descJa: "採用計画・面接対応・オンボーディング支援", descEn: "Recruitment, interviews, onboarding support" },
-  engineering:       { ja: "エンジニアリング部", en: "Engineering", color: "#22c55e", descJa: "フロントエンド・バックエンド・API設計開発", descEn: "Frontend, backend, API development" },
-  newbiz:            { ja: "新規事業部", en: "New Business", color: "#ef4444", descJa: "ピッチ資料・MVP検証・顧客ヒアリング", descEn: "Pitch decks, MVP validation, customer interviews" },
-  finance:           { ja: "財務部", en: "Finance", color: "#64748b", descJa: "財務分析・資金繰り・予算管理を統括", descEn: "Financial analysis, cash flow, budget management" },
-};
+const DEPT_COLORS = ["#8b5cf6", "#ec4899", "#06b6d4", "#f59e0b", "#10b981", "#f97316", "#3b82f6", "#14b8a6", "#a855f7", "#22c55e", "#ef4444", "#64748b"];
+const getDeptColor = (dept: string) => DEPT_COLORS[Math.abs([...dept].reduce((a, c) => a + c.charCodeAt(0), 0)) % DEPT_COLORS.length];
 
 export default function HomePage() {
   const { employees, loading, fetch } = useEmployeesStore();
@@ -99,8 +87,8 @@ export default function HomePage() {
       {deptGroups.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {deptGroups.map(({ deptId, members }) => {
-            const dept = deptNames[deptId] || { ja: deptId, en: deptId, color: "#6b7280" };
-            const deptLabel = locale === "ja" ? dept.ja : dept.en;
+            const deptColor = getDeptColor(deptId);
+            const deptLabel = deptId;
             const activeCount = members.filter((m) => m.status === "active").length;
 
             return (
@@ -112,7 +100,7 @@ export default function HomePage() {
                 {/* Dept Header */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: dept.color }} />
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: deptColor }} />
                     <h3 className="font-semibold text-sm text-[var(--color-text)]">{deptLabel}</h3>
                   </div>
                   <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-green-50 text-green-600">
@@ -122,7 +110,7 @@ export default function HomePage() {
 
                 {/* Description */}
                 <p className="text-[11px] text-[var(--color-subtext)] mb-4 line-clamp-2 leading-relaxed">
-                  {locale === "ja" ? dept.descJa : dept.descEn}
+                  {members.map((m) => m.role).filter((v, i, a) => a.indexOf(v) === i).join(" / ")}
                 </p>
 
                 {/* Avatar row */}
@@ -132,7 +120,7 @@ export default function HomePage() {
                       const st = getStatusConfig(m.status, t);
                       return (
                         <div key={m.id} className="relative" title={m.name}>
-                          <EmployeeAvatar seed={m.id} size="2rem" className="border-2 border-white rounded-full" />
+                          <EmployeeAvatar seed={m.id} size="2rem" className="border-2 border-white rounded-full" config={m.avatarConfig as Record<string, string> | undefined} />
                           <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white" style={{ backgroundColor: st.color }} />
                         </div>
                       );
@@ -170,8 +158,8 @@ export default function HomePage() {
       {expandedDept && typeof document !== "undefined" && createPortal((() => {
         const group = deptGroups.find((g) => g.deptId === expandedDept);
         if (!group) return null;
-        const dept = deptNames[expandedDept] || { ja: expandedDept, en: expandedDept, color: "#6b7280", descJa: "", descEn: "" };
-        const deptLabel = locale === "ja" ? dept.ja : dept.en;
+        const deptColor = getDeptColor(expandedDept);
+        const deptLabel = expandedDept;
 
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setExpandedDept(null)}>
@@ -180,7 +168,7 @@ export default function HomePage() {
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
                 <div className="flex items-center gap-3">
-                  <div className="w-4 h-4 rounded-full" style={{ backgroundColor: dept.color }} />
+                  <div className="w-4 h-4 rounded-full" style={{ backgroundColor: deptColor }} />
                   <div>
                     <h3 className="font-semibold text-[var(--color-text)]">{deptLabel}</h3>
                     <p className="text-xs text-[var(--color-subtext)]">{group.members.length} {locale === "ja" ? "名" : "members"}</p>
@@ -200,7 +188,7 @@ export default function HomePage() {
                   return (
                     <Link key={m.id} href={`/employee/${m.id}`} onClick={() => setExpandedDept(null)}
                       className="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-sm transition-all">
-                      <EmployeeAvatar seed={m.id} size="2.5rem" className="shrink-0" />
+                      <EmployeeAvatar seed={m.id} size="2.5rem" className="shrink-0" config={m.avatarConfig as Record<string, string> | undefined} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
                           <span className="font-medium text-sm text-[var(--color-text)]">{m.name}</span>

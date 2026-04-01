@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useEmployeesStore } from "@/stores/employees";
 import { useI18n } from "@/lib/i18n";
+import { AvatarPicker } from "@/components/avatar-picker";
+import type { AvatarFullConfig } from "react-nice-avatar";
 
 const deptLabels: Record<string, { ja: string; en: string }> = {
   "general-affairs": { ja: "総務部", en: "General Affairs" },
@@ -33,15 +35,19 @@ export default function CreateEmployeePage() {
     skills: [] as string[],
   });
   const [skillInput, setSkillInput] = useState("");
+  const [avatarConfig, setAvatarConfig] = useState<Partial<AvatarFullConfig> | null>(null);
   const [newDept, setNewDept] = useState(false);
   const [customDeptId, setCustomDeptId] = useState("");
   const [customDeptName, setCustomDeptName] = useState("");
 
   useEffect(() => { fetchEmployees(); }, [fetchEmployees]);
 
-  // 既存社員から部署を収集 + プリセット部署をマージ
-  const existingDepts = new Set(employees.map((e) => e.department).filter(Boolean));
-  const allDeptIds = new Set([...Object.keys(deptLabels), ...existingDepts]);
+  // 既存社員から部署を収集 + プリセット部署をマージ（重複排除）
+  const presetKeys = new Set(Object.keys(deptLabels));
+  const presetLabelsSet = new Set(Object.values(deptLabels).flatMap(v => [v.ja, v.en]));
+  const existingDepts = [...new Set(employees.map((e) => e.department).filter(Boolean))]
+    .filter(d => !presetLabelsSet.has(d) && !presetKeys.has(d));
+  const allDeptIds = [...Object.keys(deptLabels), ...existingDepts];
 
   const getDeptLabel = (id: string) => {
     const preset = deptLabels[id];
@@ -65,7 +71,8 @@ export default function CreateEmployeePage() {
       tone: form.tone,
       skills: form.skills,
       greeting: `${form.name}です。よろしくお願いします！`,
-    });
+      avatarConfig: avatarConfig || undefined,
+    } as Record<string, unknown>);
     router.push("/employees");
   };
 
@@ -115,9 +122,10 @@ export default function CreateEmployeePage() {
                         className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
                       >
                         <option value="">{locale === "ja" ? "部署を選択" : "Select department"}</option>
-                        {[...allDeptIds].map((id) => (
-                          <option key={id} value={id}>{getDeptLabel(id)}</option>
-                        ))}
+                        {allDeptIds.map((id) => {
+                          const label = getDeptLabel(id);
+                          return <option key={id} value={label}>{label}</option>;
+                        })}
                         <option value="__new__">{locale === "ja" ? "＋ 新しい部署を作成" : "+ Create new department"}</option>
                       </select>
                     </>
@@ -199,6 +207,24 @@ export default function CreateEmployeePage() {
             </div>
           )}
 
+          {step === 2 && (
+            <div className="animate-fade-in">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold text-[var(--color-text)]">
+                  {locale === "ja" ? "アイコンを設定" : "Choose Avatar"}
+                </h2>
+                <p className="text-sm text-[var(--color-subtext)] mt-1">
+                  {locale === "ja" ? "社員のアイコンをカスタマイズできます" : "Customize your employee's avatar"}
+                </p>
+              </div>
+              <AvatarPicker
+                seed={form.name || "default"}
+                initialConfig={avatarConfig || undefined}
+                onSelect={(c) => setAvatarConfig(c)}
+              />
+            </div>
+          )}
+
           <div className="flex gap-3 mt-8">
             {step > 0 && (
               <button onClick={() => setStep(step - 1)}
@@ -206,9 +232,9 @@ export default function CreateEmployeePage() {
                 {t.common.back}
               </button>
             )}
-            {step < 1 ? (
+            {step < 2 ? (
               <button onClick={() => setStep(step + 1)}
-                disabled={!form.name || !form.role || (!form.department && !customDeptId)}
+                disabled={step === 0 && (!form.name || !form.role || (!form.department && !customDeptId))}
                 className="flex-1 px-4 py-2 text-sm font-medium text-white bg-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                 {t.common.continue}
               </button>

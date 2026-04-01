@@ -25,6 +25,8 @@ export function ChatView({ employee }: { employee: Employee }) {
   const empThreads = threads[employee.id] || [];
   const currentThreadId = activeThread[employee.id] || "default";
   const chatMessages = messages[`${employee.id}:${currentThreadId}`] ?? [];
+  const [showReloadBanner, setShowReloadBanner] = useState(false);
+  const prevLoadingRef = useRef(loading);
 
   useEffect(() => {
     fetchThreads(employee.id);
@@ -42,6 +44,17 @@ export function ChatView({ employee }: { employee: Employee }) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
+
+  // ストリーム完了時にカスタムページの作成/削除/修正を検知
+  useEffect(() => {
+    if (prevLoadingRef.current && !loading && chatMessages.length > 0) {
+      const last = chatMessages[chatMessages.length - 1];
+      if (last?.role === "assistant" && /ページ.*作成|ページ.*生成|ページ.*削除|ページ.*修正|ページ.*更新|page.*creat|page.*delet|page.*updat/i.test(last.content)) {
+        setShowReloadBanner(true);
+      }
+    }
+    prevLoadingRef.current = loading;
+  }, [loading, chatMessages]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -119,7 +132,7 @@ export function ChatView({ employee }: { employee: Employee }) {
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
         {chatMessages.length === 0 && (
           <div className="text-center text-[var(--color-subtext)] text-sm py-12">
-            <EmployeeAvatar seed={employee.id} size="3rem" className="mx-auto mb-3" />
+            <EmployeeAvatar seed={employee.id} size="3rem" className="mx-auto mb-3" config={employee.avatarConfig as Record<string, string> | undefined} />
             <p>{t.employee.startConversation.replace("{name}", employee.name)}</p>
           </div>
         )}
@@ -135,7 +148,7 @@ export function ChatView({ employee }: { employee: Employee }) {
               }`}
             >
               {msg.role === "assistant" && (
-                <EmployeeAvatar seed={employee.id} size="1.75rem" className="shrink-0" />
+                <EmployeeAvatar seed={employee.id} size="1.75rem" className="shrink-0" config={employee.avatarConfig as Record<string, string> | undefined} />
               )}
               <div
                 className={`max-w-[75%] px-3.5 py-2.5 text-sm leading-relaxed ${
@@ -270,7 +283,7 @@ export function ChatView({ employee }: { employee: Employee }) {
         })}
         {loading && (chatMessages.length === 0 || chatMessages[chatMessages.length - 1]?.content === "") && (
           <div className="flex items-end gap-2">
-            <EmployeeAvatar seed={employee.id} size="1.75rem" className="shrink-0" />
+            <EmployeeAvatar seed={employee.id} size="1.75rem" className="shrink-0" config={employee.avatarConfig as Record<string, string> | undefined} />
             <div className="bg-white border border-[var(--color-border)] rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1">
               <span className="w-1.5 h-1.5 bg-[var(--color-subtext)] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
               <span className="w-1.5 h-1.5 bg-[var(--color-subtext)] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -303,6 +316,21 @@ export function ChatView({ employee }: { employee: Employee }) {
             onAllowPermanent={() => respondPermission(employee.id, "allowPermanent")}
             onDeny={() => respondPermission(employee.id, "deny")}
           />
+        </div>
+      )}
+
+      {/* Reload Banner */}
+      {showReloadBanner && (
+        <div className="px-6 py-2 bg-[var(--color-primary-light)] border-t border-[var(--color-primary)] flex items-center justify-between">
+          <span className="text-sm text-[var(--color-primary)] font-medium">
+            {locale === "ja" ? "新しいページが作成されました。リロードするとサイドバーに表示されます。" : "A new page was created. Reload to see it in the sidebar."}
+          </span>
+          <button
+            onClick={() => { window.location.reload(); }}
+            className="px-3 py-1 text-xs font-medium bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
+          >
+            {locale === "ja" ? "リロード" : "Reload"}
+          </button>
         </div>
       )}
 

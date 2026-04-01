@@ -24,7 +24,7 @@ export function EmployeeCard({ employee, taskCount = 0 }: Props) {
       <div className="p-5 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-md transition-all bg-white">
         {/* Header: Avatar + Name + Status */}
         <div className="flex items-start gap-4 mb-4">
-          <EmployeeAvatar seed={employee.id} size="3.5rem" className="shrink-0" />
+          <EmployeeAvatar seed={employee.id} size="3.5rem" className="shrink-0" config={employee.avatarConfig as Record<string, string> | undefined} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-semibold text-[var(--color-text)] truncate">{employee.name}</h3>

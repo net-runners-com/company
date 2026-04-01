@@ -8,20 +8,8 @@ import { EmployeeAvatar } from "@/components/employee-avatar";
 import Link from "next/link";
 import { SkeletonEmployeeGrid } from "@/components/skeleton";
 
-const deptNames: Record<string, { ja: string; en: string; color: string }> = {
-  "general-affairs": { ja: "総務部", en: "General Affairs", color: "#8b5cf6" },
-  marketing:         { ja: "マーケティング部", en: "Marketing", color: "#ec4899" },
-  research:          { ja: "リサーチ部", en: "Research", color: "#06b6d4" },
-  sales:             { ja: "営業部", en: "Sales", color: "#f59e0b" },
-  dev:               { ja: "開発部", en: "Development", color: "#10b981" },
-  accounting:        { ja: "経理部", en: "Accounting", color: "#f97316" },
-  pm:                { ja: "PM部", en: "PM", color: "#3b82f6" },
-  strategy:          { ja: "戦略部", en: "Strategy", color: "#14b8a6" },
-  hr:                { ja: "人事部", en: "HR", color: "#a855f7" },
-  engineering:       { ja: "エンジニアリング部", en: "Engineering", color: "#22c55e" },
-  newbiz:            { ja: "新規事業部", en: "New Business", color: "#ef4444" },
-  finance:           { ja: "財務部", en: "Finance", color: "#64748b" },
-};
+const DEPT_COLORS = ["#8b5cf6", "#ec4899", "#06b6d4", "#f59e0b", "#10b981", "#f97316", "#3b82f6", "#14b8a6", "#a855f7", "#22c55e", "#ef4444", "#64748b"];
+const getDeptColor = (dept: string) => DEPT_COLORS[Math.abs([...dept].reduce((a, c) => a + c.charCodeAt(0), 0)) % DEPT_COLORS.length];
 
 export default function EmployeesPage() {
   const { employees, loading, fetch } = useEmployeesStore();
@@ -33,8 +21,7 @@ export default function EmployeesPage() {
   const filtered = employees.filter((emp) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
-    const dept = deptNames[emp.department];
-    const deptLabel = dept ? (locale === "ja" ? dept.ja : dept.en) : emp.department;
+    const deptLabel = emp.department || "other";
     return (
       emp.name.toLowerCase().includes(q) ||
       emp.role.toLowerCase().includes(q) ||
@@ -95,14 +82,14 @@ export default function EmployeesPage() {
       {/* Department Cards */}
       <div className="space-y-6">
         {deptGroups.map(({ deptId, members }) => {
-          const dept = deptNames[deptId] || { ja: deptId, en: deptId, color: "#6b7280" };
-          const deptLabel = locale === "ja" ? dept.ja : dept.en;
+          const deptLabel = deptId;
+          const deptColor = getDeptColor(deptId);
 
           return (
             <div key={deptId} className="bg-white rounded-xl border border-[var(--color-border)] overflow-hidden">
               {/* Department Header */}
               <div className="flex items-center gap-3 px-5 py-3 border-b border-[var(--color-border)] bg-[var(--color-bg)]">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: dept.color }} />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: deptColor }} />
                 <h2 className="text-sm font-semibold text-[var(--color-text)]">{deptLabel}</h2>
                 <span className="text-[10px] font-medium px-1.5 py-0.5 bg-[var(--color-border-light)] text-[var(--color-subtext)] rounded-full">
                   {members.length}
@@ -121,7 +108,7 @@ export default function EmployeesPage() {
                       href={`/employee/${emp.id}`}
                       className="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-sm transition-all group"
                     >
-                      <EmployeeAvatar seed={emp.id} size="2.5rem" className="shrink-0" />
+                      <EmployeeAvatar seed={emp.id} size="2.5rem" className="shrink-0" config={emp.avatarConfig as Record<string, string> | undefined} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
                           <span className="font-medium text-sm text-[var(--color-text)] truncate">{emp.name}</span>

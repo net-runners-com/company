@@ -8,45 +8,112 @@ from pathlib import Path
 from app.db import _get_db
 from app.r2 import _r2_read
 
-EMPLOYEES_FILE = Path("/workspace/data/employees.json")
-
-# 部署ID → 部署ディレクトリのマッピング
-DEPT_WORKDIR: dict[str, str] = {
-    "general-affairs": "/workspace/company/back-office/general-affairs",
-    "accounting": "/workspace/company/back-office/accounting",
-    "marketing": "/workspace/company/front-office/marketing",
-    "sales": "/workspace/company/front-office/sales",
-    "newbiz": "/workspace/company/front-office/newbiz",
-    "dev": "/workspace/company/back-office/dev",
-    "engineering": "/workspace/company/back-office/engineering",
-    "pm": "/workspace/company/back-office/pm",
-    "research": "/workspace/company/back-office/research",
-    "hr": "/workspace/company/back-office/hr",
-    "finance": "/workspace/company/management/finance",
-    "strategy": "/workspace/company/management/strategy",
-}
-
-
 def load_employees() -> dict:
-    if EMPLOYEES_FILE.exists():
-        return json.loads(EMPLOYEES_FILE.read_text())
-    return {}
+    conn = _get_db()
+    try:
+        rows = conn.execute("SELECT id, data FROM employees").fetchall()
+        return {r["id"]: json.loads(r["data"]) for r in rows}
+    finally:
+        conn.close()
 
 
 def save_employees(data: dict):
-    EMPLOYEES_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+    conn = _get_db()
+    try:
+        for eid, emp in data.items():
+            conn.execute(
+                "INSERT OR REPLACE INTO employees (id, data, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
+                [eid, json.dumps(emp, ensure_ascii=False)])
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def save_employee(emp_id: str, emp: dict):
+    conn = _get_db()
+    try:
+        conn.execute(
+            "INSERT OR REPLACE INTO employees (id, data, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
+            [emp_id, json.dumps(emp, ensure_ascii=False)])
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def get_employee(emp_id: str) -> dict | None:
-    return load_employees().get(emp_id)
+    conn = _get_db()
+    try:
+        row = conn.execute("SELECT data FROM employees WHERE id = ?", [emp_id]).fetchone()
+        return json.loads(row["data"]) if row else None
+    finally:
+        conn.close()
+
+
+def _next_dept_id() -> str:
+    """次の部署フォルダID (dept-001, dept-002, ...)"""
+    base = Path("/workspace/company")
+    existing = sorted([d.name for d in base.iterdir() if d.is_dir() and d.name.startswith("dept-")])
+    if not existing:
+        return "dept-001"
+    last_num = int(existing[-1].split("-")[1])
+    return f"dept-{last_num + 1:03d}"
+
+
+def _next_emp_folder_id(dept_dir: Path) -> str:
+    """次の社員フォルダID (emp-001, emp-002, ...)"""
+    existing = sorted([d.name for d in dept_dir.iterdir() if d.is_dir() and d.name.startswith("emp-")])
+    if not existing:
+        return "emp-001"
+    last_num = int(existing[-1].split("-")[1])
+    return f"emp-{last_num + 1:03d}"
+
+
+def _get_or_create_dept_dir(department: str) -> Path:
+    """部署名に対応するフォルダを取得。なければ新規作成"""
+    base = Path("/workspace/company")
+    # 部署マッピングファイルで名前→フォルダID対応
+    mapping_file = base / ".dept_mapping.json"
+    if mapping_file.exists():
+        mapping = json.loads(mapping_file.read_text())
+    else:
+        mapping = {}
+
+    if department in mapping:
+        dept_dir = base / mapping[department]
+        dept_dir.mkdir(parents=True, exist_ok=True)
+        return dept_dir
+
+    # 新規部署
+    folder_id = _next_dept_id()
+    mapping[department] = folder_id
+    mapping_file.write_text(json.dumps(mapping, indent=2, ensure_ascii=False))
+    dept_dir = base / folder_id
+    dept_dir.mkdir(parents=True, exist_ok=True)
+    return dept_dir
 
 
 def _get_employee_workdir(emp: dict) -> str:
-    """社員の個別作業ディレクトリ: {部署パス}/{社員名}"""
-    dept = emp.get("department", "")
-    name = emp.get("name", emp.get("id", "unknown"))
-    base = DEPT_WORKDIR.get(dept, "/workspace/company")
-    workdir = f"{base}/{name}"
+    """社員の個別作業ディレクトリ: /workspace/company/dept-XXX/emp-YYY"""
+    dept = emp.get("department", "other")
+    emp_id = emp.get("id", "unknown")
+
+    dept_dir = _get_or_create_dept_dir(dept)
+
+    # 社員マッピング
+    emp_mapping_file = dept_dir / ".emp_mapping.json"
+    if emp_mapping_file.exists():
+        emp_mapping = json.loads(emp_mapping_file.read_text())
+    else:
+        emp_mapping = {}
+
+    if emp_id in emp_mapping:
+        workdir = str(dept_dir / emp_mapping[emp_id])
+    else:
+        folder_id = _next_emp_folder_id(dept_dir)
+        emp_mapping[emp_id] = folder_id
+        emp_mapping_file.write_text(json.dumps(emp_mapping, indent=2, ensure_ascii=False))
+        workdir = str(dept_dir / folder_id)
+
     Path(workdir).mkdir(parents=True, exist_ok=True)
     return workdir
 
@@ -60,10 +127,8 @@ def _ensure_mcp_symlink(workdir: str):
 
 
 def _ensure_employees_file():
-    """起動時にemployees.jsonが存在しなければ空で作成"""
-    if not EMPLOYEES_FILE.exists():
-        save_employees({})
-        print("[startup] Created empty employees.json")
+    """後方互換用（何もしない。SQLiteは_init_dbで初期化済み）"""
+    pass
 
 
 def _build_roster(exclude_id: str = "") -> str:
@@ -149,7 +214,12 @@ Nango外部API: POST /nango/proxy {{"method":"GET/POST","endpoint":"APIパス","
 
 メール下書き: POST /data/emails {{"to":"","subject":"","body":"","status":"draft"}} 送信後PUT /data/emails/{{id}} {{"status":"sent"}}
 
-ページ: POST /pages/generate {{"prompt":"要望"}} → slug返却。DELETE /pages/{{slug}} で削除。作成後は必ずwidget参照先コレクションにデータ投入。
+ページ（HTML+Tailwind自動生成）:
+ 新規作成: POST /pages/generate {{"prompt":"要望","slug":"英数ハイフン","title":"タイトル"}} → HTML生成&保存。slug/titleは省略可（自動生成）。
+ 修正: POST /pages/{{slug}}/update {{"prompt":"修正指示"}} → 既存HTMLを修正指示に基づき更新。ページを削除せず修正できる。
+ 削除: DELETE /pages/{{slug}}
+ 一覧: GET /pages/list
+ ※作成/修正/削除後は「ページを作成/修正/削除しました。サイドバーに反映するにはリロードしてください」と必ず伝えること。
 
 データストア: POST /data/{{col}} {{データ}} | GET /data/{{col}}(?q=&limit=) | GET /data/{{col}}/{{id}} | PUT /data/{{col}}/{{id}} {{更新}} | DELETE /data/{{col}}/{{id}} | GET /data (一覧)
 

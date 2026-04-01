@@ -14,6 +14,12 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+
+    if (body._action === "delete" && body.id) {
+      const res = await fetch(`${WORKER_URL}/employees/${body.id}`, { method: "DELETE" });
+      return Response.json(await res.json());
+    }
+
     const res = await fetch(`${WORKER_URL}/employees`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
