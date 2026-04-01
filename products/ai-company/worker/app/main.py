@@ -5,7 +5,6 @@ import subprocess
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from apscheduler.triggers.cron import CronTrigger
 
 from app.plugin_loader import load_all_plugins
 from app.db import _init_db
@@ -23,7 +22,7 @@ from app.routes.pages import router as pages_router
 from app.routes.nango import router as nango_router
 from app.routes.connectors import router as connectors_router
 from app.routes.schedules import router as schedules_router, _scheduler, _load_schedules_to_scheduler
-from app.routes.news import router as news_router, _fetch_news
+from app.routes.news import router as news_router
 from app.routes.user import router as user_router
 from app.routes.share import router as share_router
 from app.routes.line import router as line_router
@@ -72,16 +71,6 @@ async def start_scheduler():
     _scheduler.start()
     print("[scheduler] Started")
 
-
-@app.on_event("startup")
-async def start_news_cron():
-    _scheduler.add_job(
-        lambda: asyncio.ensure_future(_fetch_news()),
-        CronTrigger(hour=7, minute=0, timezone="Asia/Tokyo"),
-        id="news_auto_update",
-        replace_existing=True,
-    )
-    print("[news] Scheduled daily at 7:00 JST")
 
 
 async def _cleanup_zombie_chrome():

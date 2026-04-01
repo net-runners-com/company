@@ -1,6 +1,7 @@
 """APScheduler — scheduled task management."""
 
 import asyncio
+import importlib
 import json
 import uuid
 import time as _time
@@ -19,6 +20,12 @@ from app.routes.chat import _create_thread, _append_chat_log
 router = APIRouter()
 
 _scheduler = AsyncIOScheduler(timezone="Asia/Tokyo")
+
+# システムジョブ: handler は "module:function" 形式
+# 起動時にDBになければ自動シード
+SYSTEM_JOBS = [
+    {"id": "news_auto_update", "name": "ニュース自動更新", "cron": "0 7 * * *", "type": "system", "handler": "app.routes.news:_fetch_news"},
+]
 
 
 def _run_scheduled_task(schedule_id: str, emp_id: str, task: str, name: str):
@@ -62,40 +69,56 @@ def _run_scheduled_task(schedule_id: str, emp_id: str, task: str, name: str):
         loop.run_until_complete(_exec())
 
 
-def _load_schedules_to_scheduler():
-    """SQLiteからスケジュールを読み込んでAPSchedulerに登録"""
-    conn = _get_db()
+def _run_system_job(handler_path: str, name: str):
+    """システムジョブを実行（handler_path = "module:function"）"""
     try:
-        rows = conn.execute("SELECT id, data FROM data_store WHERE collection = 'schedules'").fetchall()
-    finally:
-        conn.close()
+        mod_path, func_name = handler_path.rsplit(":", 1)
+        mod = importlib.import_module(mod_path)
+        func = getattr(mod, func_name)
+        result = func()
+        if asyncio.iscoroutine(result):
+            asyncio.ensure_future(result)
+        print(f"[scheduler] System job done: {name}")
+    except Exception as e:
+        print(f"[scheduler] System job error: {name} — {e}")
 
-    # 既存ジョブをクリア（schedules_プレフィックスのもの）
-    for job in _scheduler.get_jobs():
-        if job.id.startswith("sched_"):
-            _scheduler.remove_job(job.id)
 
-    for row in rows:
-        sched = json.loads(row["data"])
-        cron = sched.get("cron", "")
-        emp_id = sched.get("empId", "")
-        task = sched.get("task", "")
-        name = sched.get("name", "")
-        sched_id = row["id"]
+def _register_job(sched_id: str, sched: dict):
+    """1件のスケジュールをAPSchedulerに登録"""
+    cron = sched.get("cron", "")
+    name = sched.get("name", "")
+    job_type = sched.get("type", "employee")
 
-        if not cron or not emp_id or not task:
-            continue
+    if not cron:
+        return
 
-        try:
-            parts = cron.split()
-            trigger = CronTrigger(
-                minute=parts[0] if len(parts) > 0 else "*",
-                hour=parts[1] if len(parts) > 1 else "*",
-                day=parts[2] if len(parts) > 2 else "*",
-                month=parts[3] if len(parts) > 3 else "*",
-                day_of_week=parts[4] if len(parts) > 4 else "*",
-                timezone="Asia/Tokyo",
+    try:
+        parts = cron.split()
+        trigger = CronTrigger(
+            minute=parts[0] if len(parts) > 0 else "*",
+            hour=parts[1] if len(parts) > 1 else "*",
+            day=parts[2] if len(parts) > 2 else "*",
+            month=parts[3] if len(parts) > 3 else "*",
+            day_of_week=parts[4] if len(parts) > 4 else "*",
+            timezone="Asia/Tokyo",
+        )
+
+        if job_type == "system":
+            handler = sched.get("handler", "")
+            if not handler:
+                return
+            _scheduler.add_job(
+                _run_system_job,
+                trigger=trigger,
+                id=f"sched_{sched_id}",
+                args=[handler, name],
+                replace_existing=True,
             )
+        else:
+            emp_id = sched.get("empId", "")
+            task = sched.get("task", "")
+            if not emp_id or not task:
+                return
             _scheduler.add_job(
                 _run_scheduled_task,
                 trigger=trigger,
@@ -103,36 +126,85 @@ def _load_schedules_to_scheduler():
                 args=[sched_id, emp_id, task, name],
                 replace_existing=True,
             )
-            print(f"[scheduler] Registered: {name} ({cron}) → {emp_id}")
-        except Exception as e:
-            print(f"[scheduler] Failed to register {name}: {e}")
+
+        print(f"[scheduler] Registered: {name} ({cron}) [{job_type}]")
+    except Exception as e:
+        print(f"[scheduler] Failed to register {name}: {e}")
+
+
+def _seed_system_jobs():
+    """システムジョブがDBになければシード"""
+    conn = _get_db()
+    try:
+        for job in SYSTEM_JOBS:
+            existing = conn.execute(
+                "SELECT id FROM data_store WHERE id = ? AND collection = 'schedules'",
+                [job["id"]]
+            ).fetchone()
+            if not existing:
+                conn.execute(
+                    "INSERT INTO data_store (id, collection, data) VALUES (?, ?, ?)",
+                    [job["id"], "schedules", json.dumps(job, ensure_ascii=False)]
+                )
+                print(f"[scheduler] Seeded system job: {job['name']}")
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def _load_schedules_to_scheduler():
+    """SQLiteからスケジュールを読み込んでAPSchedulerに登録"""
+    _seed_system_jobs()
+
+    conn = _get_db()
+    try:
+        rows = conn.execute("SELECT id, data FROM data_store WHERE collection = 'schedules'").fetchall()
+    finally:
+        conn.close()
+
+    # 既存ジョブをクリア（sched_プレフィックスのもの）
+    for job in _scheduler.get_jobs():
+        if job.id.startswith("sched_"):
+            _scheduler.remove_job(job.id)
+
+    for row in rows:
+        sched = json.loads(row["data"])
+        _register_job(row["id"], sched)
 
 
 @router.post("/schedules")
 async def create_schedule(request: Request):
-    """定期実行スケジュールを登録"""
+    """定期実行スケジュールを登録（社員タスク or システムジョブ）"""
     body = await request.json()
     name = body.get("name", "")
     cron = body.get("cron", "")
-    emp_id = body.get("empId", "")
-    task = body.get("task", "")
+    job_type = body.get("type", "employee")
+    sched_id = body.get("id", str(uuid.uuid4())[:8])
 
-    if not cron or not emp_id or not task:
-        return {"error": "cron, empId, task are required"}
+    if job_type == "system":
+        handler = body.get("handler", "")
+        if not cron or not handler:
+            return {"error": "cron and handler are required for system jobs"}
+        data = {"name": name, "cron": cron, "type": "system", "handler": handler}
+    else:
+        emp_id = body.get("empId", "")
+        task = body.get("task", "")
+        if not cron or not emp_id or not task:
+            return {"error": "cron, empId, task are required"}
+        data = {"name": name, "cron": cron, "empId": emp_id, "task": task}
 
-    sched_id = str(uuid.uuid4())[:8]
     conn = _get_db()
     try:
         conn.execute(
-            "INSERT INTO data_store (id, collection, data) VALUES (?, ?, ?)",
-            [sched_id, "schedules", json.dumps({"name": name, "cron": cron, "empId": emp_id, "task": task}, ensure_ascii=False)]
+            "INSERT OR REPLACE INTO data_store (id, collection, data) VALUES (?, ?, ?)",
+            [sched_id, "schedules", json.dumps(data, ensure_ascii=False)]
         )
         conn.commit()
     finally:
         conn.close()
 
-    _load_schedules_to_scheduler()
-    return {"id": sched_id, "name": name, "cron": cron, "status": "registered"}
+    _register_job(sched_id, data)
+    return {"id": sched_id, "name": name, "cron": cron, "type": job_type, "status": "registered"}
 
 
 @router.get("/schedules")
