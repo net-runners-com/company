@@ -9,19 +9,6 @@
       ],
       "env": {}
     },
-    "playwright": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@playwright/mcp",
-        "--caps",
-        "vision"
-      ],
-      "env": {
-        "DISPLAY": ":99"
-      }
-    },
     "nango": {
       "type": "stdio",
       "command": "npx",

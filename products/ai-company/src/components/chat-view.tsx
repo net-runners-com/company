@@ -342,8 +342,49 @@ export function ChatView({ employee }: { employee: Employee }) {
                 )}
                 {!msg.content.includes("[添付ファイル:") && msg.role === "assistant" ? (
                   <StreamingText content={msg.content} isStreaming={isCurrentlyStreaming}>
-                    {(displayed) => (
-                      <div className="prose prose-sm max-w-none overflow-hidden break-words prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-table:my-2 prose-pre:my-2 prose-pre:overflow-x-auto prose-code:text-[var(--color-primary)] prose-code:bg-[var(--color-primary-light)] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:break-all prose-pre:bg-[#1a1a2e] prose-pre:text-green-300 prose-pre:text-xs [&_pre_code]:text-inherit [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:rounded-none [&_pre_code]:break-normal prose-a:text-[var(--color-primary)] prose-blockquote:text-gray-400 prose-blockquote:border-gray-200 prose-blockquote:font-normal prose-blockquote:text-xs prose-blockquote:not-italic prose-blockquote:my-1">
+                    {(displayed) => {
+                      // [choices]...[/choices] ブロックを分離
+                      const choicesRegex = /\[choices(?::([^\]]*))?\]\n?([\s\S]*?)\[\/choices\]/g;
+                      const parts: { type: "text" | "choices"; content: string; question?: string; options?: string[] }[] = [];
+                      let lastIndex = 0;
+                      let match;
+                      while ((match = choicesRegex.exec(displayed)) !== null) {
+                        if (match.index > lastIndex) {
+                          parts.push({ type: "text", content: displayed.slice(lastIndex, match.index) });
+                        }
+                        const question = match[1]?.trim() || "";
+                        const options = match[2].trim().split("\n").map(l => l.replace(/^\d+[\.\)]\s*/, "").trim()).filter(Boolean);
+                        parts.push({ type: "choices", content: "", question, options });
+                        lastIndex = match.index + match[0].length;
+                      }
+                      if (lastIndex < displayed.length) {
+                        parts.push({ type: "text", content: displayed.slice(lastIndex) });
+                      }
+                      if (parts.length === 0) parts.push({ type: "text", content: displayed });
+
+                      const proseClass = "prose prose-sm max-w-none overflow-hidden break-words prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-table:my-2 prose-pre:my-2 prose-pre:overflow-x-auto prose-code:text-[var(--color-primary)] prose-code:bg-[var(--color-primary-light)] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:break-all prose-pre:bg-[#1a1a2e] prose-pre:text-green-300 prose-pre:text-xs [&_pre_code]:text-inherit [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:rounded-none [&_pre_code]:break-normal prose-a:text-[var(--color-primary)] prose-blockquote:text-gray-400 prose-blockquote:border-gray-200 prose-blockquote:font-normal prose-blockquote:text-xs prose-blockquote:not-italic prose-blockquote:my-1";
+
+                      return (<>
+                      {parts.map((part, pi) => part.type === "choices" ? (
+                        <div key={pi} className="my-2 rounded-lg border border-[var(--color-border)] overflow-hidden">
+                          {part.question && (
+                            <div className="px-4 py-2.5 bg-[var(--color-border-light)] text-sm font-medium text-[var(--color-text)]">
+                              {part.question}
+                            </div>
+                          )}
+                          {part.options?.map((opt, oi) => (
+                            <button
+                              key={oi}
+                              onClick={() => { sendMessage(employee.id, opt); }}
+                              className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-[var(--color-text)] border-t border-[var(--color-border)] hover:bg-[var(--color-primary-light)] transition-colors"
+                            >
+                              <span className="shrink-0 w-6 h-6 rounded-full bg-[var(--color-border-light)] flex items-center justify-center text-xs font-medium text-[var(--color-subtext)]">{oi + 1}</span>
+                              {opt}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                      <div key={pi} className={proseClass}>
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{
@@ -399,12 +440,14 @@ export function ChatView({ employee }: { employee: Employee }) {
                               return <code className={className} {...props}>{children}</code>;
                             },
                           }}
-                        >{displayed}</ReactMarkdown>
-                        {isCurrentlyStreaming && (
-                          <span className="inline-block w-0.5 h-4 bg-[var(--color-primary)] ml-0.5 animate-pulse" />
-                        )}
+                        >{part.content}</ReactMarkdown>
                       </div>
-                    )}
+                      ))}
+                      {isCurrentlyStreaming && (
+                        <span className="inline-block w-0.5 h-4 bg-[var(--color-primary)] ml-0.5 animate-pulse" />
+                      )}
+                      </>);
+                    }}
                   </StreamingText>
                 ) : null}
               </div>

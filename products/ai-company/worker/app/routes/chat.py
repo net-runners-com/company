@@ -126,12 +126,15 @@ async def _run_agent_background(run: AgentRun, sdk_input: str, emp_id: str,
     assistant_text_chunks: list[str] = []
     try:
         async with _browser_semaphore:
+            import os
+            env = {**os.environ, "DISPLAY": ":99"}
             proc = await asyncio.create_subprocess_exec(
                 "node", "/app/app/claude-agent.mjs",
                 stdin=asyncio.subprocess.PIPE,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
                 start_new_session=True,
+                env=env,
             )
             run.proc = proc
 
