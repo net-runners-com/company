@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useI18n } from "@/lib/i18n";
 import { EmployeeAvatar } from "@/components/employee-avatar";
 import { ChatView } from "@/components/chat-view";
@@ -73,6 +74,7 @@ export default function SecretaryPage() {
   const [newsUpdating, setNewsUpdating] = useState(false);
   const [expandedNews, setExpandedNews] = useState<number | null>(null);
   const [recentActivity, setRecentActivity] = useState<{ empId: string; empName: string; role: string; threadTitle: string; lastMessage: string; lastRole: string; timestamp: string }[]>([]);
+  const [inboxCache, setInboxCache] = useState<{ id: string; from: string; subject: string; snippet: string; date: string; unread: boolean }[] | null>(null);
 
   useEffect(() => {
     fetch("/api/employees").then(r => r.json()).then(d => { const s = d["emp-1"]; if (s) setSecretary({ ...s, id: "emp-1" }); }).catch(() => {});
@@ -287,7 +289,7 @@ export default function SecretaryPage() {
       )}
 
       {/* Inbox */}
-      {activeTab === "inbox" && <InboxTab locale={locale} />}
+      {activeTab === "inbox" && <InboxTab locale={locale} cache={inboxCache} setCache={setInboxCache} />}
 
       {/* News */}
       {activeTab === "news" && (
@@ -365,12 +367,60 @@ export default function SecretaryPage() {
   );
 }
 
-function InboxTab({ locale }: { locale: string }) {
-  const [emails, setEmails] = useState<{ id: string; from: string; subject: string; snippet: string; date: string; unread: boolean }[]>([]);
-  const [loading, setLoading] = useState(true);
+type EmailItem = { id: string; from: string; subject: string; snippet: string; date: string; unread: boolean };
+
+function InboxTab({ locale, cache, setCache }: { locale: string; cache: EmailItem[] | null; setCache: (v: EmailItem[]) => void }) {
+  const [emails, setEmails] = useState<EmailItem[]>(cache || []);
+  const [loading, setLoading] = useState(!cache);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEmail, setSelectedEmail] = useState<{ id: string; from: string; subject: string; date: string; body: string } | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+
+  const openEmail = async (item: typeof emails[0]) => {
+    setDetailLoading(true);
+    setSelectedEmail({ id: item.id, from: item.from, subject: item.subject, date: item.date, body: "" });
+    try {
+      const WORKER = "http://localhost:8000";
+      const res = await fetch(`${WORKER}/nango/proxy`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          method: "GET",
+          endpoint: `/gmail/v1/users/me/messages/${item.id}?format=full`,
+          connectionId: "__auto__",
+          provider: "google-mail",
+        }),
+      });
+      const detail = await res.json();
+      // メール本文を抽出（plain text優先、なければHTML）
+      const decodeBase64Url = (data: string) => {
+        const bin = atob(data.replace(/-/g, "+").replace(/_/g, "/"));
+        const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+        return new TextDecoder("utf-8").decode(bytes);
+      };
+      let body = "";
+      const parts = detail.payload?.parts || [];
+      const textPart = parts.find((p: { mimeType: string }) => p.mimeType === "text/plain");
+      const htmlPart = parts.find((p: { mimeType: string }) => p.mimeType === "text/html");
+      if (textPart?.body?.data) {
+        body = decodeBase64Url(textPart.body.data);
+      } else if (htmlPart?.body?.data) {
+        const html = decodeBase64Url(htmlPart.body.data);
+        body = html.replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/&#39;/g, "'").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/\s+/g, " ").trim();
+      } else if (detail.payload?.body?.data) {
+        body = decodeBase64Url(detail.payload.body.data);
+      } else {
+        body = detail.snippet || "";
+      }
+      setSelectedEmail(prev => prev ? { ...prev, body } : null);
+    } catch {
+      setSelectedEmail(prev => prev ? { ...prev, body: item.snippet } : null);
+    }
+    setDetailLoading(false);
+  };
 
   useEffect(() => {
+    if (cache) return; // キャッシュがあればスキップ
     (async () => {
       try {
         const WORKER = "http://localhost:8000";
@@ -414,6 +464,7 @@ function InboxTab({ locale }: { locale: string }) {
           });
         }
         setEmails(items);
+        setCache(items);
       } catch (e) {
         setError(locale === "ja" ? "Gmailに接続できませんでした。設定からGoogleアカウントを連携してください。" : "Could not connect to Gmail. Please link your Google account in settings.");
       }
@@ -445,20 +496,51 @@ function InboxTab({ locale }: { locale: string }) {
           {locale === "ja" ? "メールがありません" : "No emails"}
         </div>
       ) : emails.map(item => (
-        <div key={item.id} className={`flex items-start gap-4 px-5 py-4 hover:bg-[var(--color-border-light)] transition-colors cursor-pointer ${item.unread ? "bg-blue-50/30" : ""}`}>
-          <div className="mt-1.5 shrink-0">
+        <div key={item.id} onClick={() => openEmail(item)} className={`grid grid-cols-[auto_1fr] gap-4 px-5 py-4 hover:bg-[var(--color-border-light)] transition-colors cursor-pointer ${item.unread ? "bg-blue-50/30" : ""}`}>
+          <div className="mt-1.5">
             {item.unread ? <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)]" /> : <div className="w-2.5 h-2.5" />}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="overflow-hidden">
             <div className="flex items-center gap-2 mb-0.5">
-              <span className={`text-sm ${item.unread ? "font-semibold text-[var(--color-text)]" : "font-medium text-[var(--color-text)]"}`}>{item.from}</span>
-              <span className="text-[10px] text-[var(--color-subtext)]">{getTimeLabel(item.date, locale)}</span>
+              <span className={`text-sm truncate ${item.unread ? "font-semibold text-[var(--color-text)]" : "font-medium text-[var(--color-text)]"}`}>{item.from}</span>
+              <span className="text-[10px] text-[var(--color-subtext)] shrink-0">{getTimeLabel(item.date, locale)}</span>
             </div>
-            <p className={`text-sm ${item.unread ? "font-medium text-[var(--color-text)]" : "text-[var(--color-subtext)]"}`}>{item.subject}</p>
+            <p className={`text-sm truncate ${item.unread ? "font-medium text-[var(--color-text)]" : "text-[var(--color-subtext)]"}`}>{item.subject}</p>
             <p className="text-xs text-[var(--color-subtext)] mt-0.5 truncate">{item.snippet}</p>
           </div>
         </div>
       ))}
+      {/* Email Detail Modal */}
+      {selectedEmail && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40" onClick={() => setSelectedEmail(null)}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex items-start justify-between p-5 border-b border-[var(--color-border)]">
+              <div className="flex-1 min-w-0">
+                <h2 className="font-semibold text-[var(--color-text)] text-base">{selectedEmail.subject}</h2>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <span className="text-sm text-[var(--color-text)]">{selectedEmail.from}</span>
+                  <span className="text-xs text-[var(--color-subtext)]">{new Date(selectedEmail.date).toLocaleString(locale === "ja" ? "ja-JP" : "en-US")}</span>
+                </div>
+              </div>
+              <button onClick={() => setSelectedEmail(null)} className="p-1.5 hover:bg-[var(--color-border-light)] rounded-lg transition-colors shrink-0 ml-4">
+                <svg className="w-5 h-5 text-[var(--color-subtext)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5">
+              {detailLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : (
+                <pre className="text-sm text-[var(--color-text)] whitespace-pre-wrap font-sans leading-relaxed">{selectedEmail.body}</pre>
+              )}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
