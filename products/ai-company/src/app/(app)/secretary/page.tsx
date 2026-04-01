@@ -26,24 +26,6 @@ const mockNotes: Note[] = [
 ];
 
 
-interface NewsItem {
-  id: string;
-  title: string;
-  source: string;
-  category: "industry" | "tech" | "business" | "market";
-  summary: string;
-  url: string;
-  publishedAt: string;
-}
-
-const mockNews: NewsItem[] = [
-  { id: "news-1", title: "生成AI市場、2026年に10兆円規模へ — 国内企業の導入率が50%突破", source: "日経新聞", category: "tech", summary: "IDC Japanの最新調査によると、国内の生成AI市場規模は前年比65%増の1兆2000億円に達する見込み。中小企業での導入加速が寄与。", url: "#", publishedAt: "2026-03-28T06:00:00Z" },
-  { id: "news-2", title: "EC業界：サブスク型モデルへの移行が加速、月額課金売上が前年比40%増", source: "ECzine", category: "industry", summary: "定期購入やメンバーシップ型ECの売上が急増。消費者の購買行動がサブスク寄りにシフトしている傾向が鮮明に。", url: "#", publishedAt: "2026-03-28T05:00:00Z" },
-  { id: "news-3", title: "Claude 4.6リリース — 1Mコンテキスト対応、コーディング精度が大幅向上", source: "TechCrunch", category: "tech", summary: "Anthropicが最新モデルClaude 4.6を発表。100万トークンのコンテキストウィンドウと高精度なコード生成で開発者ワークフローを変革。", url: "#", publishedAt: "2026-03-27T22:00:00Z" },
-  { id: "news-4", title: "中小企業のDX支援、政府が補助金上限を500万円に引き上げ", source: "経済産業省", category: "business", summary: "2026年度のIT導入補助金の上限額が350万円から500万円に拡大。AIツール導入も対象に含まれる。", url: "#", publishedAt: "2026-03-27T18:00:00Z" },
-  { id: "news-5", title: "SNSマーケティング最新トレンド: ショート動画よりテキスト回帰の兆し", source: "MarkeZine", category: "market", summary: "Threads、Blueskyなどテキスト主体SNSの利用者が増加。長文投稿のエンゲージメント率が短尺動画を上回るケースも。", url: "#", publishedAt: "2026-03-27T14:00:00Z" },
-  { id: "news-6", title: "フリーランス保護新法が4月施行 — 発注企業に契約書面の交付義務", source: "日経新聞", category: "business", summary: "フリーランスへの業務委託に書面交付を義務付ける新法が来月施行。違反企業には罰則も。外注先との契約書確認が必要。", url: "#", publishedAt: "2026-03-27T10:00:00Z" },
-];
 
 const newsCategoryConfig: Record<string, { label: string; labelEn: string; color: string; bg: string }> = {
   industry: { label: "業界", labelEn: "Industry", color: "#0ea5e9", bg: "#f0f9ff" },
