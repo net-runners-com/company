@@ -151,11 +151,11 @@ company-test/
 
 | ツール | パス | 用途 |
 |--------|------|------|
-| browser-use CLI | `~/.browser-use-env/bin/browser-use` | ブラウザ自動操作（note, Threads投稿） |
+| Playwright MCP | `mcp__playwright__*` | ブラウザ自動操作（note, Threads投稿） |
 | gemini CLI | グローバル | 画像生成（Nano Banana） |
 
 Python スクリプトは標準ライブラリのみ使用（subprocess, pathlib, json, base64, re 等）。
-browser-use CLI を外部プロセスとして呼び出す構成。
+ブラウザ操作は Playwright MCP ツールで実行。
 
 ---
 

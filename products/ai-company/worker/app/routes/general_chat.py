@@ -19,7 +19,7 @@ router = APIRouter()
 async def execute_task(payload: dict):
     """
     フロントの API Routes から呼ばれるタスク実行エンドポイント。
-    Claude Code CLI でLLM処理、browser-use でSNS投稿など。
+    Claude Code CLI でLLM処理、Playwright MCPでSNS投稿など。
     """
     task_type = payload.get("type", "unknown")
     return {
@@ -31,7 +31,7 @@ async def execute_task(payload: dict):
 
 @router.post("/sns/post")
 async def sns_post(payload: dict):
-    """SNS投稿ジョブ（browser-use連携）"""
+    """SNS投稿ジョブ（Playwright MCP連携）"""
     platform = payload.get("platform", "unknown")
     return {
         "status": "accepted",

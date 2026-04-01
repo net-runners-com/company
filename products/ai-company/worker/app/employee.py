@@ -119,11 +119,18 @@ def _get_employee_workdir(emp: dict) -> str:
 
 
 def _ensure_mcp_symlink(workdir: str):
-    """作業ディレクトリに .mcp.json のシンボリンクを作成"""
+    """作業ディレクトリに .mcp.json → /workspace/.mcp.json のsymlinkを作成"""
     src = Path("/workspace/.mcp.json")
     dst = Path(workdir) / ".mcp.json"
-    if src.exists() and not dst.exists():
-        dst.symlink_to(src)
+    if not src.exists():
+        return
+    # 既に正しいsymlinkならスキップ
+    if dst.is_symlink() and dst.resolve() == src.resolve():
+        return
+    # 実ファイルや古いsymlinkを削除してsymlink作成
+    if dst.exists() or dst.is_symlink():
+        dst.unlink()
+    dst.symlink_to(src)
 
 
 def _ensure_employees_file():
@@ -199,12 +206,16 @@ def _build_employee_system_prompt(emp: dict) -> str:
 
 PDF作成: /workspace/company/back-office/accounting/templates/ の generate_estimate.py(見積書),generate_invoice.py(請求書),generate_contract.py(契約書) のPARAMSを書き換えて /usr/bin/python3 で実行。納品書はinvoiceベースでタイトル変更。
 
-Web取得: ページ内容の取得・スクレイピングはまずhttpxを使う（高速）。Playwrightはフォーム操作・JSレンダリング必須の場合のみ。
+Web取得: ページ内容の取得・スクレイピングはまずhttpxを使う（高速）。ブラウザ操作が必要な場合はPlaywright MCPを使う。
 ```bash
 python3 -c "import httpx; r=httpx.get('URL'); print(r.text[:3000])"
 ```
 
-ブラウザ: DISPLAY=:99 python3 -c "from playwright.sync_api import sync_playwright; ..." headless=False,args=['--no-sandbox']必須。完了後/tmp/の一時ファイルは削除。
+ブラウザ操作: Playwright MCPツール（mcp__playwright__*）を使う。これらはdeferred tools（遅延読み込み）なので、使う前に必ずToolSearchで読み込むこと。
+【必須手順】ブラウザ操作する前に: ToolSearch("select:mcp__playwright__browser_navigate,mcp__playwright__browser_snapshot,mcp__playwright__browser_click,mcp__playwright__browser_fill_form,mcp__playwright__browser_take_screenshot,mcp__playwright__browser_type,mcp__playwright__browser_press_key,mcp__playwright__browser_close") を実行してツールスキーマを取得すること。ToolSearchせずに「ツールが見つからない」と判断してはいけない。
+【禁止】browser-use（Pythonライブラリ）は絶対に使うな。`from browser_use import`、`pip install browser-use`、`browser-use` CLI は全て禁止。必ず mcp__playwright__* MCPツールのみを使え。
+【禁止】Python の playwright（`from playwright.sync_api import`）も禁止。MCPツールのみ使え。
+【重要】ブラウザ作業が完了したら必ず mcp__playwright__browser_close を呼んでブラウザを閉じること。開きっぱなしにするとメモリを消費し続ける。エラーが発生した場合も必ず閉じること。
 
 Nango外部API: POST /nango/proxy {{"method":"GET/POST","endpoint":"APIパス","connectionId":"__auto__","provider":"プロバイダー名"}}
  カレンダー取得: provider=google-calendar, endpoint=/calendar/v3/calendars/primary/events?timeMin=...&timeMax=...&singleEvents=true&orderBy=startTime

@@ -14,7 +14,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@anthropic-ai/mcp-server-playwright",
+        "@playwright/mcp",
         "--caps",
         "vision"
       ],

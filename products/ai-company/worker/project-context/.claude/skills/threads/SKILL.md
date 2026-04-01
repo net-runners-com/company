@@ -20,7 +20,7 @@ trigger: /threads
 
 | 種別 | パス |
 |------|------|
-| 投稿スクリプト | `company/front-office/marketing/sns/threads/post_to_threads.py` |
+| 投稿手順書 | `company/front-office/marketing/sns/threads/post_to_threads.md` |
 | スタイル定義 | `company/front-office/marketing/sns/threads/references/styles/` |
 | 投稿テキスト保存先 | `company/front-office/marketing/sns/threads/output/{style}/` |
 | 投稿ログ | `company/front-office/marketing/sns/threads/logs/posts.log` |
@@ -30,7 +30,7 @@ trigger: /threads
 
 ```
 company/front-office/marketing/sns/threads/
-├── post_to_threads.py            # 投稿スクリプト（browser-use CLI）
+├── post_to_threads.md            # 投稿手順書（Playwright MCP）
 ├── references/
 │   └── styles/
 │       └── ren.md                # れんのスタイルガイド
@@ -62,7 +62,7 @@ YYYY-MM-DD HH:MM | {style} | {トピック} | {投稿テキスト全文}
 ## 投稿ワークフロー
 
 ### 1. 競合分析（初回 or 定期的に）
-browser-useでThreadsを検索し、キーワード別に人気投稿を収集→分析レポートを作成。
+Playwright MCPでThreadsを検索し、キーワード別に人気投稿を収集→分析レポートを作成。
 
 ### 2. 投稿文生成
 Claude CLIでスタイルガイド+分析結果に基づいてテキスト生成。
@@ -71,20 +71,11 @@ Claude CLIでスタイルガイド+分析結果に基づいてテキスト生成
 **投稿前に必ずユーザーに文章を提示して確認を取る。** 修正があれば反映してから投稿。
 
 ### 4. 投稿
-`post_to_threads.py` で自動投稿。
+Playwright MCPツールで直接ブラウザ操作して投稿。手順は `post_to_threads.md` を参照。
 
-## コマンド
-
-```bash
-# テキスト直接指定
-python3 post_to_threads.py "つぶやきテキスト" --profile "Profile 3"
-
-# ファイルから
-python3 post_to_threads.py /path/to/text.txt --profile "Profile 3"
-
-# トピック付き
-python3 post_to_threads.py "テキスト" --profile "Profile 3" --topic "ASD"
-```
+1. `mcp__playwright__browser_navigate` → `https://www.threads.net`
+2. 作成ボタン → テキスト入力 → 投稿ボタン
+3. 完了後 `mcp__playwright__browser_close`
 
 ## スタイル（ペルソナ）
 
@@ -104,18 +95,19 @@ python3 post_to_threads.py "テキスト" --profile "Profile 3" --topic "ASD"
 
 ## Threads UI操作の知見
 
-### 投稿フロー（post_to_threads.py の処理順）
-1. **Step 1**: `threads.net` を開く
-2. **Step 2**: 「新規スレッド作成」ボタンをクリック → 投稿ダイアログが開く
+### 投稿フロー（Playwright MCP）
+1. **Step 1**: `browser_navigate` → `threads.net`
+2. **Step 2**: `browser_snapshot` → 作成ボタンを探して `browser_click`
 3. **Step 2.5**: （トピック指定時）トピック入力→サジェスト選択
-4. **Step 3**: `[contenteditable=true]` に `execCommand('insertText')` でテキスト挿入
-5. **Step 4**: 「投稿」ボタンを**座標クリック**で押す
+4. **Step 3**: `browser_evaluate` → `[contenteditable=true]` に `execCommand('insertText')` でテキスト挿入
+5. **Step 4**: `browser_snapshot` → 「投稿」ボタンを `browser_click`
+6. **Step 5**: `browser_close`（必須）
 
 ### トピック（旧ハッシュタグ）の設定方法
 - Threadsにはハッシュタグがなく、代わりに**トピック**が1投稿につき1つだけ設定できる
 - 投稿ダイアログ上部の「トピックを追加」をクリックすると入力欄が開く
 - 入力欄は **Shadow DOM内の `input[type=search][placeholder="トピックを追加"]`**
-- browser-useの `input` コマンド（stateインデックス指定）で入力するとサジェストが表示される
+- `browser_fill_form` でトピック入力するとサジェストが表示される
   - JS の `input.value = 'xxx'` + `dispatchEvent` ではサジェストが出ないことがある
 - サジェスト候補はDOM上で `textContent` にトピック名を含む `div`/`span` として出現する
 - 候補の選択は**座標クリック**で行う（`role=option` 等の属性はついていない）
@@ -126,7 +118,7 @@ python3 post_to_threads.py "テキスト" --profile "Profile 3" --topic "ASD"
   - `element.click()`
   - `dispatchEvent(new MouseEvent(...))`
   - React Fiber の `memoizedProps.onClick` 直接呼び出し
-- **座標クリック**（`browser-use click X Y`）が唯一の有効な方法
+- Playwright MCP の `browser_click` で座標指定クリックが有効
 - ページ内に「投稿」ボタンが複数存在する（ホーム画面用 + ダイアログ内）
 - **Y座標が最も大きい**ものがダイアログ内のボタン
 - まれにY座標が異常値（数百万）を返すことがある → リトライで解決
@@ -143,11 +135,10 @@ python3 post_to_threads.py "テキスト" --profile "Profile 3" --topic "ASD"
 - base64エンコードでシェルエスケープ問題を回避（note投稿と同じ手法）
 - `result: None` が返っても入力は成功している場合が多い
 
-### browser-use注意点
-- **投稿前に対象プロファイルのChromeウィンドウをすべて閉じる**。同じプロファイルでChromeが開いていると、browser-useのセッションが競合し、Y座標が異常値（8388734等）になって投稿ボタンが押せない。これがY座標異常値問題の主因
-- `run("close")` はbrowser-useセッションのみ閉じる（Chrome自体は閉じない）
-- **`killall "Google Chrome"` は絶対にしない**（ユーザーの他のタブが閉じてしまう）
-- Profile 3はviewport 0x0問題が発生することがあるが、座標クリックが有効なら投稿可能
+### Playwright MCP注意点
+- 完了後は必ず `mcp__playwright__browser_close` でブラウザを閉じる
+- エラー発生時も必ずブラウザを閉じる
+- browser-use は使用禁止
 
 ### noteとのクロスポスト
 - noteの記事を要約してThreadsに投稿する運用が有効
@@ -180,11 +171,10 @@ https://note.com/personal_dev/n/xxxxx
 | 「このページを離れる」ダイアログ | 投稿前にcloseが呼ばれた | 投稿完了確認後にclose |
 | テキスト入力: result: None | execCommandの返り値がない | 正常。テキストは入力されている |
 | 投稿ダイアログが開かない | 作成ボタンのインデックスずれ | JS fallbackで aria-label="作成" を探す |
-| トピックのサジェストが出ない | JS valueセットではReactが反応しない | browser-useの `input` コマンド（インデックス指定）を使う |
+| トピックのサジェストが出ない | JS valueセットではReactが反応しない | `browser_fill_form` を使う |
 | サジェスト候補がクリックできない | role=option等の属性がない | 座標クリックで選択する |
 
 ## 依存関係
 
-- **browser-use CLI**: `~/.browser-use-env/bin/browser-use`
-- **Google Chrome**: Profile 3（ren_adhd_asd）にログイン済み
+- **Playwright MCP**: `mcp__playwright__*` ツール（ブラウザ操作）
 - **Claude Code CLI**: 投稿文生成用（`claude -p`）

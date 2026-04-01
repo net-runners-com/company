@@ -38,18 +38,12 @@ RUN npm install -g @googleworkspace/cli
 # ============================================
 RUN npm install -g @google/gemini-cli
 
-# ============================================
-# browser-use (SNS自動化)
-# ============================================
-RUN pip install --no-cache-dir browser-use
-
-# Playwright browsers (Chromium) — Python版
-RUN pip install --no-cache-dir playwright \
-    && playwright install --with-deps chromium
-
 # Playwright browsers (Chromium) — Node.js版 (MCP server用)
-RUN npx -y @anthropic-ai/mcp-server-playwright --help 2>/dev/null || true \
-    && npx -y playwright install --with-deps chromium
+RUN npx -y @playwright/mcp --help 2>/dev/null || true \
+    && npx -y playwright install --with-deps chromium \
+    && mkdir -p /opt/google/chrome \
+    && CHROME_BIN=$(find /root/.cache/ms-playwright -name "chrome" -type f | head -1) \
+    && ln -sf "$CHROME_BIN" /opt/google/chrome/chrome
 
 # ============================================
 # Python deps

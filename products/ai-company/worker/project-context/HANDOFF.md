@@ -26,5 +26,5 @@
 
 ## コンテキスト
 - プロジェクト: .company/ 仮想組織管理システム
-- note投稿: browser-use CLI + Chrome Profile 3 で自動化
+- note投稿: Playwright MCPでブラウザ操作して自動化
 - 投稿済み記事: 7本（posts.log参照）

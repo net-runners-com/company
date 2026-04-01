@@ -67,11 +67,14 @@ async function main() {
 
   try {
     const options = {
-      allowedTools,
       cwd,
       permissionMode: "bypassPermissions",
       includePartialMessages: true,
     };
+    // allowedTools が空配列の場合は渡さない（空配列 = 全ツール不許可になるため）
+    if (allowedTools && allowedTools.length > 0) {
+      options.allowedTools = allowedTools;
+    }
 
     if (sessionId) {
       options.resume = sessionId;
@@ -131,11 +134,13 @@ async function main() {
     if (msg.includes("No conversation found") && sessionId) {
       try {
         const retryOptions = {
-          allowedTools,
           cwd,
           permissionMode: "bypassPermissions",
           includePartialMessages: true,
         };
+        if (allowedTools && allowedTools.length > 0) {
+          retryOptions.allowedTools = allowedTools;
+        }
         if (systemPrompt) {
           retryOptions.systemPrompt = systemPrompt;
         }

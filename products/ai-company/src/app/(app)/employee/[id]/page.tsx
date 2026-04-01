@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import * as api from "@/lib/api";
 import { ChatView } from "@/components/chat-view";
+import { useChatStore } from "@/stores/chat";
 import { getRoleLabel, getStatusConfig } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
 import { EmployeeAvatar } from "@/components/employee-avatar";
@@ -192,7 +193,7 @@ export default function EmployeeDetailPage() {
         {activeTab === "chat" && (
           <>
             <ChatView employee={employee} />
-            {browserActive && <VncFloating onClose={() => setBrowserActive(false)} locale={locale} />}
+            {browserActive && <VncFloating onClose={() => setBrowserActive(false)} locale={locale} employeeId={employee.id} />}
           </>
         )}
 
@@ -428,7 +429,7 @@ export default function EmployeeDetailPage() {
 }
 
 // --- VNC Floating Window ---
-function VncFloating({ onClose, locale }: { onClose: () => void; locale: string }) {
+function VncFloating({ onClose, locale, employeeId }: { onClose: () => void; locale: string; employeeId: string }) {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [size, setSize] = useState({ w: 480, h: 320 });
   const [dragging, setDragging] = useState(false);
@@ -491,13 +492,35 @@ function VncFloating({ onClose, locale }: { onClose: () => void; locale: string 
       </div>
       {/* Screen stream */}
       {!minimized && (
-        <img
-          src="http://localhost:8000/browser/stream"
-          alt="Browser"
-          className="w-full bg-black object-contain"
-          style={{ height: size.h - 36 }}
-        />
+        <>
+          <img
+            src="http://localhost:8000/browser/stream"
+            alt="Browser"
+            className="w-full bg-black object-contain"
+            style={{ height: size.h - 52 }}
+          />
+          {/* 中断ボタン */}
+          <StopButton employeeId={employeeId} locale={locale} />
+        </>
       )}
+    </div>
+  );
+}
+
+function StopButton({ employeeId, locale }: { employeeId: string; locale: string }) {
+  const { loading, stopStream } = useChatStore();
+  if (!loading) return null;
+  return (
+    <div className="flex items-center justify-center px-2 py-1 bg-gray-900">
+      <button
+        onClick={stopStream}
+        className="flex items-center gap-1.5 px-4 py-1 text-xs font-medium text-red-400 hover:text-white bg-red-500/10 hover:bg-red-500 border border-red-500/30 hover:border-red-500 rounded-md transition-colors"
+      >
+        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+          <rect x="6" y="6" width="12" height="12" rx="1" />
+        </svg>
+        {locale === "ja" ? "中断" : "Stop"}
+      </button>
     </div>
   );
 }

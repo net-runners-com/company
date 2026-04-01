@@ -12,10 +12,11 @@ import { FilePreviewModal } from "@/components/file-preview-modal";
 import type { Employee } from "@/types";
 
 export function ChatView({ employee }: { employee: Employee }) {
-  const { messages, loading, systemLines, fetchMessages, sendMessage, stopStream, registerEmployee, permissionRequest, respondPermission, threads, activeThread, fetchThreads, createThread, setActiveThread } = useChatStore();
+  const { messages, loading, systemLines, fetchMessages, sendMessage, stopStream, reconnectIfActive, registerEmployee, permissionRequest, respondPermission, threads, activeThread, fetchThreads, createThread, deleteThread, setActiveThread } = useChatStore();
   const { t, locale } = useI18n();
   const [previewFile, setPreviewFile] = useState<string | null>(null);
   const [input, setInput] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
   const [stagedFiles, setStagedFiles] = useState<{ file: File; preview: string }[]>([]);
   const [attachedFiles, setAttachedFiles] = useState<{ name: string; path: string }[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -24,6 +25,7 @@ export function ChatView({ employee }: { employee: Employee }) {
   const [prompts, setPrompts] = useState<{ _id: string; name: string; content: string; category?: string }[]>([]);
   const [attachedPrompts, setAttachedPrompts] = useState<{ name: string; content: string }[]>([]);
   const [dragOver, setDragOver] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; title: string } | null>(null);
   const plusMenuRef = useRef<HTMLDivElement>(null);
   const [showThreads, setShowThreads] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -36,17 +38,22 @@ export function ChatView({ employee }: { employee: Employee }) {
   const prevLoadingRef = useRef(loading);
 
   useEffect(() => {
-    fetchThreads(employee.id);
-    fetchMessages(employee.id);
-    registerEmployee({
-      id: employee.id,
-      name: employee.name,
-      role: employee.role,
-      department: employee.department,
-      tone: employee.tone,
-      skills: employee.skills,
-    });
-  }, [employee, fetchMessages, registerEmployee]);
+    const init = async () => {
+      fetchThreads(employee.id);
+      registerEmployee({
+        id: employee.id,
+        name: employee.name,
+        role: employee.role,
+        department: employee.department,
+        tone: employee.tone,
+        skills: employee.skills,
+      });
+      await fetchMessages(employee.id);
+      // 履歴取得完了後にバックグラウンドrunがあれば再接続
+      reconnectIfActive(employee.id);
+    };
+    init();
+  }, [employee]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -174,20 +181,63 @@ export function ChatView({ employee }: { employee: Employee }) {
         </div>
         <div className="flex-1 overflow-y-auto px-2 space-y-0.5">
           {empThreads.map((thread) => (
-            <button
+            <div
               key={thread.id}
-              onClick={() => { setActiveThread(employee.id, thread.id); fetchMessages(employee.id, thread.id); }}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm truncate transition-colors ${
+              className={`group flex items-center rounded-lg transition-colors ${
                 currentThreadId === thread.id
                   ? "bg-[var(--color-primary-light)] text-[var(--color-primary)] font-medium"
                   : "text-[var(--color-text)] hover:bg-[var(--color-border-light)]"
               }`}
             >
-              {thread.title}
-            </button>
+              <button
+                onClick={() => { setActiveThread(employee.id, thread.id); fetchMessages(employee.id, thread.id); }}
+                className="flex-1 text-left px-3 py-2 text-sm truncate min-w-0"
+              >
+                {thread.title}
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); setDeleteConfirm({ id: thread.id, title: thread.title }); }}
+                className="shrink-0 p-1 mr-1 rounded opacity-0 group-hover:opacity-100 hover:bg-red-100 hover:text-red-500 transition-all"
+                title={locale === "ja" ? "削除" : "Delete"}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           ))}
         </div>
       </div>
+
+      {/* Delete Confirm Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setDeleteConfirm(null)}>
+          <div className="bg-white rounded-xl shadow-xl p-5 w-80" onClick={(e) => e.stopPropagation()}>
+            <p className="text-sm font-semibold text-[var(--color-text)] mb-1">
+              {locale === "ja" ? "チャットを削除" : "Delete chat"}
+            </p>
+            <p className="text-xs text-[var(--color-subtext)] mb-4">
+              {locale === "ja"
+                ? `「${deleteConfirm.title}」を削除しますか？この操作は取り消せません。`
+                : `Delete "${deleteConfirm.title}"? This cannot be undone.`}
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="px-4 py-2 text-sm border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-border-light)] transition-colors"
+              >
+                {locale === "ja" ? "キャンセル" : "Cancel"}
+              </button>
+              <button
+                onClick={() => { deleteThread(employee.id, deleteConfirm.id); setDeleteConfirm(null); }}
+                className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              >
+                {locale === "ja" ? "削除" : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -226,7 +276,7 @@ export function ChatView({ employee }: { employee: Employee }) {
                 <EmployeeAvatar seed={employee.id} size="1.75rem" className="shrink-0" config={employee.avatarConfig as Record<string, string> | undefined} />
               )}
               <div
-                className={`max-w-[75%] px-3.5 py-2.5 text-sm leading-relaxed ${
+                className={`max-w-[75%] px-3.5 py-2.5 text-sm leading-relaxed overflow-hidden break-words ${
                   msg.role === "user"
                     ? "bg-[var(--color-primary)] text-white rounded-2xl rounded-br-sm"
                     : "bg-white border border-[var(--color-border)] text-[var(--color-text)] rounded-2xl rounded-bl-sm"
@@ -293,7 +343,7 @@ export function ChatView({ employee }: { employee: Employee }) {
                 {!msg.content.includes("[添付ファイル:") && msg.role === "assistant" ? (
                   <StreamingText content={msg.content} isStreaming={isCurrentlyStreaming}>
                     {(displayed) => (
-                      <div className="prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-table:my-2 prose-pre:my-2 prose-code:text-[var(--color-primary)] prose-code:bg-[var(--color-primary-light)] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-pre:bg-[#1a1a2e] prose-pre:text-green-300 prose-pre:text-xs prose-a:text-[var(--color-primary)] prose-blockquote:text-gray-400 prose-blockquote:border-gray-200 prose-blockquote:font-normal prose-blockquote:text-xs prose-blockquote:not-italic prose-blockquote:my-1">
+                      <div className="prose prose-sm max-w-none overflow-hidden break-words prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-table:my-2 prose-pre:my-2 prose-pre:overflow-x-auto prose-code:text-[var(--color-primary)] prose-code:bg-[var(--color-primary-light)] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:break-all prose-pre:bg-[#1a1a2e] prose-pre:text-green-300 prose-pre:text-xs [&_pre_code]:text-inherit [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:rounded-none [&_pre_code]:break-normal prose-a:text-[var(--color-primary)] prose-blockquote:text-gray-400 prose-blockquote:border-gray-200 prose-blockquote:font-normal prose-blockquote:text-xs prose-blockquote:not-italic prose-blockquote:my-1">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{
@@ -328,6 +378,11 @@ export function ChatView({ employee }: { employee: Employee }) {
                                 </p>
                               );
                             },
+                            pre: ({ children, ...props }) => (
+                              <pre {...props} className="bg-[#1e1e1e] text-gray-100 text-xs my-2 p-3 rounded-lg overflow-x-auto [&_code]:text-inherit [&_code]:bg-transparent [&_code]:p-0 [&_code]:rounded-none [&_code]:text-xs">
+                                {children}
+                              </pre>
+                            ),
                             code: ({ children, className, ...props }) => {
                               const text = String(children).trim();
                               const isFilePath = text.startsWith("/workspace/") || /^[\w\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf\-_]+\.\w{1,5}$/.test(text);
@@ -444,7 +499,9 @@ export function ChatView({ employee }: { employee: Employee }) {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && !loading && handleSend()}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && !isComposing && !loading && handleSend()}
             disabled={loading}
             placeholder={loading
               ? (locale === "ja" ? "応答中..." : "Responding...")

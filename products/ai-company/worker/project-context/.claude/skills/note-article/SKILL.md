@@ -20,14 +20,14 @@ trigger: /note-article
 ## 概要
 
 note.comへの記事作成から投稿までを自動化するシステム。
-Claude Code CLIで記事を生成し、browser-use CLIでブラウザ操作して投稿する。
+Claude Code CLIで記事を生成し、Playwright MCPツールでブラウザ操作して投稿する。
 
 ## 関連ファイル
 
 | 種別 | パス |
 |------|------|
 | スクリプト（記事生成） | `company/front-office/marketing/sns/note/scripts/generate_article.py` |
-| スクリプト（記事投稿） | `company/front-office/marketing/sns/note/scripts/post_to_note.py` |
+| 投稿手順書 | `company/front-office/marketing/sns/note/scripts/post_to_note.md` |
 | スクリプト（画像生成） | `company/front-office/marketing/sns/note/scripts/generate_image.py` |
 | cron用スクリプト | `company/front-office/marketing/sns/note/daily_post.sh` |
 | スタイル定義 | `company/front-office/marketing/sns/note/references/styles/` |
@@ -43,7 +43,7 @@ company/front-office/marketing/sns/note/
 ├── daily_post.sh             # cron用オーケストレーション（※スタイル未対応、要更新）
 ├── scripts/
 │   ├── generate_article.py   # 記事生成（Claude Code CLI）
-│   ├── post_to_note.py       # 記事投稿（browser-use CLI）
+│   ├── post_to_note.py       # 記事投稿（Playwright MCP CLI）
 │   └── generate_image.py     # サムネイル画像生成（Gemini API）
 ├── references/
 │   └── styles/               # スタイル（ペルソナ）定義
@@ -79,24 +79,14 @@ python3 scripts/generate_article.py --list
 
 出力: `output/{style}/{YYYY-MM-DD-HHMM}/title.txt` と `article.md`
 
-### 記事投稿
+### 記事投稿（Playwright MCP）
 
-```bash
-# 下書き保存（デフォルト: Profile 1）
-python3 scripts/post_to_note.py "タイトル" article.md
+手順は `scripts/post_to_note.md` を参照。Playwright MCPツールで直接ブラウザ操作する。
 
-# Chromeプロファイル指定
-python3 scripts/post_to_note.py "タイトル" article.md --profile "Profile 3"
-
-# 有料記事（¥300）で下書き保存
-python3 scripts/post_to_note.py "タイトル" article.md --price 300 --profile "Profile 3"
-
-# 有料記事で即公開
-python3 scripts/post_to_note.py "タイトル" article.md --price 300 --publish --profile "Profile 3"
-
-# サムネイル付き
-python3 scripts/post_to_note.py "タイトル" article.md thumbnail.png --profile "Profile 3"
-```
+1. `mcp__playwright__browser_navigate` → `https://editor.note.com/new`
+2. タイトル・本文を入力
+3. 「下書き保存」or「公開」ボタンをクリック
+4. 完了後 `mcp__playwright__browser_close`
 
 ### 画像生成
 
@@ -182,15 +172,16 @@ cat company/front-office/marketing/sns/note/logs/posts.log
 YYYY-MM-DD HH:MM | {style} | {タイトル} | {1行概要}
 ```
 
-## 投稿フロー（post_to_note.py の処理順）
+## 投稿フロー（Playwright MCP）
 
-1. **Step 1: エディタを開く** — `editor.note.com/new` をChromeプロファイルで開く
-2. **Step 2: タイトル入力** — stateからtextareaを探してinput、見つからなければJS fallback
-3. **Step 3: 目次挿入** — `document.getElementById('toc-setting').click()` で目次ブロックを挿入
-4. **Step 4: 本文入力** — MarkdownをHTMLに変換し `execCommand('insertHTML')` で挿入
-5. **Step 5: サムネイル** — （オプション）画像アップロード
-6. **Step 5.5: 有料設定** — （price > 0の場合）公開ページに遷移して価格設定
-7. **Step 6: 保存/公開** — 下書き保存 or 公開
+1. **Step 1: エディタを開く** — `browser_navigate` → `editor.note.com/new`
+2. **Step 2: タイトル入力** — `browser_snapshot` でtextareaを探して `browser_click` → `browser_fill_form`
+3. **Step 3: 目次挿入** — `browser_evaluate` → `document.getElementById('toc-setting').click()`
+4. **Step 4: 本文入力** — MarkdownをHTMLに変換し `browser_evaluate` → `execCommand('insertHTML')`
+5. **Step 5: サムネイル** — （オプション）`browser_file_upload`
+6. **Step 5.5: 有料設定** — （有料の場合）「公開に進む」→ 価格設定
+7. **Step 6: 保存/公開** — 「下書き保存」or「投稿する」をクリック
+8. **Step 7: ブラウザ閉じる** — `browser_close`（必須）
 
 ## note.com UI操作の知見
 
@@ -242,9 +233,9 @@ YYYY-MM-DD HH:MM | {style} | {タイトル} | {1行概要}
 5. 下書きの場合: 「キャンセル」→ エディタに戻る → 「下書き保存」
 6. 公開の場合: `publish_article()` で「投稿する」ボタンをクリック
 
-### browser-use CLI の注意点
+### Playwright MCP CLI の注意点
 
-- **投稿前に対象プロファイルのChromeウィンドウをすべて閉じる**。同じプロファイルでChromeが開いていると、browser-useのセッションが競合し、座標がおかしくなったりUIが正しく操作できない
+- **投稿前に対象プロファイルのChromeウィンドウをすべて閉じる**。同じプロファイルでChromeが開いていると、Playwright MCPのセッションが競合し、座標がおかしくなったりUIが正しく操作できない
 - `state` コマンド: ボタンのテキストが要素行と別行に表示される場合がある
   - `find_index()` で前後行も含めてインデックスを検索する実装で対応
 - `--profile` オプション: Chromeのプロファイルディレクトリ名（"Profile 1"等）またはプロファイル表示名（"kgj"等）を指定
@@ -254,7 +245,7 @@ YYYY-MM-DD HH:MM | {style} | {タイトル} | {1行概要}
   - `window.resizeTo()` は効かない場合がある
 - **メール認証**: noteアカウント作成後、メール認証を完了しないとエディタのDOM要素が0個になる
 - **JS fallbackパターン**: `state` でインデックスが取れない場合、`eval` でDOMを直接操作する二段構えが安定
-- **stateインデックス vs DOMインデックス**: browser-useのstate `[N]` とDOM上の要素順は一致しないことがある。確実に操作するにはJS `eval` で `getElementById` や `querySelector` を使う
+- **stateインデックス vs DOMインデックス**: Playwright MCPのstate `[N]` とDOM上の要素順は一致しないことがある。確実に操作するにはJS `eval` で `getElementById` や `querySelector` を使う
 
 ### 新しいChromeプロファイルのセットアップ手順
 
@@ -262,7 +253,7 @@ YYYY-MM-DD HH:MM | {style} | {タイトル} | {1行概要}
 2. ウィンドウを画面いっぱいに広げて閉じる（viewport問題の回避）
 3. note.comにログインする
 4. **メール認証を完了する**（未完了だとエディタのDOM要素が0個になる）
-5. `browser-use profile list` でプロファイル名を確認
+5. `Playwright MCP profile list` でプロファイル名を確認
 
 ## トラブルシューティング
 
@@ -293,8 +284,6 @@ YYYY-MM-DD HH:MM | {style} | {タイトル} | {1行概要}
 
 ## 依存関係
 
-- **browser-use CLI**: `~/.browser-use-env/bin/browser-use`（ブラウザ自動操作）
+- **Playwright MCP**: `mcp__playwright__*` ツール（ブラウザ操作）
 - **Claude Code CLI**: `claude -p`（記事生成）
-- **Google Chrome**: ログイン済みプロファイルが必要
 - **Gemini API**: サムネイル画像生成（オプション、GEMINI_API_KEY必要）
-- **Python 3**: スクリプト実行環境

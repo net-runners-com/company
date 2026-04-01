@@ -61,6 +61,5 @@ Threads詳細は `.claude/skills/threads/SKILL.md` を参照。
 # 記事生成
 python3 company/front-office/marketing/sns/note/scripts/generate_article.py --style ren
 
-# 下書き投稿
-python3 company/front-office/marketing/sns/note/scripts/post_to_note.py "タイトル" article.md --profile "Profile 3"
+# 下書き投稿 → Playwright MCPで直接ブラウザ操作（手順は scripts/post_to_note.md 参照）
 ```
