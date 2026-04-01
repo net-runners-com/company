@@ -205,7 +205,7 @@ export default function EmployeeDetailPage() {
               </div>
             ) : (
               tasks.map((task) => {
-                const ts = taskStatusConfig[task.status];
+                const ts = taskStatusConfig[task.status] || { label: task.status, color: "var(--color-subtext)", bg: "var(--color-border-light)" };
                 return (
                   <div key={task.id} className="bg-white border border-[var(--color-border)] rounded-lg p-4">
                     <div className="flex items-start justify-between">
