@@ -62,16 +62,14 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="px-8 py-8 animate-fade-in">
       {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold text-[var(--color-text)]">
-          {locale === "ja" ? "プロダクト" : "Products"}
-        </h1>
-        <p className="text-sm text-[var(--color-subtext)] mt-1">
-          {locale === "ja" ? "制作したWebサイト・LP・ECサイトなどの一覧" : "Websites, landing pages, and other web products"}
-        </p>
-      </div>
+      <h1 className="text-2xl font-bold text-[var(--color-text)] mb-1">
+        {locale === "ja" ? "プロダクト" : "Products"}
+      </h1>
+      <p className="text-sm text-[var(--color-subtext)] mb-6">
+        {locale === "ja" ? "制作したWebサイト・LP・ECサイトなどの一覧" : "Websites, landing pages, and other web products"}
+      </p>
 
       {/* Loading */}
       {loading && (
