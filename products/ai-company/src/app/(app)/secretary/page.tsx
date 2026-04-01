@@ -374,7 +374,7 @@ function InboxTab({ locale, cache, setCache }: { locale: string; cache: EmailIte
   const [emails, setEmails] = useState<EmailItem[]>(cache || []);
   const [loading, setLoading] = useState(!cache);
   const [error, setError] = useState<string | null>(null);
-  const [selectedEmail, setSelectedEmail] = useState<{ id: string; from: string; subject: string; date: string; body: string } | null>(null);
+  const [selectedEmail, setSelectedEmail] = useState<{ id: string; from: string; subject: string; date: string; body: string; isHtml?: boolean } | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
   const openEmail = async (item: typeof emails[0]) => {
@@ -400,20 +400,35 @@ function InboxTab({ locale, cache, setCache }: { locale: string; cache: EmailIte
         return new TextDecoder("utf-8").decode(bytes);
       };
       let body = "";
+      let isHtml = false;
       const parts = detail.payload?.parts || [];
-      const textPart = parts.find((p: { mimeType: string }) => p.mimeType === "text/plain");
-      const htmlPart = parts.find((p: { mimeType: string }) => p.mimeType === "text/html");
-      if (textPart?.body?.data) {
-        body = decodeBase64Url(textPart.body.data);
-      } else if (htmlPart?.body?.data) {
-        const html = decodeBase64Url(htmlPart.body.data);
-        body = html.replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/&#39;/g, "'").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/\s+/g, " ").trim();
+      const findParts = (list: typeof parts): { text?: string; html?: string } => {
+        let text: string | undefined;
+        let html: string | undefined;
+        for (const p of list) {
+          if (p.mimeType === "text/plain" && p.body?.data) text = decodeBase64Url(p.body.data);
+          if (p.mimeType === "text/html" && p.body?.data) html = decodeBase64Url(p.body.data);
+          if (p.mimeType?.startsWith("multipart/") && p.parts) {
+            const nested = findParts(p.parts);
+            if (!text && nested.text) text = nested.text;
+            if (!html && nested.html) html = nested.html;
+          }
+        }
+        return { text, html };
+      };
+      const found = findParts(parts);
+      if (found.html) {
+        body = found.html;
+        isHtml = true;
+      } else if (found.text) {
+        body = found.text;
       } else if (detail.payload?.body?.data) {
         body = decodeBase64Url(detail.payload.body.data);
+        if (detail.payload?.mimeType === "text/html") isHtml = true;
       } else {
         body = detail.snippet || "";
       }
-      setSelectedEmail(prev => prev ? { ...prev, body } : null);
+      setSelectedEmail(prev => prev ? { ...prev, body, isHtml } : null);
     } catch {
       setSelectedEmail(prev => prev ? { ...prev, body: item.snippet } : null);
     }
@@ -535,7 +550,22 @@ function InboxTab({ locale, cache, setCache }: { locale: string; cache: EmailIte
                   <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (
-                <pre className="text-sm text-[var(--color-text)] whitespace-pre-wrap font-sans leading-relaxed">{selectedEmail.body}</pre>
+                selectedEmail.isHtml ? (
+                  <iframe
+                    sandbox="allow-same-origin"
+                    srcDoc={selectedEmail.body}
+                    className="w-full border-0"
+                    style={{ minHeight: "400px" }}
+                    onLoad={(e) => {
+                      const iframe = e.currentTarget;
+                      if (iframe.contentDocument?.body) {
+                        iframe.style.height = iframe.contentDocument.body.scrollHeight + 20 + "px";
+                      }
+                    }}
+                  />
+                ) : (
+                  <pre className="text-sm text-[var(--color-text)] whitespace-pre-wrap font-sans leading-relaxed">{selectedEmail.body}</pre>
+                )
               )}
             </div>
           </div>
