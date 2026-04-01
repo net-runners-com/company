@@ -64,6 +64,10 @@ function getTimeLabel(dateStr: string, locale: string): string {
   return locale === "ja" ? `${diffD}日前` : `${diffD}d ago`;
 }
 
+type EmailItem = { id: string; from: string; subject: string; snippet: string; date: string; unread: boolean };
+// ページ遷移でも保持されるモジュールレベルキャッシュ
+let _inboxCache: EmailItem[] | null = null;
+
 export default function SecretaryPage() {
   const { t, locale } = useI18n();
   const [activeTab, setActiveTab] = useState<TabKey>("chat");
@@ -74,7 +78,6 @@ export default function SecretaryPage() {
   const [newsUpdating, setNewsUpdating] = useState(false);
   const [expandedNews, setExpandedNews] = useState<number | null>(null);
   const [recentActivity, setRecentActivity] = useState<{ empId: string; empName: string; role: string; threadTitle: string; lastMessage: string; lastRole: string; timestamp: string }[]>([]);
-  const [inboxCache, setInboxCache] = useState<{ id: string; from: string; subject: string; snippet: string; date: string; unread: boolean }[] | null>(null);
 
   useEffect(() => {
     fetch("/api/employees").then(r => r.json()).then(d => { const s = d["emp-1"]; if (s) setSecretary({ ...s, id: "emp-1" }); }).catch(() => {});
@@ -289,7 +292,7 @@ export default function SecretaryPage() {
       )}
 
       {/* Inbox */}
-      {activeTab === "inbox" && <InboxTab locale={locale} cache={inboxCache} setCache={setInboxCache} />}
+      {activeTab === "inbox" && <InboxTab locale={locale} cache={_inboxCache} setCache={(v) => { _inboxCache = v; }} />}
 
       {/* News */}
       {activeTab === "news" && (
@@ -366,8 +369,6 @@ export default function SecretaryPage() {
     </div>
   );
 }
-
-type EmailItem = { id: string; from: string; subject: string; snippet: string; date: string; unread: boolean };
 
 function InboxTab({ locale, cache, setCache }: { locale: string; cache: EmailItem[] | null; setCache: (v: EmailItem[]) => void }) {
   const [emails, setEmails] = useState<EmailItem[]>(cache || []);
