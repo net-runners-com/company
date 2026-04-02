@@ -7,24 +7,19 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.plugin_loader import load_all_plugins
-from app.db import _init_db
 from app.employee import _ensure_employees_file
 
 # Route modules
 from app.routes.health import router as health_router
 from app.routes.employees import router as employees_router
 from app.routes.chat import router as chat_router
-from app.routes.data import router as data_router
 from app.routes.files import router as files_router
 from app.routes.accounting import router as accounting_router
 from app.routes.projects import router as projects_router
 from app.routes.pages import router as pages_router
-from app.routes.nango import router as nango_router
 from app.routes.connectors import router as connectors_router
 from app.routes.schedules import router as schedules_router, _scheduler, _load_schedules_to_scheduler
 from app.routes.news import router as news_router
-from app.routes.user import router as user_router
-from app.routes.share import router as share_router
 from app.routes.line import router as line_router
 from app.routes.rules import router as rules_router
 from app.routes.general_chat import router as general_chat_router
@@ -42,17 +37,13 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(employees_router)
 app.include_router(chat_router)
-app.include_router(data_router)
 app.include_router(files_router)
 app.include_router(accounting_router)
 app.include_router(projects_router)
 app.include_router(pages_router)
-app.include_router(nango_router)
 app.include_router(connectors_router)
 app.include_router(schedules_router)
 app.include_router(news_router)
-app.include_router(user_router)
-app.include_router(share_router)
 app.include_router(line_router)
 app.include_router(rules_router)
 app.include_router(general_chat_router)
@@ -62,7 +53,6 @@ app.include_router(general_chat_router)
 async def on_startup():
     load_all_plugins()
     _ensure_employees_file()
-    _init_db()
 
 
 @app.on_event("startup")
