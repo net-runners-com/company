@@ -9,14 +9,8 @@ services:
     volumes:
       - ./front/src:/app/src
       - ./front/public:/app/public
-    environment:
-      - NODE_ENV=development
-      - WORKER_URL=http://worker:8000
-      - BACK_URL=http://back:8001
-      - DATABASE_URL=${DATABASE_URL}
-    depends_on:
-      db:
-        condition: service_healthy
+    env_file:
+      - ./front/.env
 
   # --- Back (Shared API — business logic + Supabase DB) ---
   back:
@@ -27,13 +21,8 @@ services:
       - "8001:8001"
     volumes:
       - ./back/app:/app/app
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - TZ=Asia/Tokyo
-      - NANGO_SECRET_KEY=${NANGO_SECRET_KEY:-}
-    depends_on:
-      db:
-        condition: service_healthy
+    env_file:
+      - ./back/.env
 
   # --- Worker (per-user container — Claude Code CLI + Playwright + R2) ---
   worker:
@@ -46,54 +35,8 @@ services:
       - ./worker/app:/app/app
       - ./worker/project-context/company:/workspace/company
       - worker-data:/workspace/data
-    environment:
-      # Database (for migration period — will be removed)
-      - DATABASE_URL=${DATABASE_URL}
-      # Timezone
-      - TZ=Asia/Tokyo
-      # Claude Code CLI
-      - CLAUDE_CODE_USE_BEDROCK=${CLAUDE_CODE_USE_BEDROCK:-0}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
-      - IS_SANDBOX=${IS_SANDBOX:-1}
-      # Google (gws + gemini)
-      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
-      # Google OAuth2
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
-      # Webhook public URL (ngrok etc.)
-      - PUBLIC_URL=${PUBLIC_URL:-}
-      # Nango
-      - NANGO_SECRET_KEY=${NANGO_SECRET_KEY:-}
-      # Cloudflare R2
-      - R2_ACCOUNT_ID=${R2_ACCOUNT_ID:-8a3d80a1153c0958366bccdbaa70e7b4}
-      - R2_ENDPOINT=${R2_ENDPOINT:-https://8a3d80a1153c0958366bccdbaa70e7b4.r2.cloudflarestorage.com}
-      - R2_BUCKET=${R2_BUCKET:-ai-company-dev}
-      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID:-}
-      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY:-}
-      # Back API URL (for callbacks)
-      - BACK_URL=http://back:8001
-    depends_on:
-      db:
-        condition: service_healthy
-
-  # --- Database (PostgreSQL) ---
-  db:
-    image: postgres:16-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=aicompany
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./worker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 2s
-      timeout: 5s
-      retries: 10
+    env_file:
+      - ./worker/.env
 
 volumes:
-  pgdata:
   worker-data:
