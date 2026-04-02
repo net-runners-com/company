@@ -13,7 +13,6 @@ from app.routes.health import router as health_router
 from app.routes.chat import router as chat_router
 from app.routes.accounting import router as accounting_router
 from app.routes.projects import router as projects_router
-from app.routes.pages import router as pages_router
 from app.routes.connectors import router as connectors_router
 from app.routes.agent import router as agent_router
 from app.routes.line import router as line_router
@@ -34,7 +33,6 @@ app.include_router(health_router)
 app.include_router(chat_router)
 app.include_router(accounting_router)
 app.include_router(projects_router)
-app.include_router(pages_router)
 app.include_router(connectors_router)
 app.include_router(agent_router)
 app.include_router(line_router)
