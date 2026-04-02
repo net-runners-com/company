@@ -2,41 +2,43 @@ services:
   # --- Frontend (Next.js + BFF API Routes) ---
   frontend:
     build:
-      context: ./front
-      dockerfile: Dockerfile
+      context: ../front
+      dockerfile: ../env/front/Dockerfile
     ports:
       - "3000:3000"
     volumes:
-      - ./front/src:/app/src
-      - ./front/public:/app/public
+      - ../front/src:/app/src
     env_file:
       - ./front/.env
+      - ../front/.env
 
   # --- Back (Shared API — business logic + Supabase DB) ---
   back:
     build:
-      context: ./back
-      dockerfile: Dockerfile
+      context: ../back
+      dockerfile: ../env/back/Dockerfile
     ports:
       - "8001:8001"
     volumes:
-      - ./back/app:/app/app
+      - ../back/app:/app/app
     env_file:
       - ./back/.env
+      - ../back/.env
 
   # --- Worker (per-user container — Claude Code CLI + Playwright + R2) ---
   worker:
     build:
-      context: ./worker
-      dockerfile: Dockerfile
+      context: ../worker
+      dockerfile: ../env/worker/Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - ./worker/app:/app/app
-      - ./worker/project-context/company:/workspace/company
+      - ../worker/app:/app/app
+      - ../worker/project-context/company:/workspace/company
       - worker-data:/workspace/data
     env_file:
       - ./worker/.env
+      - ../worker/.env
 
 volumes:
   worker-data:
