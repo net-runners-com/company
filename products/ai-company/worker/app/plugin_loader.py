@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Optional, Type
 
 from app.connector_base import ConnectorHandler
-from app.r2 import _get_r2, R2_BUCKET
+from app.r2 import _get_r2, R2_BUCKET, _env_prefix
 
 PLUGINS_CACHE = Path("/tmp/connector-plugins")
 
@@ -18,7 +18,7 @@ _handler_cache: dict[str, Type[ConnectorHandler] | None] = {}
 def _download_plugin_file(plugin_id: str, filename: str) -> bytes | None:
     """R2からプラグインファイルをダウンロード"""
     s3 = _get_r2()
-    key = f"plugins/{plugin_id}/{filename}"
+    key = f"{_env_prefix()}plugins/{plugin_id}/{filename}"
     try:
         resp = s3.get_object(Bucket=R2_BUCKET, Key=key)
         return resp["Body"].read()

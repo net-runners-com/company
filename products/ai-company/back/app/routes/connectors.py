@@ -35,9 +35,9 @@ def save_connector(cid: str, data: dict):
 @router.get("/connectors/providers")
 async def list_providers(locale: str = "en"):
     """R2からプラグイン一覧を動的取得"""
-    from app.r2 import _get_r2, R2_BUCKET
+    from app.r2 import _get_r2, R2_BUCKET, r2_plugins_prefix
     s3 = _get_r2()
-    prefix = "plugins/"
+    prefix = r2_plugins_prefix()
     try:
         resp = s3.list_objects_v2(Bucket=R2_BUCKET, Prefix=prefix, Delimiter="/")
     except Exception as e:

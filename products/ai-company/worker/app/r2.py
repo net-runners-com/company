@@ -15,15 +15,19 @@ def _get_r2():
     )
 
 
-R2_BUCKET = os.environ.get("R2_BUCKET", "ai-company-dev")
+R2_BUCKET = os.environ.get("R2_BUCKET", "eureka")
+R2_ENV = os.environ.get("R2_ENV", "development")
+
+
+def _env_prefix() -> str:
+    return f"{R2_ENV}/"
 
 
 def _r2_prefix(emp_id: str) -> str:
-    return f"employees/{emp_id}/"
+    return f"{_env_prefix()}employees/{emp_id}/"
 
 
 def _r2_read(emp_id: str, path: str) -> bytes | None:
-    """R2からファイル読込（employee.pyのCLAUDE.md読込で使用）"""
     s3 = _get_r2()
     key = _r2_prefix(emp_id) + path
     try:
@@ -34,7 +38,6 @@ def _r2_read(emp_id: str, path: str) -> bytes | None:
 
 
 def _r2_sync_to_local(emp_id: str, local_dir: str):
-    """R2 → ローカル同期（エージェント起動前）"""
     s3 = _get_r2()
     prefix = _r2_prefix(emp_id)
     try:
@@ -52,7 +55,6 @@ def _r2_sync_to_local(emp_id: str, local_dir: str):
 
 
 def _r2_sync_from_local(emp_id: str, local_dir: str):
-    """ローカル → R2 同期（エージェント終了後）"""
     s3 = _get_r2()
     prefix = _r2_prefix(emp_id)
     local_base = Path(local_dir)

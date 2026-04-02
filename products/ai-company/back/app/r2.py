@@ -14,11 +14,21 @@ def _get_r2():
     )
 
 
-R2_BUCKET = os.environ.get("R2_BUCKET", "ai-company-dev")
+R2_BUCKET = os.environ.get("R2_BUCKET", "eureka")
+R2_ENV = os.environ.get("R2_ENV", "development")
+
+
+def _env_prefix() -> str:
+    """環境別プレフィックス: development/, staging/, production/"""
+    return f"{R2_ENV}/"
 
 
 def r2_prefix(emp_id: str) -> str:
-    return f"employees/{emp_id}/"
+    return f"{_env_prefix()}employees/{emp_id}/"
+
+
+def r2_plugins_prefix() -> str:
+    return f"{_env_prefix()}plugins/"
 
 
 def r2_list(emp_id: str, path: str = "") -> list[dict]:
@@ -32,15 +42,16 @@ def r2_list(emp_id: str, path: str = "") -> list[dict]:
         print(f"[R2] list error: {e}")
         return []
 
+    base = r2_prefix(emp_id)
     items = []
     for cp in resp.get("CommonPrefixes", []):
         name = cp["Prefix"][len(prefix):].rstrip("/")
         if name:
-            items.append({"name": name, "path": cp["Prefix"][len(r2_prefix(emp_id)):].rstrip("/"), "isDir": True, "size": None})
+            items.append({"name": name, "path": cp["Prefix"][len(base):].rstrip("/"), "isDir": True, "size": None})
     for obj in resp.get("Contents", []):
         name = obj["Key"][len(prefix):]
         if name and "/" not in name:
-            items.append({"name": name, "path": obj["Key"][len(r2_prefix(emp_id)):], "isDir": False, "size": obj["Size"]})
+            items.append({"name": name, "path": obj["Key"][len(base):], "isDir": False, "size": obj["Size"]})
     return items
 
 
