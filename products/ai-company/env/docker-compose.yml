@@ -19,6 +19,9 @@ services:
       dockerfile: ../env/back/Dockerfile
     ports:
       - "8001:8001"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     volumes:
       - ../back/app:/app/app
     env_file:
