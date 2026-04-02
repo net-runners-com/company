@@ -8,6 +8,7 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
 from app.db import query, execute
+from app.r2 import r2_write
 
 router = APIRouter()
 
@@ -61,8 +62,52 @@ async def upsert_employee(payload: dict):
     }
     save_employee(emp_id, emp)
 
-    # R2 profile generation stays in worker (needs filesystem)
-    # Worker will call back to this API after creation
+    # 新規作成時にR2にプロフィール生成
+    if not existing:
+        name = emp.get("name", "")
+        role = emp.get("role", "")
+        dept = emp.get("department", "")
+        tone = emp.get("tone", "")
+        skills = emp.get("skills", [])
+        profile_md = f"""# 自己紹介
+
+## 基本情報
+
+| 項目 | 内容 |
+|------|------|
+| 名前 | {name} |
+| 役職 | {role} |
+| 所属 | {dept} |
+| 口調 | {tone} |
+| 着任日 | {_time.strftime('%Y年%m月%d日')} |
+
+## スキル
+
+{chr(10).join(f'- {s}' for s in skills) if skills else '- （未設定）'}
+
+## プロフィール
+
+{name}です。{role}として働いています。よろしくお願いします！
+"""
+        claude_md = f"""# {name} の個人ルール
+
+## 性格・口調
+- {tone}な口調で話す
+- {role}としての専門性を活かして回答する
+
+## 専門知識
+{chr(10).join(f'- {s}' for s in skills) if skills else '- （自由に追加してください）'}
+
+## 行動ルール
+- 作業フォルダ内のファイルを活用して業務を遂行する
+- 分からないことは正直に伝える
+- 報告は簡潔に、要点をまとめる
+"""
+        try:
+            r2_write(emp_id, "自己紹介.md", profile_md.encode("utf-8"), "text/markdown; charset=utf-8")
+            r2_write(emp_id, "CLAUDE.md", claude_md.encode("utf-8"), "text/markdown; charset=utf-8")
+        except Exception as e:
+            print(f"[employees] R2 write error: {e}")
 
     return emp
 
