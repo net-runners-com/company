@@ -1,31 +1,19 @@
 import { NextRequest } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 
 const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+  // TODO: Supabase Auth token validation
   const body = await req.json();
-  const userId = (session.user as { id?: string }).id || "";
-  const userEmail = session.user.email || "";
 
   try {
     const res = await fetch(`${BACK_URL}/nango/session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId,
-        userEmail,
-        integrationId: body.integrationId || null,
-      }),
+      body: JSON.stringify(body),
     });
     return Response.json(await res.json());
   } catch {
-    return Response.json({ error: "Worker not reachable" }, { status: 502 });
+    return Response.json({ error: "Back not reachable" }, { status: 502 });
   }
 }

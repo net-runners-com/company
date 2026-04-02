@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useEmployeesStore } from "@/stores/employees";
 import { useI18n } from "@/lib/i18n";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth-provider";
 import { EmployeeAvatar } from "@/components/employee-avatar";
 import { getStatusConfig } from "@/lib/constants";
 import Link from "next/link";
@@ -24,11 +24,11 @@ const getDeptColor = (dept: string) => DEPT_COLORS[Math.abs([...dept].reduce((a,
 export default function HomePage() {
   const { employees, loading, fetch } = useEmployeesStore();
   const { t, locale } = useI18n();
-  const { data: session } = useSession();
+  const { user } = useAuth();
 
   useEffect(() => { fetch(); }, [fetch]);
 
-  const userName = session?.user?.name || session?.user?.email?.split("@")[0] || "User";
+  const userName = user?.user_metadata?.name || user?.email?.split("@")[0] || "User";
   const [expandedDept, setExpandedDept] = useState<string | null>(null);
   const activeEmployees = employees.filter((e) => e.status !== "archived");
 

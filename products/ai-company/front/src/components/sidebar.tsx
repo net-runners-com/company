@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useAuth } from "@/lib/auth-provider";
 import { useI18n } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
@@ -81,7 +81,7 @@ const navLabels: Record<string, Record<string, string>> = {
 export function Sidebar() {
   const pathname = usePathname();
   const { locale, setLocale } = useI18n();
-  const { data: session } = useSession();
+  const { user, signOut } = useAuth();
   const [depts, setDepts] = useState<Set<string>>(new Set());
   const [loaded, setLoaded] = useState(false);
   const [customPages, setCustomPages] = useState<{ slug: string; title: string }[]>([]);
@@ -113,7 +113,7 @@ export function Sidebar() {
     : navItems.filter((item) => item.dept === null); // ロード中は固定ページのみ
 
   const labels = navLabels[locale] || navLabels.en;
-  const userName = session?.user?.name || session?.user?.email?.split("@")[0] || "User";
+  const userName = user?.user_metadata?.name || user?.email?.split("@")[0] || "User";
 
   const renderLink = (item: NavItem, isMobile = false) => {
     const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -182,7 +182,7 @@ export function Sidebar() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-[var(--color-text)] truncate">{userName}</p>
-              <button onClick={() => signOut({ callbackUrl: "/" })} className="text-xs text-[var(--color-subtext)] hover:text-[var(--color-danger)] transition-colors">
+              <button onClick={() => { signOut(); window.location.href = "/"; }} className="text-xs text-[var(--color-subtext)] hover:text-[var(--color-danger)] transition-colors">
                 {locale === "ja" ? "ログアウト" : "Sign Out"}
               </button>
             </div>

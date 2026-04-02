@@ -1,16 +1,10 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { getStatus } from "@/lib/google-connector";
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const res = await fetch(`${BACK_URL}/oauth/google/status`);
+    return Response.json(await res.json());
+  } catch {
+    return Response.json({}, { status: 502 });
   }
-
-  const userId = (session.user as { id?: string }).id;
-  if (!userId) return Response.json({});
-
-  const status = await getStatus(userId);
-  return Response.json(status);
 }
