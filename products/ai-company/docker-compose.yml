@@ -1,23 +1,41 @@
 services:
-  # --- Frontend (Next.js + API Routes) ---
+  # --- Frontend (Next.js + BFF API Routes) ---
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ./front
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
-      - ./src:/app/src
-      - ./public:/app/public
+      - ./front/src:/app/src
+      - ./front/public:/app/public
     environment:
       - NODE_ENV=development
       - WORKER_URL=http://worker:8000
+      - BACK_URL=http://back:8001
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/aicompany
     depends_on:
       db:
         condition: service_healthy
 
-  # --- Worker (FastAPI + Claude Code + browser-use + gws) ---
+  # --- Back (Shared API — business logic + Supabase DB) ---
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./back/app:/app/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/aicompany
+      - TZ=Asia/Tokyo
+      - NANGO_SECRET_KEY=${NANGO_SECRET_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --- Worker (per-user container — Claude Code CLI + Playwright + R2) ---
   worker:
     build:
       context: ./worker
@@ -29,12 +47,13 @@ services:
       - ./worker/project-context/company:/workspace/company
       - worker-data:/workspace/data
     environment:
-      # Database
+      # Database (for migration period — will be removed)
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/aicompany
       # Timezone
       - TZ=Asia/Tokyo
-      # Claude Code CLI (OAuth)
+      # Claude Code CLI
       - CLAUDE_CODE_USE_BEDROCK=${CLAUDE_CODE_USE_BEDROCK:-0}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - IS_SANDBOX=${IS_SANDBOX:-1}
       # Google (gws + gemini)
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
@@ -43,8 +62,7 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
       # Webhook public URL (ngrok etc.)
       - PUBLIC_URL=${PUBLIC_URL:-}
-      # LINE/Slack/Discord — コネクタ設定は Web UI から管理
-      # Nango (サービス連携用)
+      # Nango
       - NANGO_SECRET_KEY=${NANGO_SECRET_KEY:-}
       # Cloudflare R2
       - R2_ACCOUNT_ID=${R2_ACCOUNT_ID:-8a3d80a1153c0958366bccdbaa70e7b4}
@@ -52,6 +70,8 @@ services:
       - R2_BUCKET=${R2_BUCKET:-ai-company-dev}
       - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID:-}
       - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY:-}
+      # Back API URL (for callbacks)
+      - BACK_URL=http://back:8001
     depends_on:
       db:
         condition: service_healthy
