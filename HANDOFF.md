@@ -5,82 +5,72 @@
 ### 4層アーキテクチャ分離
 - **front/**: Next.js BFF
 - **back/**: FastAPI 共有API + Supabase PostgreSQL (14ルート)
-  - employees, data, chat, user, connectors (CRUD+Google OAuth+providers), schedules (APScheduler), news, share, pages (generate/update含む), nango, files (R2), calendar, worker_proxy
-- **worker/**: Claude Code CLI実行のみ (9ルート)
-  - agent, chat, projects, accounting, general_chat, connectors (webhook), line, rules, health
+- **worker/**: Claude Code CLI実行のみ (9ルート: agent, chat, projects, accounting, general_chat, connectors, line, rules, health)
 - **env/**: Dockerfile, docker-compose.yml, コンテナ構成.env
 
-### DB移行
-- SQLite → Supabase PostgreSQL (aws-1-ap-northeast-2 pooler)
-- 全テーブル user_id UUID 付き
-- データ移行完了 (社員10, データ105, スレッド50, メッセージ346)
+### Cloud Run デプロイ
+- **staging**: https://eureka-back-staging-932022452995.asia-northeast1.run.app
+- **production**: 削除済み（必要時に再作成）
+- GCP: advance-verve-477206-d9, Artifact Registry eureka (asia-northeast1)
+- ビルド: `docker buildx build --platform linux/amd64 -f env/back/Dockerfile -t asia-northeast1-docker.pkg.dev/advance-verve-477206-d9/eureka/back:latest --push .`
+
+### Cloud Scheduler
+- **eureka-news-update-staging**: 毎朝7時JST → staging /schedules/trigger
+- back/schedules.py に `/schedules/trigger` エンドポイント追加済み
 
 ### R2管理
 - バケット: `eureka`
-- 環境別ディレクトリ: `{R2_ENV}/employees/`, `{R2_ENV}/plugins/`
-- R2_ENV: development / staging / production
-- コネクタープラグイン: R2からオンデマンドロード（worker再ビルド不要）
-- ファイルブラウザ・スキル: backから直接R2操作
-
-### Worker スリム化
-- 削除済み: db.py, data.py, user.py, share.py, nango.py, files.py, schedules.py, employees.py, pages.py, news.py (GET)
-- APScheduler: backに移行、タスク実行は worker `/agent/run` にHTTP
-- pages generate/update: backが `/agent/run` 呼んでHTML抽出・保存
-- connector plugins: R2管理に移行、ローカルディレクトリ削除
+- 環境別: `{R2_ENV}/employees/`, `{R2_ENV}/plugins/`
+- LINEプラグイン staging にアップロード済み (manifest.json, handler.py, icon.svg)
+- コネクタープラグイン: R2からオンデマンドロード
 
 ### Fly.io
 - アプリ `eureka-workers` 作成済み
-- FLY_API_TOKEN を back/.env に設定済み
-- worker_proxy.py: Fly Machines API連携（マシン作成/起動/停止）実装済み
+- FLY_API_TOKEN 設定済み
+- worker_proxy.py: Fly Machines API連携実装済み
 
-### 進捗管理ページ
-- バックグラウンド実行、中断機能、ポーリング、並列エージェント、UI改善
+### Worker スリム化
+- 9ルートのみ（全てclaude CLI/Playwright/ローカルファイル依存）
+- `/agent/run`: 汎用エージェント実行エンドポイント
+- APScheduler: backに移行済み（Cloud Scheduler経由）
+- R2: sync_to_local/sync_from_local + _r2_read のみ
 
 ## 作業中・未完了
-- [ ] **本番デプロイ構成の実装**:
-  - Cloud Run: back API デプロイ
-  - Cloud Scheduler: cron → Cloud Run エンドポイント
-  - Fly.io Machines: worker（ユーザー別オンデマンド）
-  - Vercel: front デプロイ
-- [ ] **フロントBFF統一**: WORKER_URL直接参照 → back `/worker/{path}` プロキシ経由に
-- [ ] **Supabase Auth統合**: NextAuth → Supabase Auth
+- [ ] **LPページ**: `/` にEurekaサービス紹介 + CTA（登録/ログイン）
+- [ ] **Supabase Auth統合**: NextAuth → Supabase Auth に切替
+  - メール/パスワード + Google OAuth
+  - auth.users 連携 + RLS
+  - NextAuth関連コード削除
+- [ ] **アカウント登録→コンテナ自動作成**: 登録時にFly.io Machine作成
+- [ ] **フロントBFF統一**: WORKER_URL直接参照 → back `/worker/{path}` プロキシ経由
 - [ ] **RLSポリシー**: マルチテナント
-- [ ] **SPEC.md再作成**: 4層アーキテクチャ版
+- [ ] **Vercel デプロイ**: front/
 
 ## 決定事項
-- **AI認証**: ANTHROPIC_API_KEY方式
+- **サービス名**: Eureka
+- **認証**: Supabase Auth（NextAuthから移行）
 - **本番構成**: Cloud Run (back) + Fly.io Machines (worker) + Vercel (front) + Supabase (DB)
-  - Cloud Scheduler でcron管理（APScheduler置き換え）
-- **R2**: バケット `eureka`、環境別ディレクトリ (`R2_ENV`)
+- **cron**: Cloud Scheduler → Cloud Run `/schedules/trigger`
+- **R2**: バケット `eureka`、環境別ディレクトリ (R2_ENV)
 - **コネクタープラグイン**: R2管理、オンデマンドロード
-- **WORKER_URL は動的**: backのworker_proxyがDBからユーザー別URL取得
 
 ## 次回やるべきこと
-1. **Cloud Run デプロイ**: back/ のDockerイメージをGCRにpush → Cloud Run作成
-2. **Cloud Scheduler設定**: cronジョブ → Cloud Run `/schedules/trigger` 
-3. **Fly.io Worker テスト**: eureka-workersにテストマシン作成・起動確認
-4. **Vercel デプロイ**: front/ をVercelに接続
+1. **LPページ作成**: `/` にEureka紹介、料金、CTA
+2. **Supabase Auth実装**: サインアップ/ログイン、NextAuth削除
+3. **登録フロー**: サインアップ → Fly Machine作成 → オンボーディング
+4. **Vercel デプロイ**: front/ 接続
 5. **フロントBFF → worker_proxy統一**
 
 ## コンテキスト
 - **リポジトリ**: https://github.com/net-runners-com/company (main)
-- **Supabase**: mzdnglqmungkdcllurdz (ap-northeast-2), pooler接続
-- **R2**: eureka バケット, development/ プレフィックス
-- **Fly.io**: eureka-workers アプリ (Runners Net org)
-- **起動**: `docker compose -f env/docker-compose.yml up -d`
+- **サービス名**: Eureka
+- **GCP**: advance-verve-477206-d9
+- **Supabase**: mzdnglqmungkdcllurdz (ap-northeast-2 pooler)
+- **R2**: eureka バケット
+- **Fly.io**: eureka-workers (Runners Net org)
+- **Cloud Run staging**: eureka-back-staging
+- **Artifact Registry**: asia-northeast1-docker.pkg.dev/advance-verve-477206-d9/eureka/back
+- **起動 (dev)**: `docker compose -f env/docker-compose.yml up -d`
 - **ポート**: front:3000, back:8001, worker:8000
-- **主要ファイル**:
-  - `env/docker-compose.yml`
-  - `back/app/main.py` (14ルーター)
-  - `back/app/db.py` (DATABASE_URL)
-  - `back/app/r2.py` (R2_ENV対応)
-  - `back/app/routes/worker_proxy.py` (Fly Machines連携)
-  - `back/app/routes/schedules.py` (APScheduler + worker /agent/run)
-  - `back/app/routes/connectors.py` (CRUD + OAuth + R2 providers)
-  - `back/app/routes/pages.py` (generate/update via /agent/run)
-  - `worker/app/main.py` (9ルーター)
-  - `worker/app/routes/agent.py` (汎用実行)
-  - `worker/app/back_client.py` (Worker→Back通信)
-  - `worker/app/plugin_loader.py` (R2オンデマンド)
-- **注意**: sed使用禁止（ファイル破損事故あり）
-- **DNS**: Supabase direct接続不可、pooler使用
+- **テストユーザー**: dev@example.com (ID: 00000000-0000-0000-0000-000000000001)
+- **注意**: sed使用禁止。Cloud RunはARM不可（--platform linux/amd64必須）
