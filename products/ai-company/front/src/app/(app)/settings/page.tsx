@@ -15,6 +15,7 @@ interface ConnectorData {
   config: Record<string, string>;
   enabled: boolean;
   webhookPath: string;
+  webhookUrl?: string;
   status?: string;
   createdAt?: string;
 }
