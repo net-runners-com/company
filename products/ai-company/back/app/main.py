@@ -3,6 +3,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.routes import employees, data, chat, user, connectors, schedules, news, share
+
 app = FastAPI(title="AI Company API", version="0.1.0")
 
 app.add_middleware(
@@ -13,12 +15,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ─── Routes ───
+app.include_router(employees.router)
+app.include_router(data.router)
+app.include_router(chat.router)
+app.include_router(user.router)
+app.include_router(connectors.router)
+app.include_router(schedules.router)
+app.include_router(news.router)
+app.include_router(share.router)
+
 
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "back"}
-
-
-# Routes will be added as they are migrated from worker
-# from app.routes import employees, data, projects, chat, ...
-# app.include_router(employees.router)
