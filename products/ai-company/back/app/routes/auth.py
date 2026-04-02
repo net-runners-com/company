@@ -53,7 +53,8 @@ async def setup_user(payload: dict):
         except Exception as e:
             print(f"[auth/setup] R2 write error for {emp['id']}: {e}")
 
-    # TODO: Fly.io Machine作成（本番用）
-    # container_url = await _ensure_container_running(user_id)
+    # Fly.io Machine作成
+    from app.routes.machines import create_machine
+    machine_result = await create_machine({"userId": user_id})
 
-    return {"status": "setup_complete", "employees": len(INITIAL_EMPLOYEES)}
+    return {"status": "setup_complete", "employees": len(INITIAL_EMPLOYEES), "machine": machine_result}

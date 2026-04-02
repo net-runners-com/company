@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import employees, data, chat, user, connectors, schedules, news, share, pages, nango, worker_proxy, files, calendar, auth
+from app.routes import employees, data, chat, user, connectors, schedules, news, share, pages, nango, worker_proxy, files, calendar, auth, machines
 from app.routes.schedules import load_and_start_scheduler
 
 app = FastAPI(title="AI Company API", version="0.1.0")
@@ -30,6 +30,7 @@ app.include_router(nango.router)
 app.include_router(files.router)
 app.include_router(calendar.router)
 app.include_router(auth.router)
+app.include_router(machines.router)
 app.include_router(worker_proxy.router)
 
 
