@@ -1,4 +1,4 @@
-"""General chat — /chat, /chat/stream, /tasks/execute, /sns/post, /playwright/*, calendar."""
+"""General chat — /chat, /chat/stream, /playwright/*."""
 
 import asyncio
 import json
@@ -9,35 +9,7 @@ import time
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
-import app.back_client as back
-from app.routes.nango import NANGO_BASE
-
 router = APIRouter()
-
-
-@router.post("/tasks/execute")
-async def execute_task(payload: dict):
-    """
-    フロントの API Routes から呼ばれるタスク実行エンドポイント。
-    Claude Code CLI でLLM処理、Playwright MCPでSNS投稿など。
-    """
-    task_type = payload.get("type", "unknown")
-    return {
-        "status": "accepted",
-        "task_type": task_type,
-        "message": f"Task '{task_type}' queued for execution",
-    }
-
-
-@router.post("/sns/post")
-async def sns_post(payload: dict):
-    """SNS投稿ジョブ（Playwright MCP連携）"""
-    platform = payload.get("platform", "unknown")
-    return {
-        "status": "accepted",
-        "platform": platform,
-        "message": f"Post to {platform} queued",
-    }
 
 
 @router.post("/chat")
@@ -224,89 +196,3 @@ async def playwright_status():
     }
 
 
-# ============================================
-# Google Calendar — Nango経由で予定取得
-# ============================================
-
-@router.get("/calendar/events")
-async def get_calendar_events(month: str = ""):
-    """Googleカレンダーから予定取得。month=YYYY-MM"""
-    import datetime
-    if not month:
-        month = datetime.datetime.now().strftime("%Y-%m")
-
-    year, mon = month.split("-")
-    # 月初〜月末
-    time_min = f"{month}-01T00:00:00+09:00"
-    last_day = (datetime.date(int(year), int(mon), 1) + datetime.timedelta(days=32)).replace(day=1) - datetime.timedelta(days=1)
-    time_max = f"{month}-{last_day.day}T23:59:59+09:00"
-
-    # Nango proxy で取得
-    secret = os.environ.get("NANGO_SECRET_KEY", "")
-    if not secret:
-        return {"events": [], "error": "NANGO_SECRET_KEY not configured"}
-
-    # 接続IDを自動取得
-    import httpx
-    connection_id = ""
-    async with httpx.AsyncClient() as client:
-        try:
-            resp = await client.get(f"{NANGO_BASE}/connections", headers={"Authorization": f"Bearer {secret}"}, timeout=10)
-            conns = resp.json().get("connections", [])
-            match = next((c for c in conns if c.get("provider") == "google-calendar" or c.get("provider_config_key") == "google-calendar"), None)
-            if match:
-                connection_id = match["connection_id"]
-        except Exception:
-            pass
-
-    if not connection_id:
-        # Googleカレンダー未接続 → ローカルデータにフォールバック
-        entries = back.list_data("calendar_events")
-        return {"events": entries, "source": "local"}
-
-    # Nango proxy でGoogle Calendar API呼び出し
-    import urllib.parse
-    endpoint = f"/calendar/v3/calendars/primary/events?timeMin={urllib.parse.quote(time_min)}&timeMax={urllib.parse.quote(time_max)}&singleEvents=true&orderBy=startTime&maxResults=100"
-
-    async with httpx.AsyncClient() as client:
-        try:
-            resp = await client.request(
-                "GET",
-                f"{NANGO_BASE}/proxy{endpoint}",
-                headers={
-                    "Authorization": f"Bearer {secret}",
-                    "Connection-Id": connection_id,
-                    "Provider-Config-Key": "google-calendar",
-                },
-                timeout=15,
-            )
-            data = resp.json()
-        except Exception as e:
-            return {"events": [], "error": str(e)}
-
-    events = []
-    for item in data.get("items", []):
-        start = item.get("start", {})
-        end = item.get("end", {})
-
-        if "dateTime" in start:
-            date = start["dateTime"][:10]
-            start_time = start["dateTime"][11:16]
-            end_time = end.get("dateTime", "")[11:16] if "dateTime" in end else ""
-        else:
-            date = start.get("date", "")
-            start_time = ""
-            end_time = ""
-
-        events.append({
-            "id": item.get("id", ""),
-            "title": item.get("summary", ""),
-            "description": item.get("description", ""),
-            "date": date,
-            "startTime": start_time,
-            "endTime": end_time,
-            "type": "meeting",
-            "location": item.get("location", ""),
-        })
-
-    return {"events": events, "source": "google"}
