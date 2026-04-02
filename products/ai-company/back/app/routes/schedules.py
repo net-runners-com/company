@@ -53,11 +53,29 @@ def _run_scheduled_task(schedule_id: str, emp_id: str, task: str, name: str):
     print(f"[scheduler] Result: {name} → {result.get('status', 'unknown')}")
 
 
+NEWS_FETCH_PROMPT = """今日のニュースを6件取得してJSON配列で返してください。
+カテゴリ: tech, business, industry, market
+Web検索で実際の最新ニュースを取得すること。
+
+出力形式（JSONのみ）:
+```json
+[{"title":"タイトル","source":"ソース","category":"tech","summary":"要約","url":"URL","publishedAt":"ISO日時"}]
+```"""
+
+
 def _run_system_job(handler_id: str, name: str):
-    """システムジョブを実行"""
+    """システムジョブを実行 — workerの/agent/runに投げる"""
     print(f"[scheduler] System job: {name}")
     if handler_id == "news_update":
-        _call_worker("/news/update", {})
+        # 秘書（emp-1）にニュース取得させる
+        result = _call_worker("/agent/run", {
+            "empId": "emp-1",
+            "task": NEWS_FETCH_PROMPT,
+            "threadTitle": "ニュース自動取得",
+            "maxTurns": 5,
+            "timeout": 60,
+        })
+        print(f"[scheduler] News update result: {result.get('status', 'unknown')}")
     else:
         print(f"[scheduler] Unknown handler: {handler_id}")
 

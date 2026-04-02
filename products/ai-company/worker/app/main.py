@@ -15,7 +15,6 @@ from app.routes.accounting import router as accounting_router
 from app.routes.projects import router as projects_router
 from app.routes.pages import router as pages_router
 from app.routes.connectors import router as connectors_router
-from app.routes.news import router as news_router
 from app.routes.agent import router as agent_router
 from app.routes.line import router as line_router
 from app.routes.rules import router as rules_router
@@ -37,7 +36,6 @@ app.include_router(accounting_router)
 app.include_router(projects_router)
 app.include_router(pages_router)
 app.include_router(connectors_router)
-app.include_router(news_router)
 app.include_router(agent_router)
 app.include_router(line_router)
 app.include_router(rules_router)
