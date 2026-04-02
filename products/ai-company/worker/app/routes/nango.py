@@ -6,7 +6,7 @@ import time as _time
 
 from fastapi import APIRouter, Request
 
-from app.db import _get_db
+import app.back_client as back
 
 router = APIRouter()
 
@@ -172,17 +172,9 @@ async def nango_webhook(request: Request):
     if event_type == "auth" and body.get("success"):
         connection_id = body.get("connectionId", "")
         provider = body.get("providerConfigKey", "")
-        conn = _get_db()
-        try:
-            conn.execute(
-                "INSERT OR REPLACE INTO data_store (id, collection, data) VALUES (?, ?, ?)",
-                [f"nango-{connection_id}", "nango_connections",
-                 json.dumps({"connectionId": connection_id, "provider": provider,
-                             "status": "connected", "connectedAt": _time.strftime("%Y-%m-%dT%H:%M:%S")},
-                            ensure_ascii=False)]
-            )
-            conn.commit()
-        finally:
-            conn.close()
+        back.save_data("nango_connections", f"nango-{connection_id}", {
+            "connectionId": connection_id, "provider": provider,
+            "status": "connected", "connectedAt": _time.strftime("%Y-%m-%dT%H:%M:%S"),
+        })
 
     return {"status": "ok"}

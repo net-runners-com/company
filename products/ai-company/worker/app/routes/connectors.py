@@ -13,7 +13,7 @@ from pathlib import Path
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, Response
 
-from app.db import _get_db
+import app.back_client as back
 from app.plugin_loader import get_all_manifests, get_handler_class, get_manifest, get_registry
 
 router = APIRouter()
@@ -23,33 +23,21 @@ _agent_processes: dict[str, subprocess.Popen] = {}
 
 
 def load_connectors() -> dict:
-    conn = _get_db()
-    try:
-        rows = conn.execute("SELECT id, data FROM connectors").fetchall()
-        return {r["id"]: json.loads(r["data"]) for r in rows}
-    finally:
-        conn.close()
+    result = back.get("/connectors")
+    return result.get("connectors", {})
 
 
 def save_connectors(data: dict):
-    conn = _get_db()
-    try:
-        for cid, c in data.items():
-            conn.execute(
-                "INSERT OR REPLACE INTO connectors (id, data, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
-                [cid, json.dumps(c, ensure_ascii=False)])
-        conn.commit()
-    finally:
-        conn.close()
+    """Save connectors via back API data_store as fallback."""
+    for cid, c in data.items():
+        back.save_data("connectors_data", cid, c)
 
 
 def get_connector(connector_id: str) -> dict | None:
-    conn = _get_db()
-    try:
-        row = conn.execute("SELECT data FROM connectors WHERE id = ?", [connector_id]).fetchone()
-        return json.loads(row["data"]) if row else None
-    finally:
-        conn.close()
+    result = back.get(f"/connectors/{connector_id}")
+    if result.get("error"):
+        return None
+    return result
 
 
 def _get_public_url() -> str | None:

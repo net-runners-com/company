@@ -9,7 +9,7 @@ import time
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
-from app.db import _get_db
+import app.back_client as back
 from app.routes.nango import NANGO_BASE
 
 router = APIRouter()
@@ -261,12 +261,8 @@ async def get_calendar_events(month: str = ""):
 
     if not connection_id:
         # Googleカレンダー未接続 → ローカルデータにフォールバック
-        conn = _get_db()
-        try:
-            rows = conn.execute("SELECT data FROM data_store WHERE collection = 'calendar_events' ORDER BY created_at DESC").fetchall()
-            return {"events": [json.loads(r["data"]) for r in rows], "source": "local"}
-        finally:
-            conn.close()
+        entries = back.list_data("calendar_events")
+        return {"events": entries, "source": "local"}
 
     # Nango proxy でGoogle Calendar API呼び出し
     import urllib.parse

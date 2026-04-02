@@ -7,7 +7,7 @@ import uuid
 
 from fastapi import APIRouter, Request
 
-from app.db import _get_db
+import app.back_client as back
 
 router = APIRouter()
 
@@ -20,12 +20,8 @@ async def generate_page(request: Request):
     if not prompt:
         return {"error": "prompt is required"}
 
-    conn = _get_db()
-    try:
-        rows = conn.execute("SELECT collection, COUNT(*) as count FROM data_store GROUP BY collection").fetchall()
-        collections = [{"name": r["collection"], "count": r["count"]} for r in rows]
-    finally:
-        conn.close()
+    result = back.get("/data")
+    collections = result.get("collections", [])
 
     collections_text = "\n".join(f"- {c['name']} ({c['count']}件)" for c in collections) if collections else "（まだなし）"
 
@@ -111,15 +107,7 @@ async def _generate_html_page(prompt: str, collections_text: str, body: dict):
         "html": html_content,
     }
 
-    conn = _get_db()
-    try:
-        conn.execute(
-            "INSERT OR REPLACE INTO data_store (id, collection, data) VALUES (?, ?, ?)",
-            [slug, "dashboards", json.dumps(page_def, ensure_ascii=False)]
-        )
-        conn.commit()
-    finally:
-        conn.close()
+    back.save_data("dashboards", slug, page_def)
 
     return {"slug": slug, "title": title, "mode": "html", "status": "created"}
 
@@ -129,12 +117,7 @@ async def _generate_html_page(prompt: str, collections_text: str, body: dict):
 @router.get("/pages/list")
 async def list_pages():
     """作成済みカスタムページ一覧"""
-    conn = _get_db()
-    try:
-        rows = conn.execute("SELECT data FROM data_store WHERE collection = 'dashboards' ORDER BY created_at DESC").fetchall()
-        return {"pages": [json.loads(r["data"]) for r in rows]}
-    finally:
-        conn.close()
+    return back.get("/pages/list")
 
 
 @router.post("/pages/{slug}/update")
@@ -146,25 +129,14 @@ async def update_page(slug: str, request: Request):
         return {"error": "prompt is required"}
 
     # 既存ページ取得
-    conn = _get_db()
-    try:
-        row = conn.execute("SELECT data FROM data_store WHERE id = ? AND collection = 'dashboards'", [slug]).fetchone()
-    finally:
-        conn.close()
-
-    if not row:
+    page_def = back.get(f"/pages/{slug}")
+    if not page_def or page_def.get("error"):
         return {"error": "Page not found", "slug": slug}
-
-    page_def = json.loads(row["data"])
     current_html = page_def.get("html", "")
 
     # コレクション情報取得
-    conn = _get_db()
-    try:
-        rows = conn.execute("SELECT collection, COUNT(*) as count FROM data_store GROUP BY collection").fetchall()
-        collections = [{"name": r["collection"], "count": r["count"]} for r in rows]
-    finally:
-        conn.close()
+    result = back.get("/data")
+    collections = result.get("collections", [])
 
     collections_text = "\n".join(f"- {c['name']} ({c['count']}件)" for c in collections) if collections else "（まだなし）"
 
@@ -209,16 +181,7 @@ async def update_page(slug: str, request: Request):
         return {"error": "Could not parse HTML", "raw": output[:500]}
 
     page_def["html"] = match.group(1)
-
-    conn = _get_db()
-    try:
-        conn.execute(
-            "UPDATE data_store SET data = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%S','now','localtime') WHERE id = ? AND collection = 'dashboards'",
-            [json.dumps(page_def, ensure_ascii=False), slug]
-        )
-        conn.commit()
-    finally:
-        conn.close()
+    back.post(f"/pages/{slug}/save", page_def)
 
     return {"slug": slug, "title": page_def.get("title", ""), "mode": "html", "status": "updated"}
 
@@ -226,10 +189,4 @@ async def update_page(slug: str, request: Request):
 @router.delete("/pages/{slug}")
 async def delete_page(slug: str):
     """カスタムページを削除"""
-    conn = _get_db()
-    try:
-        conn.execute("DELETE FROM data_store WHERE id = ? AND collection = 'dashboards'", [slug])
-        conn.commit()
-        return {"status": "deleted", "slug": slug}
-    finally:
-        conn.close()
+    return back.delete(f"/pages/{slug}")

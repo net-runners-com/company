@@ -10,7 +10,7 @@ from fastapi import APIRouter, Request
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from app.db import _get_db
+import app.back_client as back
 from app.employee import (
     load_employees, _get_employee_workdir, _build_employee_system_prompt,
 )
@@ -134,42 +134,27 @@ def _register_job(sched_id: str, sched: dict):
 
 def _seed_system_jobs():
     """システムジョブがDBになければシード"""
-    conn = _get_db()
-    try:
-        for job in SYSTEM_JOBS:
-            existing = conn.execute(
-                "SELECT id FROM data_store WHERE id = ? AND collection = 'schedules'",
-                [job["id"]]
-            ).fetchone()
-            if not existing:
-                conn.execute(
-                    "INSERT INTO data_store (id, collection, data) VALUES (?, ?, ?)",
-                    [job["id"], "schedules", json.dumps(job, ensure_ascii=False)]
-                )
-                print(f"[scheduler] Seeded system job: {job['name']}")
-        conn.commit()
-    finally:
-        conn.close()
+    for job in SYSTEM_JOBS:
+        existing = back.get_data("schedules", job["id"])
+        if not existing:
+            back.save_data("schedules", job["id"], job)
+            print(f"[scheduler] Seeded system job: {job['name']}")
 
 
 def _load_schedules_to_scheduler():
-    """SQLiteからスケジュールを読み込んでAPSchedulerに登録"""
+    """Back APIからスケジュールを読み込んでAPSchedulerに登録"""
     _seed_system_jobs()
 
-    conn = _get_db()
-    try:
-        rows = conn.execute("SELECT id, data FROM data_store WHERE collection = 'schedules'").fetchall()
-    finally:
-        conn.close()
+    rows = back.list_data("schedules")
 
     # 既存ジョブをクリア（sched_プレフィックスのもの）
     for job in _scheduler.get_jobs():
         if job.id.startswith("sched_"):
             _scheduler.remove_job(job.id)
 
-    for row in rows:
-        sched = json.loads(row["data"])
-        _register_job(row["id"], sched)
+    for sched in rows:
+        sid = sched.pop("_id", None) or sched.get("id", "")
+        _register_job(sid, sched)
 
 
 @router.post("/schedules")
@@ -193,16 +178,7 @@ async def create_schedule(request: Request):
             return {"error": "cron, empId, task are required"}
         data = {"name": name, "cron": cron, "empId": emp_id, "task": task}
 
-    conn = _get_db()
-    try:
-        conn.execute(
-            "INSERT OR REPLACE INTO data_store (id, collection, data) VALUES (?, ?, ?)",
-            [sched_id, "schedules", json.dumps(data, ensure_ascii=False)]
-        )
-        conn.commit()
-    finally:
-        conn.close()
-
+    back.save_data("schedules", sched_id, data)
     _register_job(sched_id, data)
     return {"id": sched_id, "name": name, "cron": cron, "type": job_type, "status": "registered"}
 
@@ -210,32 +186,18 @@ async def create_schedule(request: Request):
 @router.get("/schedules")
 async def list_schedules():
     """スケジュール一覧"""
-    conn = _get_db()
-    try:
-        rows = conn.execute("SELECT id, data, created_at FROM data_store WHERE collection = 'schedules' ORDER BY created_at DESC").fetchall()
-        schedules = []
-        for r in rows:
-            s = json.loads(r["data"])
-            s["_id"] = r["id"]
-            s["_created_at"] = r["created_at"]
-            # 次回実行時刻
-            job = _scheduler.get_job(f"sched_{r['id']}")
-            s["nextRun"] = str(job.next_run_time) if job and job.next_run_time else None
-            schedules.append(s)
-        return {"schedules": schedules}
-    finally:
-        conn.close()
+    entries = back.list_data("schedules")
+    for s in entries:
+        sid = s.get("_id", "")
+        job = _scheduler.get_job(f"sched_{sid}")
+        s["nextRun"] = str(job.next_run_time) if job and job.next_run_time else None
+    return {"schedules": entries}
 
 
 @router.delete("/schedules/{sched_id}")
 async def delete_schedule(sched_id: str):
     """スケジュール削除"""
-    conn = _get_db()
-    try:
-        conn.execute("DELETE FROM data_store WHERE id = ? AND collection = 'schedules'", [sched_id])
-        conn.commit()
-    finally:
-        conn.close()
+    back.delete_data("schedules", sched_id)
     try:
         _scheduler.remove_job(f"sched_{sched_id}")
     except Exception:
