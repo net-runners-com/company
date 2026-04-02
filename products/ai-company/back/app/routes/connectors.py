@@ -32,6 +32,58 @@ def save_connector(cid: str, data: dict):
     )
 
 
+@router.get("/connectors/providers")
+async def list_providers(locale: str = "en"):
+    """R2からプラグイン一覧を動的取得"""
+    from app.r2 import _get_r2, R2_BUCKET
+    s3 = _get_r2()
+    prefix = "plugins/"
+    try:
+        resp = s3.list_objects_v2(Bucket=R2_BUCKET, Prefix=prefix, Delimiter="/")
+    except Exception as e:
+        return {"providers": [], "error": str(e)}
+
+    providers = []
+    for cp in resp.get("CommonPrefixes", []):
+        plugin_id = cp["Prefix"][len(prefix):].rstrip("/")
+        if not plugin_id:
+            continue
+        # manifest.json を読む
+        try:
+            obj = s3.get_object(Bucket=R2_BUCKET, Key=f"{prefix}{plugin_id}/manifest.json")
+            manifest = json.loads(obj["Body"].read())
+        except Exception:
+            continue
+
+        # icon.svg を読む
+        icon_svg = ""
+        try:
+            obj = s3.get_object(Bucket=R2_BUCKET, Key=f"{prefix}{plugin_id}/icon.svg")
+            icon_svg = obj["Body"].read().decode("utf-8")
+        except Exception:
+            pass
+
+        display = manifest.get("display", {})
+        providers.append({
+            "id": manifest.get("id", plugin_id),
+            "type": manifest.get("type", "webhook"),
+            "name": display.get("name", {}).get(locale, display.get("name", {}).get("en", plugin_id)),
+            "description": display.get("description", {}).get(locale, display.get("description", {}).get("en", "")),
+            "color": display.get("color", "#6366f1"),
+            "bgColor": display.get("bgColor", "#eef2ff"),
+            "iconSvg": icon_svg,
+            "fields": [{
+                "key": f["key"],
+                "label": f["label"].get(locale, f["label"].get("en", f["key"])),
+                "type": f.get("type", "text"),
+                "required": f.get("required", False),
+            } for f in manifest.get("fields", [])],
+            "auth": manifest.get("auth", {}),
+        })
+
+    return {"providers": providers}
+
+
 @router.get("/connectors")
 async def list_connectors():
     connectors = load_connectors()
