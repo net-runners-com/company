@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   const userEmail = session.user.email || "";
 
   try {
-    const res = await fetch(`${WORKER_URL}/nango/session`, {
+    const res = await fetch(`${BACK_URL}/nango/session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

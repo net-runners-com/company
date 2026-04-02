@@ -1,8 +1,8 @@
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function GET() {
   try {
-    const res = await fetch(`${WORKER_URL}/nango/connections`);
+    const res = await fetch(`${BACK_URL}/nango/connections`);
     return Response.json(await res.json());
   } catch {
     return Response.json({ connections: [] }, { status: 502 });

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 
 const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(`${WORKER_URL}/connectors`);
+    const res = await fetch(`${BACK_URL}/connectors`);
     const data = await res.json();
     return Response.json(data);
   } catch {

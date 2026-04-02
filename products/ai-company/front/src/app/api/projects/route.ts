@@ -1,11 +1,12 @@
 import { NextRequest } from "next/server";
 
 const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function GET(req: NextRequest) {
   const projectId = req.nextUrl.searchParams.get("id");
 
-  // Single project status (polling)
+  // Single project status (polling) — worker tracks running state in memory
   if (projectId) {
     try {
       const res = await fetch(`${WORKER_URL}/projects/${projectId}/status`, { cache: "no-store" });

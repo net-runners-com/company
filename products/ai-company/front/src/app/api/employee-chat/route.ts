@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 
 const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
   // List threads
   if (_action === "threads") {
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/threads`);
+      const res = await fetch(`${BACK_URL}/employee/${employeeId}/threads`);
       return Response.json(await res.json());
     } catch {
       return Response.json({ threads: [] }, { status: 200 });
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
   // Create thread
   if (_action === "create_thread") {
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/threads`, {
+      const res = await fetch(`${BACK_URL}/employee/${employeeId}/threads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: body.title || "" }),
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
     const tid = threadId;
     if (!tid) return Response.json({ error: "threadId required" }, { status: 400 });
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/threads/${tid}`, {
+      const res = await fetch(`${BACK_URL}/employee/${employeeId}/threads/${tid}`, {
         method: "DELETE",
       });
       return Response.json(await res.json());
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
   if (_action === "history") {
     try {
       const tid = threadId || "default";
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/chat/history?thread_id=${tid}`);
+      const res = await fetch(`${BACK_URL}/employee/${employeeId}/chat/history?thread_id=${tid}`);
       return Response.json(await res.json());
     } catch {
       return Response.json([], { status: 200 });
@@ -62,14 +63,14 @@ export async function POST(req: NextRequest) {
   // Register employee on worker
   if (_action === "register") {
     try {
-      const res = await fetch(`${WORKER_URL}/employees`, {
+      const res = await fetch(`${BACK_URL}/employees`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       return Response.json(await res.json());
     } catch {
-      return Response.json({ error: "Worker not reachable" }, { status: 502 });
+      return Response.json({ error: "Back API not reachable" }, { status: 502 });
     }
   }
 
