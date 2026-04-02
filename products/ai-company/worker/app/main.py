@@ -13,7 +13,6 @@ from app.employee import _ensure_employees_file
 from app.routes.health import router as health_router
 from app.routes.employees import router as employees_router
 from app.routes.chat import router as chat_router
-from app.routes.files import router as files_router
 from app.routes.accounting import router as accounting_router
 from app.routes.projects import router as projects_router
 from app.routes.pages import router as pages_router
@@ -37,7 +36,6 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(employees_router)
 app.include_router(chat_router)
-app.include_router(files_router)
 app.include_router(accounting_router)
 app.include_router(projects_router)
 app.include_router(pages_router)
