@@ -1,0 +1,456 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - link "メイン コンテンツにスキップ" [ref=e2] [cursor=pointer]
+      - link "ユーザー補助ヘルプ" [ref=e3] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=ja
+      - link "ユーザー補助に関するフィードバック" [ref=e4] [cursor=pointer]
+  - generic [ref=e9]:
+    - search [ref=e10]:
+      - generic [ref=e12]:
+        - link "Google ホームへ" [ref=e14] [cursor=pointer]:
+          - /url: https://www.google.com/webhp?hl=ja&sa=X&ved=0ahUKEwjpg--39cyTAxV41zQHHTvdO_QQPAgJ
+          - img [ref=e15]
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - combobox "検索" [ref=e26]: 建築会社 ホームページ デザイン トレンド 参考 かっこいい 建築会社 ホームページ デザイン トレンド 参考 かっこいい
+            - generic [ref=e27]:
+              - button "消去" [ref=e29] [cursor=pointer]:
+                - img [ref=e31]
+              - generic [ref=e34]:
+                - button "音声で検索" [ref=e35] [cursor=pointer]:
+                  - img [ref=e36]
+                - button "画像で検索" [ref=e38] [cursor=pointer]:
+                  - img [ref=e39]
+          - button "検索" [ref=e41] [cursor=pointer]:
+            - img [ref=e44]
+    - generic [ref=e46]:
+      - button "設定" [ref=e48] [cursor=pointer]:
+        - img [ref=e51]
+      - generic [ref=e54]:
+        - button "Google アプリ" [ref=e56] [cursor=pointer]:
+          - img [ref=e57]
+        - link "ログイン" [ref=e61] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=ja&passive=true&continue=https://www.google.com/search%3Fq%3D%25E5%25BB%25BA%25E7%25AF%2589%25E4%25BC%259A%25E7%25A4%25BE%2B%25E3%2583%259B%25E3%2583%25BC%25E3%2583%25A0%25E3%2583%259A%25E3%2583%25BC%25E3%2582%25B8%2B%25E3%2583%2587%25E3%2582%25B6%25E3%2582%25A4%25E3%2583%25B3%2B%25E3%2583%2588%25E3%2583%25AC%25E3%2583%25B3%25E3%2583%2589%2B%25E5%258F%2582%25E8%2580%2583%2B%25E3%2581%258B%25E3%2581%25A3%25E3%2581%2593%25E3%2581%2584%25E3%2581%2584%26hl%3Dja&ec=futura_srp_og_si_72236_p
+  - generic [ref=e63]:
+    - navigation [ref=e69]:
+      - generic [ref=e73]:
+        - list [ref=e74]:
+          - listitem [ref=e75]:
+            - link "AI モード" [ref=e78] [cursor=pointer]:
+              - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&udm=50&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&aep=1&ntc=1&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ2J8OegQIDxAE
+              - generic [ref=e81]: AI モード
+          - listitem [ref=e82]:
+            - link "すべて" [disabled] [ref=e83]:
+              - generic [ref=e85]: すべて
+          - listitem [ref=e86]:
+            - link "画像" [ref=e87] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=2&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQtKgLegQIFRAB
+              - generic [ref=e89]: 画像
+          - listitem [ref=e90]:
+            - link "ショッピング" [ref=e91] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=28&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&ved=1t:220175&ictx=111
+              - generic [ref=e93]: ショッピング
+          - listitem [ref=e94]:
+            - link "ショート動画" [ref=e95] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=39&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQs6gLegQIFBAB
+              - generic [ref=e97]: ショート動画
+          - listitem [ref=e98]:
+            - link "動画" [ref=e99] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=7&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQtKgLegQIERAB
+              - generic [ref=e101]: 動画
+          - listitem [ref=e102]:
+            - link "ニュース" [ref=e103] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&tbm=nws&source=lnms&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ0pQJegQIEhAB
+              - generic [ref=e105]: ニュース
+          - listitem [ref=e106]:
+            - button "その他のフィルタ" [ref=e107] [cursor=pointer]:
+              - generic "その他のフィルタ" [ref=e108]:
+                - generic [ref=e109]:
+                  - generic [ref=e110]: もっと見る
+                  - img [ref=e112]
+        - button "ツール" [ref=e115] [cursor=pointer]:
+          - generic [ref=e117]:
+            - generic [ref=e118]: ツール
+            - img [ref=e120]
+    - heading "検索結果" [level=1] [ref=e122]
+    - main [ref=e128]:
+      - generic [ref=e132]:
+        - generic [ref=e135]:
+          - heading "ウェブ検索結果" [level=2] [ref=e136]
+          - generic [ref=e137]:
+            - generic [ref=e140]:
+              - link "【建設業】カッコいいホームページ制作デザインまとめ！信頼感 ... 株式会社ウェブ企画パートナーズ https://wk-partners.co.jp › ... › ウェブデザイン" [ref=e142] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/construction-industry-web-design/
+                - heading "【建設業】カッコいいホームページ制作デザインまとめ！信頼感 ..." [level=3] [ref=e143]
+                - generic [ref=e148]:
+                  - generic [ref=e150]: 株式会社ウェブ企画パートナーズ
+                  - generic [ref=e152]: https://wk-partners.co.jp › ... › ウェブデザイン
+              - button "この結果について" [ref=e153] [cursor=pointer]:
+                - img [ref=e156]
+            - generic [ref=e159]:
+              - generic [ref=e160]: 2026/02/12 —
+              - generic [ref=e161]:
+                - text: 今回は建設業（
+                - emphasis [ref=e162]: 建設会社
+                - text: ）に絞った、Web制作会社が、おしゃれな
+                - emphasis [ref=e163]: ホームページデザイン
+                - text: や印象に残ったホームページを集めました。 デザインだけでなく、 ...
+            - link "wk-partners.co.jp からの建築会社 ホームページ デザイン トレンド 参考 かっこいい" [ref=e166] [cursor=pointer]:
+              - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/construction-industry-web-design/
+              - img "wk-partners.co.jp からの建築会社 ホームページ デザイン トレンド 参考 かっこいい" [ref=e168]
+        - generic [ref=e172]:
+          - generic [ref=e175]:
+            - link "建設会社ホームページの参考になるかっこいい・おしゃれな ... ミライスタイル https://mirai-style.net › 建築業界WEB運用コラム" [ref=e177] [cursor=pointer]:
+              - /url: https://mirai-style.net/column/36953/
+              - heading "建設会社ホームページの参考になるかっこいい・おしゃれな ..." [level=3] [ref=e178]
+              - generic [ref=e183]:
+                - generic [ref=e185]: ミライスタイル
+                - generic [ref=e187]: https://mirai-style.net › 建築業界WEB運用コラム
+            - button "この結果について" [ref=e188] [cursor=pointer]:
+              - img [ref=e191]
+          - generic [ref=e194]:
+            - generic [ref=e195]: 2025/09/22 —
+            - generic [ref=e196]:
+              - emphasis [ref=e197]: 建設会社ホームページ
+              - text: の
+              - emphasis [ref=e198]: 参考
+              - text: になる
+              - emphasis [ref=e199]: かっこいい
+              - text: ・おしゃれな
+              - emphasis [ref=e200]: デザイン
+              - text: 10選として、『ミライスタイル』が手がけた事例をご紹介します。
+        - generic [ref=e204]:
+          - generic [ref=e207]:
+            - link "建築・建設業のホームページ制作デザイン14選！かっこいい ... titan-art.com https://titan-art.com › ..." [ref=e209] [cursor=pointer]:
+              - /url: https://titan-art.com/15168
+              - heading "建築・建設業のホームページ制作デザイン14選！かっこいい ..." [level=3] [ref=e210]
+              - generic [ref=e215]:
+                - generic [ref=e217]: titan-art.com
+                - generic [ref=e219]: https://titan-art.com › ...
+            - button "この結果について" [ref=e220] [cursor=pointer]:
+              - img [ref=e223]
+          - generic [ref=e226]:
+            - generic [ref=e227]: 2025/12/12 —
+            - generic [ref=e228]:
+              - emphasis [ref=e229]: 建築
+              - text: ・
+              - emphasis [ref=e230]: 建設
+              - text: 業の
+              - emphasis [ref=e231]: ホームページ
+              - text: 制作
+              - emphasis [ref=e232]: デザイン
+              - text: 14選！
+              - emphasis [ref=e233]: かっこいい
+              - text: 信頼感があるサイトとは？ ; タイタンアートが手がけた
+              - emphasis [ref=e234]: 建築
+              - text: ・
+              - emphasis [ref=e235]: 建設
+              - text: 業の
+              - emphasis [ref=e236]: ホームページ
+              - text: 制作事例4選.
+          - list [ref=e238]:
+            - listitem [ref=e239]:
+              - link "タイタンアートが手がけた建築・建..." [ref=e240] [cursor=pointer]:
+                - /url: https://titan-art.com/15168#sec01
+                - generic [ref=e243]: タイタンアートが手がけた建築・建...
+            - listitem [ref=e244]:
+              - link "参考になる建築・建設業のホーム..." [ref=e245] [cursor=pointer]:
+                - /url: https://titan-art.com/15168#sec02
+                - generic [ref=e248]: 参考になる建築・建設業のホーム...
+            - listitem [ref=e249]:
+              - link "山創株式会社" [ref=e250] [cursor=pointer]:
+                - /url: https://titan-art.com/15168#sec02-07
+                - generic [ref=e253]: 山創株式会社
+          - generic [ref=e255]:
+            - text: "含まれない: トレンド ‎| 必須にする:"
+            - link "トレンド" [ref=e256] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%22%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89%22+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ5t4CegQIGxAB
+        - generic [ref=e260]:
+          - generic [ref=e263]:
+            - link "参考になる！「建築業（建設会社）」のホームページデザイン ... 株式会社リーピー https://leapy.jp › ブログ › HP・Webデザイン事例" [ref=e265] [cursor=pointer]:
+              - /url: https://leapy.jp/blog/web-design/job/building-design/
+              - heading "参考になる！「建築業（建設会社）」のホームページデザイン ..." [level=3] [ref=e266]
+              - generic [ref=e271]:
+                - generic [ref=e273]: 株式会社リーピー
+                - generic [ref=e275]: https://leapy.jp › ブログ › HP・Webデザイン事例
+            - button "この結果について" [ref=e276] [cursor=pointer]:
+              - img [ref=e279]
+          - generic [ref=e283]:
+            - text: 現役Webデザイナー14名が、
+            - emphasis [ref=e284]: 建設
+            - text: ・土木業界で
+            - emphasis [ref=e285]: 参考
+            - text: になる
+            - emphasis [ref=e286]: ホームページデザイン
+            - text: を厳選・分析しました。おしゃれ、シンプル、スタイリッシュなどのデザインをまとめてい ...
+          - link "leapy.jp からの建築会社 ホームページ デザイン トレンド 参考 かっこいい" [ref=e289] [cursor=pointer]:
+            - /url: https://leapy.jp/blog/web-design/job/building-design/
+            - img "leapy.jp からの建築会社 ホームページ デザイン トレンド 参考 かっこいい" [ref=e291]
+          - generic [ref=e293]:
+            - text: "含まれない: トレンド ‎| 必須にする:"
+            - link "トレンド" [ref=e294] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%22%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89%22+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ5t4CegQIVBAB
+        - generic [ref=e298]:
+          - generic [ref=e301]:
+            - link "建設・土木業のホームページ制作デザインの参考に！建設 ... derize.com https://www.derize.com › Recommend" [ref=e303] [cursor=pointer]:
+              - /url: https://www.derize.com/recommend/210/
+              - heading "建設・土木業のホームページ制作デザインの参考に！建設 ..." [level=3] [ref=e304]
+              - generic [ref=e309]:
+                - generic [ref=e311]: derize.com
+                - generic [ref=e313]: https://www.derize.com › Recommend
+            - button "この結果について" [ref=e314] [cursor=pointer]:
+              - img [ref=e317]
+          - generic [ref=e320]:
+            - generic [ref=e321]: 2024/06/25 —
+            - generic [ref=e322]:
+              - text: 岐阜県関市にある遮熱工事や
+              - emphasis [ref=e323]: 建設
+              - text: 土木事業を行う
+              - emphasis [ref=e324]: 会社
+              - text: 。三角形を活かした
+              - emphasis [ref=e325]: デザイン
+              - text: が
+              - emphasis [ref=e326]: かっこいい
+              - text: です。程よいアニメーションと写真やイラストの使い方が上手く ...
+          - link "www.derize.com からの建築会社 ホームページ デザイン トレンド 参考 かっこいい" [ref=e329] [cursor=pointer]:
+            - /url: https://www.derize.com/recommend/210/
+            - img "www.derize.com からの建築会社 ホームページ デザイン トレンド 参考 かっこいい" [ref=e331]
+          - list [ref=e333]:
+            - listitem [ref=e334]:
+              - link "建設会社のホームページ事例20選" [ref=e335] [cursor=pointer]:
+                - /url: https://www.derize.com/recommend/210/#20
+                - generic [ref=e338]: 建設会社のホームページ事例20選
+            - listitem [ref=e339]:
+              - link "建設業のホームページに必要な..." [ref=e340] [cursor=pointer]:
+                - /url: https://www.derize.com/recommend/210/#i-2
+                - generic [ref=e343]: 建設業のホームページに必要な...
+        - generic [ref=e347]:
+          - generic [ref=e350]:
+            - link "【2026年版】建設会社ホームページデザイン事例10選 株式会社Acsport https://construction.acsport.net › コラム" [ref=e352] [cursor=pointer]:
+              - /url: https://construction.acsport.net/column/useful/4210/
+              - heading "【2026年版】建設会社ホームページデザイン事例10選" [level=3] [ref=e353]
+              - generic [ref=e358]:
+                - generic [ref=e360]: 株式会社Acsport
+                - generic [ref=e362]: https://construction.acsport.net › コラム
+            - button "この結果について" [ref=e363] [cursor=pointer]:
+              - img [ref=e366]
+          - generic [ref=e369]:
+            - generic [ref=e370]: 2026/03/04 —
+            - generic [ref=e371]:
+              - emphasis [ref=e372]: 建設会社
+              - text: の
+              - emphasis [ref=e373]: ホームページデザイン
+              - text: 事例をもとに、集客・採用・受注につながるサイトの作り方を解説します。最新
+              - emphasis [ref=e374]: トレンド
+              - text: や制作費用の相場、失敗しやすい ...
+          - list [ref=e376]:
+            - listitem [ref=e377]:
+              - link "建設会社ホームページデザイン..." [ref=e378] [cursor=pointer]:
+                - /url: https://construction.acsport.net/column/useful/4210/#2026
+                - generic [ref=e381]: 建設会社ホームページデザイン...
+            - listitem [ref=e382]:
+              - link "目的別｜受注・採用につながる..." [ref=e383] [cursor=pointer]:
+                - /url: https://construction.acsport.net/column/useful/4210/#i-2
+                - generic [ref=e386]: 目的別｜受注・採用につながる...
+        - generic [ref=e390]:
+          - generic [ref=e393]:
+            - link "【厳選66サイト】工務店の参考ホームページデザイン集 mihoncho.com https://mihoncho.com › koumuten" [ref=e395] [cursor=pointer]:
+              - /url: https://mihoncho.com/koumuten/
+              - heading "【厳選66サイト】工務店の参考ホームページデザイン集" [level=3] [ref=e396]
+              - generic [ref=e401]:
+                - generic [ref=e403]: mihoncho.com
+                - generic [ref=e405]: https://mihoncho.com › koumuten
+            - button "この結果について" [ref=e406] [cursor=pointer]:
+              - img [ref=e409]
+          - generic [ref=e413]:
+            - text: 最新66サイト掲載 ウェブデザイナーが日本全国の数万サイトを閲覧し、モダンな
+            - emphasis [ref=e414]: デザイン
+            - text: 、親しみやすい、安心感のある、落ち着いた
+            - emphasis [ref=e415]: デザイン
+            - text: 、スタイリッシュな
+            - emphasis [ref=e416]: デザイン
+            - text: ...
+          - generic [ref=e418]:
+            - text: "含まれない: トレンド ‎| 必須にする:"
+            - link "トレンド" [ref=e419] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%22%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89%22+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ5t4CegQIUxAB
+        - generic [ref=e423]:
+          - generic [ref=e426]:
+            - link "建築･建設･不動産･家･庭 SANKOU! https://sankoudesign.com › category › architecture-const..." [ref=e428] [cursor=pointer]:
+              - /url: https://sankoudesign.com/category/architecture-construction-realestate-home-garden/
+              - heading "建築･建設･不動産･家･庭" [level=3] [ref=e429]
+              - generic [ref=e434]:
+                - generic [ref=e436]: SANKOU!
+                - generic [ref=e438]: https://sankoudesign.com › category › architecture-const...
+            - button "この結果について" [ref=e439] [cursor=pointer]:
+              - img [ref=e442]
+          - generic [ref=e446]:
+            - text: Web
+            - emphasis [ref=e447]: デザイン
+            - text: 制作の
+            - emphasis [ref=e448]: 参考
+            - text: になる｢
+            - emphasis [ref=e449]: 建築
+            - text: ･
+            - emphasis [ref=e450]: 建設
+            - text: ･不動産･家･庭｣のWebサイト･LP一覧。居住性や意匠が伝わるサイトを更新中。2026年の最新
+            - emphasis [ref=e451]: トレンド
+            - text: をチェック！
+          - generic [ref=e453]:
+            - text: "含まれない: トレンド ‎| 必須にする:"
+            - link "トレンド" [ref=e454] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%22%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89%22+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ5t4CegQIURAB
+        - generic [ref=e458]:
+          - generic [ref=e461]:
+            - link "工務店のホームページデザインはこれ！デザインスタイルや ... MASA株式会社 https://masacorporate.co.jp › column › construction-we..." [ref=e463] [cursor=pointer]:
+              - /url: https://masacorporate.co.jp/column/construction-website-design-examples/
+              - heading "工務店のホームページデザインはこれ！デザインスタイルや ..." [level=3] [ref=e464]
+              - generic [ref=e469]:
+                - generic [ref=e471]: MASA株式会社
+                - generic [ref=e473]: https://masacorporate.co.jp › column › construction-we...
+            - button "この結果について" [ref=e474] [cursor=pointer]:
+              - img [ref=e477]
+          - generic [ref=e480]:
+            - generic [ref=e481]: 2025/12/04 —
+            - generic [ref=e482]:
+              - text: 本記事では「工務店
+              - emphasis [ref=e483]: ホームページ
+              - text: の
+              - emphasis [ref=e484]: デザイン
+              - text: スタイル案」から「
+              - emphasis [ref=e485]: 参考
+              - text: にすべき
+              - emphasis [ref=e486]: デザイン
+              - text: 事例8選」をご紹介します。 地域No.1を目指す
+              - emphasis [ref=e487]: 建設会社
+              - text: 様へ. 無料 建設 ...
+        - generic [ref=e491]:
+          - generic [ref=e494]:
+            - link "「建設会社のホームページをかっこいい・おしゃれなデザイン ... Instagram https://www.instagram.com › ..." [ref=e496] [cursor=pointer]:
+              - /url: https://www.instagram.com/p/DRBV6yZkgXz/
+              - heading "「建設会社のホームページをかっこいい・おしゃれなデザイン ..." [level=3] [ref=e497]
+              - generic [ref=e502]:
+                - generic [ref=e504]: Instagram
+                - generic [ref=e506]: https://www.instagram.com › ...
+            - button "この結果について" [ref=e507] [cursor=pointer]:
+              - img [ref=e510]
+          - generic [ref=e513]:
+            - generic [ref=e514]: 2025/11/13 —
+            - generic [ref=e515]:
+              - text: 本記事では、建築業界専門のWEBマーケティング会社『ミライスタイル』が、
+              - emphasis [ref=e516]: 建設会社ホームページ
+              - text: の
+              - emphasis [ref=e517]: 参考
+              - text: になる
+              - emphasis [ref=e518]: かっこいい
+              - text: ・おしゃれな
+              - emphasis [ref=e519]: デザイン
+              - text: 10選をご紹介 ...
+          - generic [ref=e521]:
+            - text: "含まれない: トレンド ‎| 必須にする:"
+            - link "トレンド" [ref=e522] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%22%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89%22+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ5t4CegQIVxAB
+      - generic [ref=e524]:
+        - generic [ref=e529]:
+          - heading "他の人はこちらも検索" [level=2] [ref=e531]
+          - generic [ref=e533]:
+            - generic [ref=e534]:
+              - link "建設業 ホームページ 例" [ref=e538] [cursor=pointer]:
+                - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E8%A8%AD%E6%A5%AD+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E4%BE%8B&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ1QJ6BAg0EAE
+                - generic [ref=e539]:
+                  - generic [ref=e544]: 建設業 ホームページ 例
+                  - img [ref=e548]
+              - link "建設会社 HP おしゃれ" [ref=e553] [cursor=pointer]:
+                - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E8%A8%AD%E4%BC%9A%E7%A4%BE+HP+%E3%81%8A%E3%81%97%E3%82%83%E3%82%8C&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ1QJ6BAg9EAE
+                - generic [ref=e554]:
+                  - generic [ref=e559]: 建設会社 HP おしゃれ
+                  - img [ref=e563]
+              - link "建築 ホームページ デザイン" [ref=e568] [cursor=pointer]:
+                - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ1QJ6BAg6EAE
+                - generic [ref=e569]:
+                  - generic [ref=e574]: 建築 ホームページ デザイン
+                  - img [ref=e578]
+              - link "建設 会社 ホームページ デザイン" [ref=e583] [cursor=pointer]:
+                - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E8%A8%AD+%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ1QJ6BAg5EAE
+                - generic [ref=e584]:
+                  - generic [ref=e589]: 建設 会社 ホームページ デザイン
+                  - img [ref=e593]
+            - generic [ref=e595]:
+              - link "建設業 ホームページ 制作" [ref=e599] [cursor=pointer]:
+                - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E8%A8%AD%E6%A5%AD+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ1QJ6BAg4EAE
+                - generic [ref=e600]:
+                  - generic [ref=e605]: 建設業 ホームページ 制作
+                  - img [ref=e609]
+              - link "土木 建設業 ホームページ" [ref=e614] [cursor=pointer]:
+                - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%9C%9F%E6%9C%A8+%E5%BB%BA%E8%A8%AD%E6%A5%AD+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ1QJ6BAg3EAE
+                - generic [ref=e615]:
+                  - generic [ref=e620]: 土木 建設業 ホームページ
+                  - img [ref=e624]
+              - link "施工事例 Webデザイン" [ref=e629] [cursor=pointer]:
+                - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E6%96%BD%E5%B7%A5%E4%BA%8B%E4%BE%8B+Web%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ1QJ6BAg2EAE
+                - generic [ref=e630]:
+                  - generic [ref=e635]: 施工事例 Webデザイン
+                  - img [ref=e639]
+              - link "建設 業 ホームページ 参考" [ref=e644] [cursor=pointer]:
+                - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E8%A8%AD+%E6%A5%AD+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%8F%82%E8%80%83&sa=X&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ1QJ6BAg1EAE
+                - generic [ref=e645]:
+                  - generic [ref=e650]: 建設 業 ホームページ 参考
+                  - img [ref=e654]
+        - navigation [ref=e656]:
+          - heading "ページの操作" [level=1] [ref=e657]
+          - text: "1"
+          - link "Page 2" [ref=e660] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=10&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAE
+            - text: "2"
+          - link "Page 3" [ref=e662] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=20&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAG
+            - text: "3"
+          - link "Page 4" [ref=e664] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=30&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAI
+            - text: "4"
+          - link "Page 5" [ref=e666] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=40&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAK
+            - text: "5"
+          - link "Page 6" [ref=e668] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=50&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAM
+            - text: "6"
+          - link "Page 7" [ref=e670] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=60&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAO
+            - text: "7"
+          - link "Page 8" [ref=e672] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=70&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAQ
+            - text: "8"
+          - link "Page 9" [ref=e674] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=80&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAS
+            - text: "9"
+          - link "Page 10" [ref=e676] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=90&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8tMDegQIChAU
+            - text: "10"
+          - heading "次へ" [level=2] [ref=e678]:
+            - link "次へ" [ref=e679] [cursor=pointer]:
+              - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3+%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89+%E5%8F%82%E8%80%83+%E3%81%8B%E3%81%A3%E3%81%93%E3%81%84%E3%81%84&sca_esv=031e7e0cba0603c0&hl=ja&ei=-DLNaemnDPiu0-kPu7rvoQ8&start=10&sa=N&sstk=Af77f_dgPaJm0G4H854zNWhDSEC74FO43VPEg4f4cxG2kOjJ1sjY-uKAAajPu5VXO44iCL3YfWjq9J7uMCfGfsKfo8Y7ZOglW88uHA&ved=2ahUKEwjpg--39cyTAxV41zQHHTvdO_QQ8NMDegQIChAW
+              - generic [ref=e681]: 次へ
+      - navigation
+    - contentinfo [ref=e682]:
+      - heading "フッターのリンク" [level=1] [ref=e683]
+      - generic [ref=e687]:
+        - generic [ref=e689]:
+          - text: 日本
+          - generic [ref=e691]:
+            - 'button "越谷市、埼玉県 - ソース: あなたの IP アドレス" [ref=e693] [cursor=pointer]':
+              - generic [ref=e694]: 越谷市、埼玉県
+              - generic [ref=e696]:
+                - text: "-"
+                - generic [ref=e697]: "ソース: あなたの IP アドレス"
+            - text: "-"
+            - button "現在地を更新" [ref=e699] [cursor=pointer]: 現在地を更新
+        - generic [ref=e702]:
+          - link "ヘルプ" [ref=e703] [cursor=pointer]:
+            - /url: https://support.google.com/websearch/?p=ws_results_help&hl=ja&fg=1
+          - link "フィードバックを送信" [ref=e704] [cursor=pointer]:
+            - /url: "#"
+          - link "プライバシー" [ref=e705] [cursor=pointer]:
+            - /url: https://policies.google.com/privacy?hl=ja&fg=1
+          - link "規約" [ref=e706] [cursor=pointer]:
+            - /url: https://policies.google.com/terms?hl=ja&fg=1

@@ -1,0 +1,543 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - link "メイン コンテンツにスキップ" [ref=e2] [cursor=pointer]
+      - link "ユーザー補助ヘルプ" [ref=e3] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=ja
+      - link "ユーザー補助に関するフィードバック" [ref=e4] [cursor=pointer]
+  - generic [ref=e9]:
+    - search [ref=e10]:
+      - generic [ref=e12]:
+        - link "Google ホームへ" [ref=e14] [cursor=pointer]:
+          - /url: https://www.google.com/webhp?hl=ja&sa=X&ved=0ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQPAgJ
+          - img [ref=e15]
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - combobox "検索" [ref=e26]: 建築会社 ホームページ 制作 20万円 予算 相場 建築会社 ホームページ 制作 20万円 予算 相場
+            - generic [ref=e27]:
+              - button "消去" [ref=e29] [cursor=pointer]:
+                - img [ref=e31]
+              - generic [ref=e34]:
+                - button "音声で検索" [ref=e35] [cursor=pointer]:
+                  - img [ref=e36]
+                - button "画像で検索" [ref=e38] [cursor=pointer]:
+                  - img [ref=e39]
+          - button "検索" [ref=e41] [cursor=pointer]:
+            - img [ref=e44]
+    - generic [ref=e46]:
+      - button "設定" [ref=e48] [cursor=pointer]:
+        - img [ref=e51]
+      - generic [ref=e54]:
+        - button "Google アプリ" [ref=e56] [cursor=pointer]:
+          - img [ref=e57]
+        - link "ログイン" [ref=e61] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=ja&passive=true&continue=https://www.google.com/search%3Fq%3D%25E5%25BB%25BA%25E7%25AF%2589%25E4%25BC%259A%25E7%25A4%25BE%2B%25E3%2583%259B%25E3%2583%25BC%25E3%2583%25A0%25E3%2583%259A%25E3%2583%25BC%25E3%2582%25B8%2B%25E5%2588%25B6%25E4%25BD%259C%2B20%25E4%25B8%2587%25E5%2586%2586%2B%25E4%25BA%2588%25E7%25AE%2597%2B%25E7%259B%25B8%25E5%25A0%25B4%26hl%3Dja&ec=futura_srp_og_si_72236_p
+  - generic [ref=e63]:
+    - navigation [ref=e69]:
+      - generic [ref=e73]:
+        - list [ref=e74]:
+          - listitem [ref=e75]:
+            - link "AI モード" [ref=e78] [cursor=pointer]:
+              - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&udm=50&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&aep=1&ntc=1&sa=X&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ2J8OegQIDRAE
+              - generic [ref=e81]: AI モード
+          - listitem [ref=e82]:
+            - link "すべて" [disabled] [ref=e83]:
+              - generic [ref=e85]: すべて
+          - listitem [ref=e86]:
+            - link "画像" [ref=e87] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=2&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sa=X&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQtKgLegQIEhAB
+              - generic [ref=e89]: 画像
+          - listitem [ref=e90]:
+            - link "ショッピング" [ref=e91] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=28&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&ved=1t:220175&ictx=111
+              - generic [ref=e93]: ショッピング
+          - listitem [ref=e94]:
+            - link "ショート動画" [ref=e95] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=39&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sa=X&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQs6gLegQIFhAB
+              - generic [ref=e97]: ショート動画
+          - listitem [ref=e98]:
+            - link "動画" [ref=e99] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=7&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sa=X&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQtKgLegQIFxAB
+              - generic [ref=e101]: 動画
+          - listitem [ref=e102]:
+            - link "ニュース" [ref=e103] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&tbm=nws&source=lnms&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&sa=X&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ0pQJegQIFBAB
+              - generic [ref=e105]: ニュース
+          - listitem [ref=e106]:
+            - button "その他のフィルタ" [ref=e107] [cursor=pointer]:
+              - generic "その他のフィルタ" [ref=e108]:
+                - generic [ref=e109]:
+                  - generic [ref=e110]: もっと見る
+                  - img [ref=e112]
+        - button "ツール" [ref=e115] [cursor=pointer]:
+          - generic [ref=e117]:
+            - generic [ref=e118]: ツール
+            - img [ref=e120]
+    - heading "検索結果" [level=1] [ref=e122]
+    - generic [ref=e127]:
+      - generic [ref=e128]:
+        - region "広告" [ref=e133]:
+          - generic [ref=e134]:
+            - heading "スポンサー広告" [level=2] [ref=e140]
+            - generic [ref=e141]:
+              - generic [ref=e147]:
+                - generic [ref=e153]:
+                  - generic [ref=e154]:
+                    - link "リフォーム専門ホームページ制作 | Web集客増2026年決定版 shipinc.co.jp https://www.shipinc.co.jp" [ref=e155] [cursor=pointer]:
+                      - /url: https://www.shipinc.co.jp/strategy/
+                      - heading "リフォーム専門ホームページ制作 | Web集客増2026年決定版" [level=3] [ref=e156]
+                      - generic [ref=e158]:
+                        - img [ref=e163]
+                        - generic [ref=e165]:
+                          - generic [ref=e167]: shipinc.co.jp
+                          - generic [ref=e168]: https://www.shipinc.co.jp
+                    - button "広告の表示について" [ref=e171] [cursor=pointer]:
+                      - img [ref=e173]
+                  - generic [ref=e177]: 株式会社シップ／リフォーム・工務店・外壁塗装1,200社超の支援実績。AI検索時代にあわせ...
+                  - generic [ref=e179]:
+                    - text: ‎
+                    - link "制作実績" [ref=e180] [cursor=pointer]:
+                      - /url: https://www.shipinc.co.jp/production/
+                    - text: · ‎
+                    - link "TOPページ" [ref=e181] [cursor=pointer]:
+                      - /url: https://www.shipinc.co.jp/
+                    - text: · ‎
+                    - link "会社案内" [ref=e182] [cursor=pointer]:
+                      - /url: https://www.shipinc.co.jp/company/
+                  - generic [ref=e187]: "過去 1 か月間のアクセス数: 1 万件以上"
+                - generic [ref=e193]:
+                  - link "onamae.com からの画像" [ref=e195] [cursor=pointer]:
+                    - /url: https://www.google.com/aclk?sa=L&pf=1&ai=DChsSEwjH1a2x9cyTAxWX0RYFHYO4MrUYACICCAEQDRoCdGw&co=1&ase=2&gclid=EAIaIQobChMIx9WtsfXMkwMVl9EWBR2DuDK1EAAYAiAEEgLkRfD_BwE&cid=CAASugHkaKVEy6XtIjdWPpUhGidFtCjQgXuUdhDN7Xx9J56Vz3PAuIbUH0uQ5eiIjQNfU977T80qHc5_Xx177JkfXS9-4WbTCZ1LuZdaDkgSM54SZeJC0SZxTl8pRJWylRHahIwXVT00XyT3FrZra8rCGRmRoPZQ_JF25GaEMkzRhIfsjA8lZuQy-8xrQJfpRsCVypXMXKOao6igZTq4SESFJ22NwZHsFr1OyF1zUnM8Oi9h8XAbATlLo3HJ6pU&cce=2&category=acrcp_v1_32&sig=AOD64_2x10i8wbxGioUOR639hgGzmTUfBQ&q=&nis=4&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQh78CegQIGhAB&adurl=https://www.onamae.com/campaign/aihppack/007/%3Futm_source%3DGoogle%26utm_medium%3Dpaidsearch%26banner_id%3D1138_kwt_aihp_bigaihp_hpkw_rsa_005%26waad%3DlB0zz4g9%26keyword%3D%25E3%2583%259B%25E3%2583%25BC%25E3%2583%25A0%25E3%2583%259A%25E3%2583%25BC%25E3%2582%25B8%25E5%2588%25B6%25E4%25BD%259C%26matchtype%3Dp%26flow%3Dnormal%26gad_source%3D1%26gad_campaignid%3D23605622072%26gbraid%3D0AAAAADrg_-hqpUHK9PYiUb3lj1aNqwUFG%26gclid%3DEAIaIQobChMIx9WtsfXMkwMVl9EWBR2DuDK1EAAYAiAEEgLkRfD_BwE
+                    - img "onamae.com からの画像" [ref=e197]
+                  - generic [ref=e198]:
+                    - link "ホームページ作成の正解はこれ | 制作会社と同等のクオリティ お名前.com https://www.onamae.com › ホームページ › ai作成" [ref=e199] [cursor=pointer]:
+                      - /url: https://www.onamae.com/campaign/aihppack/007/?utm_source=Google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_hpkw_rsa_005&waad=lB0zz4g9
+                      - heading "ホームページ作成の正解はこれ | 制作会社と同等のクオリティ" [level=3] [ref=e201]
+                      - generic [ref=e207]:
+                        - generic [ref=e209]: お名前.com
+                        - generic [ref=e210]: https://www.onamae.com › ホームページ › ai作成
+                    - button "広告の表示について" [ref=e213] [cursor=pointer]:
+                      - img [ref=e215]
+                  - generic [ref=e219]: AIが最新トレンドを反映した信頼感のあるサイトを構築。文章作成から画像...
+                  - generic [ref=e221]:
+                    - text: ‎
+                    - link "ホームページ制作" [ref=e222] [cursor=pointer]:
+                      - /url: https://www.onamae.com/campaign/aihppack/007/?utm_source=Google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_hpkw_rsa_005&waad=lB0zz4g9
+                    - text: · ‎
+                    - link "ネット副業に役立つHowto" [ref=e223] [cursor=pointer]:
+                      - /url: https://www.onamae.com/column/tag/howto/?utm_source=google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_focus_sitelink-4&waad=C27mLK4M
+                    - text: · ‎
+                    - link "アドセンスのノウハウ" [ref=e224] [cursor=pointer]:
+                      - /url: https://www.onamae.com/column/tag/adsense/?utm_source=google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_focus_sitelink-3&waad=JNbGf69B
+                    - text: · ‎
+                    - link "最短10分で公開可能" [ref=e225] [cursor=pointer]:
+                      - /url: /aclk?sa=L&pf=1&ai=DChsSEwjH1a2x9cyTAxWX0RYFHYO4MrUYACICCAEQEBoCdGw&co=1&ase=2&gclid=EAIaIQobChMIx9WtsfXMkwMVl9EWBR2DuDK1EAAYAiAFEgJDGfD_BwE&cid=CAASugHkaKVEy6XtIjdWPpUhGidFtCjQgXuUdhDN7Xx9J56Vz3PAuIbUH0uQ5eiIjQNfU977T80qHc5_Xx177JkfXS9-4WbTCZ1LuZdaDkgSM54SZeJC0SZxTl8pRJWylRHahIwXVT00XyT3FrZra8rCGRmRoPZQ_JF25GaEMkzRhIfsjA8lZuQy-8xrQJfpRsCVypXMXKOao6igZTq4SESFJ22NwZHsFr1OyF1zUnM8Oi9h8XAbATlLo3HJ6pU&cce=2&category=acrcp_v1_32&sig=AOD64_29kKneDNLwDgt78-_aYGnvzn2eHw&adurl=https://www.onamae.com/campaign/aihppack/007/%3Futm_source%3DGoogle%26utm_medium%3Dpaidsearch%26banner_id%3D1138_kwt_aihp_bigaihp_hpkw_rsa_005%26waad%3DlB0zz4g9%26keyword%3D%25E3%2583%259B%25E3%2583%25BC%25E3%2583%25A0%25E3%2583%259A%25E3%2583%25BC%25E3%2582%25B8%25E5%2588%25B6%25E4%25BD%259C%26matchtype%3Dp%26flow%3Dnormal%26gad_source%3D1%26gad_campaignid%3D23605622072%26gbraid%3D0AAAAADrg_-hqpUHK9PYiUb3lj1aNqwUFG%26gclid%3DEAIaIQobChMIx9WtsfXMkwMVl9EWBR2DuDK1EAAYAiAFEgJDGfD_BwE&q=
+                - generic [ref=e231]:
+                  - generic [ref=e232]:
+                    - link "店舗・個人事業向けAI制作 | ホームページ 作成 費用 見積もり Manus https://www.manus.im" [ref=e233] [cursor=pointer]:
+                      - /url: https://manus.im/ja/features/webapp
+                      - heading "店舗・個人事業向けAI制作 | ホームページ 作成 費用 見積もり" [level=3] [ref=e234]
+                      - generic [ref=e240]:
+                        - generic [ref=e242]: Manus
+                        - generic [ref=e243]: https://www.manus.im
+                    - button "広告の表示について" [ref=e246] [cursor=pointer]:
+                      - img [ref=e248]
+                  - generic [ref=e252]: SNSやショップ紹介に最適。AIが構成とデザインを用意。 コード不要。写真とテキストだけで...
+                  - generic [ref=e254]:
+                    - text: ‎
+                    - link "ショップHPもAIで" [ref=e255] [cursor=pointer]:
+                      - /url: /aclk?sa=L&ai=DChsSEwjH1a2x9cyTAxWX0RYFHYO4MrUYACICCAEQDhoCdGw&co=1&ase=2&gclid=EAIaIQobChMIx9WtsfXMkwMVl9EWBR2DuDK1EAAYAyAEEgKnOPD_BwE&cid=CAASugHkaKVEy6XtIjdWPpUhGidFtCjQgXuUdhDN7Xx9J56Vz3PAuIbUH0uQ5eiIjQNfU977T80qHc5_Xx177JkfXS9-4WbTCZ1LuZdaDkgSM54SZeJC0SZxTl8pRJWylRHahIwXVT00XyT3FrZra8rCGRmRoPZQ_JF25GaEMkzRhIfsjA8lZuQy-8xrQJfpRsCVypXMXKOao6igZTq4SESFJ22NwZHsFr1OyF1zUnM8Oi9h8XAbATlLo3HJ6pU&cce=2&category=acrcp_v1_32&sig=AOD64_2iuLkhJeH-XxHwid6mgiwgHaqM2Q&adurl=&q=
+                    - text: · ‎
+                    - link "Manus" [ref=e256] [cursor=pointer]:
+                      - /url: /aclk?sa=L&ai=DChsSEwjH1a2x9cyTAxWX0RYFHYO4MrUYACICCAEQDxoCdGw&co=1&ase=2&gclid=EAIaIQobChMIx9WtsfXMkwMVl9EWBR2DuDK1EAAYAyAFEgKbcvD_BwE&cid=CAASugHkaKVEy6XtIjdWPpUhGidFtCjQgXuUdhDN7Xx9J56Vz3PAuIbUH0uQ5eiIjQNfU977T80qHc5_Xx177JkfXS9-4WbTCZ1LuZdaDkgSM54SZeJC0SZxTl8pRJWylRHahIwXVT00XyT3FrZra8rCGRmRoPZQ_JF25GaEMkzRhIfsjA8lZuQy-8xrQJfpRsCVypXMXKOao6igZTq4SESFJ22NwZHsFr1OyF1zUnM8Oi9h8XAbATlLo3HJ6pU&cce=2&category=acrcp_v1_32&sig=AOD64_1rqgbcCB9LAepS9t7bwKR6Qn7gtw&adurl=&q=
+                    - text: · ‎
+                    - link "Plans And Pricing" [ref=e257] [cursor=pointer]:
+                      - /url: https://manus.im/pricing
+                    - text: · ‎
+                    - link "Nano Banana Pro スライド" [ref=e258] [cursor=pointer]:
+                      - /url: https://manus.im/ja/tools/nano-banana-pro-slides
+                    - text: · ‎
+                    - link "AI Web Builder" [ref=e259] [cursor=pointer]:
+                      - /url: https://manus.im/features/webapp
+                - generic [ref=e265]:
+                  - generic [ref=e266]:
+                    - link "丸投げOK・プロに完全お任せ | 初期費用を抑えたサイト作成 how-about.jp https://www.how-about.jp" [ref=e267] [cursor=pointer]:
+                      - /url: https://how-about.jp/
+                      - heading "丸投げOK・プロに完全お任せ | 初期費用を抑えたサイト作成" [level=3] [ref=e268]
+                      - generic [ref=e270]:
+                        - img [ref=e275]
+                        - generic [ref=e277]:
+                          - generic [ref=e279]: how-about.jp
+                          - generic [ref=e280]: https://www.how-about.jp
+                    - button "広告の表示について" [ref=e283] [cursor=pointer]:
+                      - img [ref=e285]
+                  - generic [ref=e289]: 面倒な原稿や画像の手配もプロに丸投げでOK。スマホ対応・SEO込みで初期16.8万円のみ。 今なら12万円無料｜デザイン・機能性と低価格の両立｜SEO記事で成長サポート｜完成まで手間なし。
+              - button "「スポンサー」検索結果を非表示" [ref=e290] [cursor=pointer]:
+                - separator [ref=e291]
+                - generic [ref=e292]:
+                  - generic [ref=e293]: 「スポンサー」検索結果を非表示
+                  - img [ref=e295]
+        - generic [ref=e311]:
+          - generic [ref=e314]:
+            - generic [ref=e316]:
+              - generic [ref=e318]:
+                - generic [ref=e319]:
+                  - img [ref=e320]
+                  - heading "AI による概要" [level=2] [ref=e322]
+                - button "この結果について" [ref=e326]:
+                  - img [ref=e328]
+              - generic [ref=e354]:
+                - generic [ref=e355]: 建築会社のホームページ制作（20万円予算）は、テンプレート活用や中小制作会社・フリーランスへの依頼で可能。
+                - mark [ref=e356]: ページ数は5〜10ページ程度の小規模コーポレートサイト、またはCMS（WordPress）による基本機能のサイトが相場
+                - text: 。デザインは既存テンプレートが中心だが、実績掲載や問い合わせフォームなど、基本機能は揃う。
+                - button "比較ビズ (+2) - 関連リンクを表示" [disabled] [ref=e359]:
+                  - generic [ref=e360]:
+                    - img "比較ビズ" [ref=e361]
+                    - generic [ref=e362]:
+                      - generic [ref=e363]: 比較ビズ
+                      - generic [ref=e364]: "+2"
+            - progressbar [ref=e369]
+          - button "その他の AI による概要を表示" [ref=e393]:
+            - generic [ref=e395] [cursor=pointer]:
+              - generic [ref=e396]: もっと見る
+              - img [ref=e398]
+      - main [ref=e401]:
+        - generic [ref=e405]:
+          - generic [ref=e408]:
+            - heading "ウェブ検索結果" [level=2] [ref=e409]
+            - generic [ref=e410]:
+              - generic [ref=e413]:
+                - link "建築会社のホームページ制作費用はいくらかかるのか？ ゴッタライド https://www.gotta-ride.com › ブログ" [ref=e415] [cursor=pointer]:
+                  - /url: https://www.gotta-ride.com/blog/459.html
+                  - heading "建築会社のホームページ制作費用はいくらかかるのか？" [level=3] [ref=e416]
+                  - generic [ref=e421]:
+                    - generic [ref=e423]: ゴッタライド
+                    - generic [ref=e425]: https://www.gotta-ride.com › ブログ
+                - button "この結果について" [ref=e426] [cursor=pointer]:
+                  - img [ref=e429]
+              - generic [ref=e432]:
+                - generic [ref=e433]: 2019/11/27 —
+                - generic [ref=e434]:
+                  - emphasis [ref=e435]: ホームページ制作
+                  - text: 料金の20%程度が一般的な価格とされており、だいたい5万円から
+                  - emphasis [ref=e436]: 20万円
+                  - text: が
+                  - emphasis [ref=e437]: 相場
+                  - text: と言われています。
+                  - emphasis [ref=e438]: 建築
+                  - text: でいうところの「諸経費」や ...
+          - generic [ref=e442]:
+            - generic [ref=e443]:
+              - heading "関連する質問" [level=2] [ref=e444]
+              - button "この結果について" [ref=e445] [cursor=pointer]:
+                - img [ref=e448]
+            - generic [ref=e450]:
+              - button "建設業のホームページ制作費用はいくらですか？" [ref=e456] [cursor=pointer]:
+                - generic [ref=e458]: 建設業のホームページ制作費用はいくらですか？
+                - img [ref=e461]
+              - button "ホームページ制作費用は平均していくらですか？" [ref=e470] [cursor=pointer]:
+                - generic [ref=e472]: ホームページ制作費用は平均していくらですか？
+                - img [ref=e475]
+              - button "HP制作の金額の相場は？" [ref=e484] [cursor=pointer]:
+                - generic [ref=e486]: HP制作の金額の相場は？
+                - img [ref=e489]
+              - button "ホームページの適正な予算は？" [ref=e498] [cursor=pointer]:
+                - generic [ref=e500]: ホームページの適正な予算は？
+                - img [ref=e503]
+          - generic [ref=e508]:
+            - heading "ウェブ検索結果" [level=2] [ref=e509]
+            - generic [ref=e510]:
+              - generic [ref=e513]:
+                - link "料金表 - 建設業専門のホームページ制作 - 株式会社Acsport 株式会社Acsport https://construction.acsport.net › price" [ref=e515] [cursor=pointer]:
+                  - /url: https://construction.acsport.net/price/
+                  - heading "料金表 - 建設業専門のホームページ制作 - 株式会社Acsport" [level=3] [ref=e516]
+                  - generic [ref=e521]:
+                    - generic [ref=e523]: 株式会社Acsport
+                    - generic [ref=e525]: https://construction.acsport.net › price
+                - button "この結果について" [ref=e526] [cursor=pointer]:
+                  - img [ref=e529]
+              - generic [ref=e533]:
+                - text: 工務店やリフォーム、土木、総合
+                - emphasis [ref=e534]: 建設
+                - text: 業、
+                - emphasis [ref=e535]: 建築
+                - text: 、設備など
+                - emphasis [ref=e536]: 建設
+                - text: 業専門の
+                - emphasis [ref=e537]: ホームページ制作
+                - text: が初期費用
+                - emphasis [ref=e538]: 20万円
+                - text: から。
+                - emphasis [ref=e539]: 相場
+                - text: の半額設定で、採用・集客・ブランディングに特化した ...
+          - generic [ref=e543]:
+            - generic [ref=e546]:
+              - link "工務店のホームページ制作・リニュアル費用の相場はいくら？ ミライスタイル https://mirai-style.net › 建築業界WEB運用コラム" [ref=e548] [cursor=pointer]:
+                - /url: https://mirai-style.net/column/13327/
+                - heading "工務店のホームページ制作・リニュアル費用の相場はいくら？" [level=3] [ref=e549]
+                - generic [ref=e554]:
+                  - generic [ref=e556]: ミライスタイル
+                  - generic [ref=e558]: https://mirai-style.net › 建築業界WEB運用コラム
+              - button "この結果について" [ref=e559] [cursor=pointer]:
+                - img [ref=e562]
+            - generic [ref=e565]:
+              - generic [ref=e566]: 2020/11/29 —
+              - generic [ref=e567]:
+                - text: 1.1 低
+                - emphasis [ref=e568]: 予算
+                - text: で制作するホームページ（10
+                - emphasis [ref=e569]: 万円
+                - text: ～60
+                - emphasis [ref=e570]: 万円
+                - text: ） · 1.2 一般的な
+                - emphasis [ref=e571]: ホームページ制作
+                - text: （100
+                - emphasis [ref=e572]: 万円
+                - text: ～200
+                - emphasis [ref=e573]: 万円
+                - text: ） · 1.3 高価格帯の
+                - emphasis [ref=e574]: ホームページ制作
+                - text: （250
+                - emphasis [ref=e575]: 万円
+                - text: ～）.
+          - generic [ref=e579]:
+            - heading "スポンサー広告" [level=2] [ref=e585]
+            - generic [ref=e586]:
+              - generic [ref=e597]:
+                - generic [ref=e598]:
+                  - link "最新版リフォームWeb集客 | 反響が増えるホームページ shipinc.co.jp https://www.shipinc.co.jp" [ref=e599] [cursor=pointer]:
+                    - /url: https://www.shipinc.co.jp/strategy/
+                    - heading "最新版リフォームWeb集客 | 反響が増えるホームページ" [level=3] [ref=e600]
+                    - generic [ref=e602]:
+                      - img [ref=e607]
+                      - generic [ref=e609]:
+                        - generic [ref=e611]: shipinc.co.jp
+                        - generic [ref=e612]: https://www.shipinc.co.jp
+                  - button "広告の表示について" [ref=e615] [cursor=pointer]:
+                    - img [ref=e617]
+                - generic [ref=e621]: 株式会社シップ／リフォーム・工務店・外壁塗装1,200社超の支援実績。AI検索時代にあわせたAIO対策を実装した集客できるWebサイト。
+                - generic [ref=e623]:
+                  - text: ‎
+                  - link "制作実績" [ref=e624] [cursor=pointer]:
+                    - /url: https://www.shipinc.co.jp/production/
+                  - text: · ‎
+                  - link "会社案内" [ref=e625] [cursor=pointer]:
+                    - /url: https://www.shipinc.co.jp/company/
+                  - text: · ‎
+                  - link "TOPページ" [ref=e626] [cursor=pointer]:
+                    - /url: https://www.shipinc.co.jp/
+                - generic [ref=e631]: "過去 1 か月間のアクセス数: 1 万件以上"
+              - button "「スポンサー」検索結果を非表示" [ref=e632] [cursor=pointer]:
+                - separator [ref=e633]
+                - generic [ref=e634]:
+                  - generic [ref=e635]: 「スポンサー」検索結果を非表示
+                  - img [ref=e637]
+          - generic [ref=e642]:
+            - generic [ref=e645]:
+              - link "費用の内訳・選び方・失敗しない予算の決め方【2025年版】 relations.ne.jp https://relations.ne.jp › ホーム › コラム記事一覧" [ref=e647] [cursor=pointer]:
+                - /url: https://relations.ne.jp/homesen/website-production/3893/
+                - heading "費用の内訳・選び方・失敗しない予算の決め方【2025年版】" [level=3] [ref=e648]
+                - generic [ref=e653]:
+                  - generic [ref=e655]: relations.ne.jp
+                  - generic [ref=e657]: https://relations.ne.jp › ホーム › コラム記事一覧
+              - button "この結果について" [ref=e658] [cursor=pointer]:
+                - img [ref=e661]
+            - generic [ref=e664]:
+              - generic [ref=e665]: 2025/12/13 —
+              - generic [ref=e666]:
+                - text: ▽
+                - emphasis [ref=e667]: 建設
+                - text: 業
+                - emphasis [ref=e668]: ホームページ制作
+                - text: の一般的な価格帯 ·
+                - emphasis [ref=e669]: 会社
+                - text: 案内レベル（5ページ前後）：30〜60
+                - emphasis [ref=e670]: 万円
+                - text: · 標準的な
+                - emphasis [ref=e671]: 建設
+                - text: 業サイト（10〜15ページ）：60〜120
+                - emphasis [ref=e672]: 万円
+                - text: · 施工実績が充実 ...
+          - generic [ref=e676]:
+            - generic [ref=e679]:
+              - link "建設業の独立でホームページ制作費用はいくら？最新相場と ... サッシ屋Lab https://sashya-lab.sumaicreate.co.jp › construction-indus..." [ref=e681] [cursor=pointer]:
+                - /url: https://sashya-lab.sumaicreate.co.jp/construction-industry-website/
+                - heading "建設業の独立でホームページ制作費用はいくら？最新相場と ..." [level=3] [ref=e682]
+                - generic [ref=e687]:
+                  - generic [ref=e689]: サッシ屋Lab
+                  - generic [ref=e691]: https://sashya-lab.sumaicreate.co.jp › construction-indus...
+              - button "この結果について" [ref=e692] [cursor=pointer]:
+                - img [ref=e695]
+            - generic [ref=e698]:
+              - generic [ref=e699]: 2026/01/14 —
+              - generic [ref=e700]:
+                - text: ② デザイン・コーディング代（
+                - emphasis [ref=e701]: 制作
+                - text: 工賃） ·
+                - emphasis [ref=e702]: 相場
+                - text: ：10〜30
+                - emphasis [ref=e703]: 万円
+                - text: · ページ数が多いほど、また、こだわりが強いほど高くなります。
+          - generic [ref=e707]:
+            - generic [ref=e710]:
+              - link "【早見表付き】ホームページ作成費用の相場は？内訳や節約 ... ecforce https://ec-force.com › TOP › 基礎知識" [ref=e712] [cursor=pointer]:
+                - /url: https://ec-force.com/blog/d2c_no305
+                - heading "【早見表付き】ホームページ作成費用の相場は？内訳や節約 ..." [level=3] [ref=e713]
+                - generic [ref=e718]:
+                  - generic [ref=e720]: ecforce
+                  - generic [ref=e722]: https://ec-force.com › TOP › 基礎知識
+              - button "この結果について" [ref=e723] [cursor=pointer]:
+                - img [ref=e726]
+            - generic [ref=e729]:
+              - generic [ref=e730]: 2026/01/23 —
+              - generic [ref=e731]:
+                - text: ...
+                - emphasis [ref=e732]: 相場
+                - text: は、トップページで10万円〜
+                - emphasis [ref=e733]: 20万円
+                - text: です。下層ページの作成には1万円〜5万円がかかります。
+                - emphasis [ref=e734]: 制作会社
+                - text: を利用する場合には、依頼するページ総数やデザイン ...
+          - generic [ref=e738]:
+            - generic [ref=e741]:
+              - link "ホームページ制作費用【2025年最新版】プロが費用相場や内訳 ... プロベル https://probel.jp › プロベル編集部のブログ一覧" [ref=e743] [cursor=pointer]:
+                - /url: https://probel.jp/promaga/b/764/
+                - heading "ホームページ制作費用【2025年最新版】プロが費用相場や内訳 ..." [level=3] [ref=e744]
+                - generic [ref=e749]:
+                  - generic [ref=e751]: プロベル
+                  - generic [ref=e753]: https://probel.jp › プロベル編集部のブログ一覧
+              - button "この結果について" [ref=e754] [cursor=pointer]:
+                - img [ref=e757]
+            - generic [ref=e760]:
+              - generic [ref=e761]: 2025/12/05 —
+              - generic [ref=e762]:
+                - text: LP（ランディングページ）
+                - emphasis [ref=e763]: 制作
+                - text: の費用
+                - emphasis [ref=e764]: 相場
+                - text: ：10万〜60
+                - emphasis [ref=e765]: 万円
+                - text: 以上 · コーポレートサイト
+                - emphasis [ref=e766]: 制作
+                - text: の費用
+                - emphasis [ref=e767]: 相場
+                - text: ：10万〜300
+                - emphasis [ref=e768]: 万円
+                - text: 以上 · オウンドメディア
+                - emphasis [ref=e769]: 制作
+                - text: の費用
+                - emphasis [ref=e770]: 相場
+                - text: ：
+                - emphasis [ref=e771]: 20万
+                - text: 〜 ...
+          - generic [ref=e775]:
+            - generic [ref=e778]:
+              - link "ホームページ作成を会社に依頼する費用相場と見積もりのポイント TMCデジタル https://www.tmcdigital.jp › homepage-creation-cost" [ref=e780] [cursor=pointer]:
+                - /url: https://www.tmcdigital.jp/column/web-design/homepage-creation-cost/
+                - heading "ホームページ作成を会社に依頼する費用相場と見積もりのポイント" [level=3] [ref=e781]
+                - generic [ref=e786]:
+                  - generic [ref=e788]: TMCデジタル
+                  - generic [ref=e790]: https://www.tmcdigital.jp › homepage-creation-cost
+              - button "この結果について" [ref=e791] [cursor=pointer]:
+                - img [ref=e794]
+            - generic [ref=e797]:
+              - generic [ref=e798]: 2025/11/27 —
+              - generic [ref=e799]:
+                - emphasis [ref=e800]: ホームページ
+                - text: 作成の費用は一般的な
+                - emphasis [ref=e801]: 相場
+                - text: は50万円～500万円、運用費は月額5,000円～
+                - emphasis [ref=e802]: 20万円
+                - text: です。BtoB企業・製造業では、戦略設計を含む300万円～1000万 ...
+          - generic [ref=e806]:
+            - generic [ref=e809]:
+              - link "建設業のホームページ制作費用はいくら？相場と失敗しない ... kenchiku-senmon.com https://kenchiku-senmon.com › ... › ホームページ制作" [ref=e811] [cursor=pointer]:
+                - /url: https://kenchiku-senmon.com/blog/homepage/1011.html
+                - heading "建設業のホームページ制作費用はいくら？相場と失敗しない ..." [level=3] [ref=e812]
+                - generic [ref=e817]:
+                  - generic [ref=e819]: kenchiku-senmon.com
+                  - generic [ref=e821]: https://kenchiku-senmon.com › ... › ホームページ制作
+              - button "この結果について" [ref=e822] [cursor=pointer]:
+                - img [ref=e825]
+            - generic [ref=e828]:
+              - generic [ref=e829]: 2023/08/15 —
+              - generic [ref=e830]:
+                - text: ・低コストでオリジナルデザイン可能・小規模サイト向き, ・スキルに差がある・サポート体制に不安, 10
+                - emphasis [ref=e831]: 〜
+                - text: 20万円前後, 年間数万円程度, ・小規模建設業 ...
+          - generic [ref=e835]:
+            - generic [ref=e838]:
+              - link "ホームページ制作・作成費用の相場を解説-料金内訳・ページ数 ... クーミル株式会社 https://coomil.co.jp › column › home-page-market-price" [ref=e840] [cursor=pointer]:
+                - /url: https://coomil.co.jp/column/home-page-market-price/
+                - heading "ホームページ制作・作成費用の相場を解説-料金内訳・ページ数 ..." [level=3] [ref=e841]
+                - generic [ref=e846]:
+                  - generic [ref=e848]: クーミル株式会社
+                  - generic [ref=e850]: https://coomil.co.jp › column › home-page-market-price
+              - button "この結果について" [ref=e851] [cursor=pointer]:
+                - img [ref=e854]
+            - generic [ref=e857]:
+              - generic [ref=e858]: 2026/03/10 —
+              - generic [ref=e859]:
+                - emphasis [ref=e860]: ホームページ制作
+                - text: の料金
+                - emphasis [ref=e861]: 相場
+                - text: はいくら？本記事では「依頼先別」「サイト種類別」「ページ数別」の費用
+                - emphasis [ref=e862]: 相場
+                - text: を早見表でわかりやすく解説。
+        - navigation [ref=e865]:
+          - heading "ページの操作" [level=1] [ref=e866]
+          - text: "1"
+          - link "Page 2" [ref=e869] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=10&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAE
+            - text: "2"
+          - link "Page 3" [ref=e871] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=20&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAG
+            - text: "3"
+          - link "Page 4" [ref=e873] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=30&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAI
+            - text: "4"
+          - link "Page 5" [ref=e875] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=40&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAK
+            - text: "5"
+          - link "Page 6" [ref=e877] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=50&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAM
+            - text: "6"
+          - link "Page 7" [ref=e879] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=60&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAO
+            - text: "7"
+          - link "Page 8" [ref=e881] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=70&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAQ
+            - text: "8"
+          - link "Page 9" [ref=e883] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=80&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAS
+            - text: "9"
+          - link "Page 10" [ref=e885] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=90&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8tMDegQIBhAU
+            - text: "10"
+          - heading "次へ" [level=2] [ref=e887]:
+            - link "次へ" [ref=e888] [cursor=pointer]:
+              - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%88%B6%E4%BD%9C+20%E4%B8%87%E5%86%86+%E4%BA%88%E7%AE%97+%E7%9B%B8%E5%A0%B4&sca_esv=031e7e0cba0603c0&hl=ja&ei=6jLNaaamG-TM1e8P8NiPqQE&start=10&sa=N&sstk=Af77f_dfE5LWCbID6Nuw52AF3WSfNwlYaxhkG945qZ-4j94r1VzTBGLSniO4Sp5wzeojpjSW8UWwF4IB3hvMvPREPOoouVRJnLtsvw&ved=2ahUKEwimw6ex9cyTAxVkZvUHHXDsIxUQ8NMDegQIBhAW
+              - generic [ref=e890]: 次へ
+        - navigation
+    - contentinfo [ref=e891]:
+      - heading "フッターのリンク" [level=1] [ref=e892]
+      - generic [ref=e896]:
+        - generic [ref=e898]:
+          - text: 日本
+          - generic [ref=e900]:
+            - 'button "越谷市、埼玉県 - ソース: あなたの IP アドレス" [ref=e902] [cursor=pointer]':
+              - generic [ref=e903]: 越谷市、埼玉県
+              - generic [ref=e905]:
+                - text: "-"
+                - generic [ref=e906]: "ソース: あなたの IP アドレス"
+            - text: "-"
+            - button "現在地を更新" [ref=e908] [cursor=pointer]: 現在地を更新
+        - generic [ref=e911]:
+          - link "ヘルプ" [ref=e912] [cursor=pointer]:
+            - /url: https://support.google.com/websearch/?p=ws_results_help&hl=ja&fg=1
+          - link "フィードバックを送信" [ref=e913] [cursor=pointer]:
+            - /url: "#"
+          - link "プライバシー" [ref=e914] [cursor=pointer]:
+            - /url: https://policies.google.com/privacy?hl=ja&fg=1
+          - link "規約" [ref=e915] [cursor=pointer]:
+            - /url: https://policies.google.com/terms?hl=ja&fg=1

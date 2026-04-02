@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>施工実績 | 土屋建築株式会社</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: '#1a365d',
+        'navy-light': '#2a4a7f',
+        orange: '#dd6b20',
+        'orange-light': '#ed8936',
+        'text-main': '#2d3748',
+        'bg-light': '#f7fafc',
+      },
+      fontFamily: {
+        sans: ['Noto Sans JP', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+body { font-family: 'Noto Sans JP', sans-serif; color: #2d3748; }
+.work-card {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.work-card.fade-out {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+}
+.work-card.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.filter-tab {
+  transition: all 0.3s ease;
+}
+.filter-tab.active {
+  background-color: #1a365d;
+  color: #fff;
+}
+.hamburger-line {
+  transition: all 0.3s ease;
+}
+.mobile-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.mobile-menu.open {
+  max-height: 400px;
+}
+</style>
+</head>
+<body class="bg-bg-light min-h-screen">
+
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 bg-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 flex-shrink-0">
+        <div class="w-10 h-10 bg-navy rounded flex items-center justify-center">
+          <i class="fas fa-building text-white text-lg"></i>
+        </div>
+        <div>
+          <div class="text-navy font-bold text-lg leading-tight">土屋建築</div>
+          <div class="text-xs text-gray-500 leading-tight">株式会社</div>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#" class="text-text-main hover:text-orange font-medium text-sm transition-colors">ホーム</a>
+        <a href="#" class="text-text-main hover:text-orange font-medium text-sm transition-colors">会社概要</a>
+        <a href="#" class="text-orange font-bold text-sm border-b-2 border-orange pb-1">施工実績</a>
+        <a href="#" class="text-text-main hover:text-orange font-medium text-sm transition-colors">サービス</a>
+        <a href="#" class="text-text-main hover:text-orange font-medium text-sm transition-colors">採用情報</a>
+        <a href="#" class="text-text-main hover:text-orange font-medium text-sm transition-colors">お問い合わせ</a>
+      </nav>
+
+      <!-- TEL + Hamburger -->
+      <div class="flex items-center gap-4">
+        <a href="tel:03-1234-5678" class="hidden sm:flex items-center gap-2 bg-orange text-white px-4 py-2 rounded-lg hover:bg-orange-light transition-colors">
+          <i class="fas fa-phone text-sm"></i>
+          <span class="font-bold text-sm">03-1234-5678</span>
+        </a>
+        <button id="hamburger" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="メニュー">
+          <span class="hamburger-line block w-6 h-0.5 bg-navy"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-navy"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-navy"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="mobile-menu md:hidden bg-white border-t border-gray-100">
+    <nav class="flex flex-col px-6 py-4 gap-3">
+      <a href="#" class="text-text-main hover:text-orange font-medium py-2 border-b border-gray-100">ホーム</a>
+      <a href="#" class="text-text-main hover:text-orange font-medium py-2 border-b border-gray-100">会社概要</a>
+      <a href="#" class="text-orange font-bold py-2 border-b border-gray-100">施工実績</a>
+      <a href="#" class="text-text-main hover:text-orange font-medium py-2 border-b border-gray-100">サービス</a>
+      <a href="#" class="text-text-main hover:text-orange font-medium py-2 border-b border-gray-100">採用情報</a>
+      <a href="#" class="text-text-main hover:text-orange font-medium py-2">お問い合わせ</a>
+      <a href="tel:03-1234-5678" class="sm:hidden flex items-center justify-center gap-2 bg-orange text-white px-4 py-3 rounded-lg mt-2">
+        <i class="fas fa-phone"></i>
+        <span class="font-bold">03-1234-5678</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- Page Header -->
+<section class="bg-navy py-16 sm:py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-4">施工実績</h1>
+    <p class="text-blue-200 text-sm sm:text-base">確かな技術と信頼で、理想の空間を実現いたします。</p>
+  </div>
+</section>
+
+<!-- Breadcrumb -->
+<div class="bg-white border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+    <nav class="flex items-center gap-2 text-sm text-gray-500">
+      <a href="#" class="hover:text-orange transition-colors"><i class="fas fa-home"></i> ホーム</a>
+      <i class="fas fa-chevron-right text-xs text-gray-300"></i>
+      <span class="text-navy font-medium">施工実績</span>
+    </nav>
+  </div>
+</div>
+
+<!-- Category Filter Tabs -->
+<section class="bg-white py-8 border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-wrap justify-center gap-3" id="filterTabs">
+      <button class="filter-tab active px-6 py-2.5 rounded-full border-2 border-navy text-sm font-medium" data-filter="all">
+        <i class="fas fa-th-large mr-1"></i>すべて
+      </button>
+      <button class="filter-tab px-6 py-2.5 rounded-full border-2 border-gray-300 text-gray-600 hover:border-navy hover:text-navy text-sm font-medium" data-filter="新築">
+        <i class="fas fa-home mr-1"></i>新築
+      </button>
+      <button class="filter-tab px-6 py-2.5 rounded-full border-2 border-gray-300 text-gray-600 hover:border-navy hover:text-navy text-sm font-medium" data-filter="リフォーム">
+        <i class="fas fa-tools mr-1"></i>リフォーム
+      </button>
+      <button class="filter-tab px-6 py-2.5 rounded-full border-2 border-gray-300 text-gray-600 hover:border-navy hover:text-navy text-sm font-medium" data-filter="商業施設">
+        <i class="fas fa-store mr-1"></i>商業施設
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Works Grid -->
+<section class="py-12 sm:py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="worksGrid">
+      <!-- Cards rendered by JS -->
+    </div>
+    <!-- Results count -->
+    <div id="resultsCount" class="text-center mt-8 text-gray-500 text-sm"></div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="bg-navy py-16 sm:py-20">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">お住まいのことなら何でもご相談ください</h2>
+    <p class="text-blue-200 mb-8 text-sm sm:text-base">新築・リフォーム・商業施設まで、お客様のご要望に合わせた最適なプランをご提案いたします。まずはお気軽にお問い合わせください。</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="tel:03-1234-5678" class="flex items-center gap-2 bg-orange hover:bg-orange-light text-white px-8 py-4 rounded-lg font-bold transition-colors text-lg">
+        <i class="fas fa-phone"></i>
+        03-1234-5678
+      </a>
+      <a href="#" class="flex items-center gap-2 bg-white hover:bg-gray-100 text-navy px-8 py-4 rounded-lg font-bold transition-colors">
+        <i class="fas fa-envelope"></i>
+        メールで問い合わせ
+      </a>
+    </div>
+    <p class="text-blue-300 text-xs mt-4">受付時間: 平日 9:00〜18:00 / 土曜 9:00〜15:00</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-400 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <!-- Company Info -->
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-navy rounded flex items-center justify-center">
+            <i class="fas fa-building text-white"></i>
+          </div>
+          <div>
+            <div class="text-white font-bold text-lg">土屋建築株式会社</div>
+          </div>
+        </div>
+        <p class="text-sm leading-relaxed mb-3">
+          〒150-0001 東京都渋谷区神宮前1-2-3<br>
+          TEL: 03-1234-5678 / FAX: 03-1234-5679
+        </p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 bg-gray-700 hover:bg-orange rounded-full flex items-center justify-center transition-colors">
+            <i class="fab fa-facebook-f text-white text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 bg-gray-700 hover:bg-orange rounded-full flex items-center justify-center transition-colors">
+            <i class="fab fa-instagram text-white text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 bg-gray-700 hover:bg-orange rounded-full flex items-center justify-center transition-colors">
+            <i class="fab fa-line text-white text-sm"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-white font-bold mb-4">サイトマップ</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-orange transition-colors">ホーム</a></li>
+          <li><a href="#" class="hover:text-orange transition-colors">会社概要</a></li>
+          <li><a href="#" class="hover:text-orange transition-colors">施工実績</a></li>
+          <li><a href="#" class="hover:text-orange transition-colors">サービス</a></li>
+          <li><a href="#" class="hover:text-orange transition-colors">採用情報</a></li>
+          <li><a href="#" class="hover:text-orange transition-colors">お問い合わせ</a></li>
+        </ul>
+      </div>
+
+      <!-- Business Hours -->
+      <div>
+        <h3 class="text-white font-bold mb-4">営業時間</h3>
+        <table class="text-sm w-full">
+          <tr><td class="py-1">平日</td><td class="py-1">9:00〜18:00</td></tr>
+          <tr><td class="py-1">土曜</td><td class="py-1">9:00〜15:00</td></tr>
+          <tr><td class="py-1">日曜・祝日</td><td class="py-1 text-orange">定休日</td></tr>
+        </table>
+        <div class="mt-4 p-3 bg-gray-800 rounded-lg">
+          <p class="text-xs text-gray-400">
+            <i class="fas fa-info-circle mr-1 text-orange"></i>
+            お急ぎの場合はお電話ください。時間外でも対応可能な場合がございます。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-700 pt-6 text-center text-xs text-gray-500">
+      <p>&copy; 2024 土屋建築株式会社 All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Works data
+const works = [
+  {
+    id: 1,
+    name: '田中邸新築工事',
+    category: '新築',
+    area: '世田谷区',
+    structure: '木造2階建',
+    size: '120㎡',
+    description: 'ご家族4人のための開放感あるリビングを中心とした住まい。自然光をたっぷり取り込む設計で、省エネ性能にも配慮しました。',
+    year: '2024'
+  },
+  {
+    id: 2,
+    name: '山田邸リフォーム',
+    category: 'リフォーム',
+    area: '渋谷区',
+    structure: 'RC造',
+    size: '85㎡',
+    description: '築30年のマンションを全面リフォーム。水回りの刷新と間取り変更で、現代のライフスタイルに合った快適な住空間を実現しました。',
+    year: '2024'
+  },
+  {
+    id: 3,
+    name: '○○商業ビル',
+    category: '商業施設',
+    area: '港区',
+    structure: 'S造5階建',
+    size: '500㎡',
+    description: 'テナントオフィスビルの新築工事。高い耐震性能と柔軟なフロアプランで、多様なビジネスニーズに対応する施設です。',
+    year: '2023'
+  },
+  {
+    id: 4,
+    name: '鈴木邸新築',
+    category: '新築',
+    area: '目黒区',
+    structure: '木造2階建',
+    size: '150㎡',
+    description: '二世帯住宅として、プライバシーを確保しながらも家族の繋がりを大切にした設計。屋上テラス付きの贅沢な住まいです。',
+    year: '2023'
+  },
+  {
+    id: 5,
+    name: '佐藤邸キッチンリフォーム',
+    category: 'リフォーム',
+    area: '新宿区',
+    structure: '木造',
+    size: '30㎡',
+    description: 'キッチンを中心とした部分リフォーム。アイランドキッチンへの変更と収納力の強化で、料理が楽しくなる空間に生まれ変わりました。',
+    year: '2024'
+  },
+  {
+    id: 6,
+    name: '△△クリニック',
+    category: '商業施設',
+    area: '品川区',
+    structure: 'RC造3階建',
+    size: '200㎡',
+    description: '内科・小児科クリニックの新築工事。患者様が安心して過ごせる温かみのある空間と、効率的な動線設計を両立しました。',
+    year: '2023'
+  },
+  {
+    id: 7,
+    name: '高橋邸新築',
+    category: '新築',
+    area: '杉並区',
+    structure: '木造2階建',
+    size: '135㎡',
+    description: '在宅ワークに対応した書斎スペースを確保した住宅。高気密・高断熱仕様で一年を通じて快適な住環境を実現しています。',
+    year: '2024'
+  },
+  {
+    id: 8,
+    name: '中村邸全面リノベーション',
+    category: 'リフォーム',
+    area: '中野区',
+    structure: '木造',
+    size: '100㎡',
+    description: '築40年の戸建てをフルリノベーション。耐震補強を行いながら、モダンなデザインと最新設備で新築同様の住まいへ。',
+    year: '2023'
+  },
+  {
+    id: 9,
+    name: '□□オフィスビル',
+    category: '商業施設',
+    area: '千代田区',
+    structure: 'S造8階建',
+    size: '800㎡',
+    description: '大規模オフィスビルの設計・施工。最新の空調システムと免震構造を採用し、テナント企業の生産性向上に貢献する建物です。',
+    year: '2022'
+  }
+];
+
+// Category badge colors
+const categoryColors = {
+  '新築': { bg: 'bg-blue-100', text: 'text-blue-700', icon: 'fa-home' },
+  'リフォーム': { bg: 'bg-green-100', text: 'text-green-700', icon: 'fa-tools' },
+  '商業施設': { bg: 'bg-purple-100', text: 'text-purple-700', icon: 'fa-store' }
+};
+
+function createCard(work) {
+  const colors = categoryColors[work.category] || { bg: 'bg-gray-100', text: 'text-gray-700', icon: 'fa-building' };
+
+  return `
+    <div class="work-card fade-in bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 group" data-category="${work.category}">
+      <!-- Thumbnail Placeholder -->
+      <div class="relative h-52 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center overflow-hidden">
+        <div class="text-center">
+          <i class="fas ${colors.icon} text-4xl text-gray-400 mb-2"></i>
+          <p class="text-gray-400 text-xs">施工写真</p>
+        </div>
+        <div class="absolute top-3 left-3">
+          <span class="inline-flex items-center gap-1 px-3 py-1 ${colors.bg} ${colors.text} text-xs font-bold rounded-full">
+            <i class="fas ${colors.icon}"></i>
+            ${work.category}
+          </span>
+        </div>
+        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs text-gray-600 font-medium">
+          ${work.year}年
+        </div>
+        <div class="absolute inset-0 bg-navy/0 group-hover:bg-navy/20 transition-colors duration-300 flex items-center justify-center">
+          <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white text-navy px-4 py-2 rounded-lg text-sm font-bold shadow-lg">
+            <i class="fas fa-search-plus mr-1"></i>詳細を見る
+          </span>
+        </div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="p-5">
+        <h3 class="text-lg font-bold text-text-main mb-3 group-hover:text-navy transition-colors">${work.name}</h3>
+        <div class="space-y-2 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-orange w-4 text-center"></i>
+            <span>${work.area}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-drafting-compass text-orange w-4 text-center"></i>
+            <span>${work.structure}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-ruler-combined text-orange w-4 text-center"></i>
+            <span>${work.size}</span>
+          </div>
+        </div>
+        <p class="text-gray-500 text-xs mt-3 leading-relaxed line-clamp-2">${work.description}</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderWorks(category) {
+  const grid = document.getElementById('worksGrid');
+  const countEl = document.getElementById('resultsCount');
+  const filtered = category === 'all' ? works : works.filter(w => w.category === category);
+
+  // Fade out
+  grid.querySelectorAll('.work-card').forEach(card => {
+    card.classList.add('fade-out');
+    card.classList.remove('fade-in');
+  });
+
+  setTimeout(() => {
+    grid.innerHTML = filtered.map(createCard).join('');
+    countEl.textContent = `全 ${filtered.length} 件の施工実績`;
+    window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
+  }, 300);
+}
+
+// Filter tab click
+document.getElementById('filterTabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-tab');
+  if (!btn) return;
+
+  document.querySelectorAll('.filter-tab').forEach(t => {
+    t.classList.remove('active', 'border-navy', 'text-white');
+    t.classList.add('border-gray-300', 'text-gray-600');
+  });
+  btn.classList.add('active', 'border-navy');
+  btn.classList.remove('border-gray-300', 'text-gray-600');
+
+  renderWorks(btn.dataset.filter);
+});
+
+// Hamburger menu
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+
+// Initial render
+renderWorks('all');
+
+// Resize notification
+function notifyResize() {
+  window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
+}
+window.addEventListener('resize', notifyResize);
+window.addEventListener('load', notifyResize);
+new MutationObserver(notifyResize).observe(document.body, { childList: true, subtree: true });
+</script>
+</body>
+</html>

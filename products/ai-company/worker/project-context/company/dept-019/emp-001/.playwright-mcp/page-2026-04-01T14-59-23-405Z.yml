@@ -1,0 +1,453 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - link "メイン コンテンツにスキップ" [ref=e2] [cursor=pointer]
+      - link "ユーザー補助ヘルプ" [ref=e3] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=ja
+      - link "ユーザー補助に関するフィードバック" [ref=e4] [cursor=pointer]
+  - generic [ref=e9]:
+    - search [ref=e10]:
+      - generic [ref=e12]:
+        - link "Google ホームへ" [ref=e14] [cursor=pointer]:
+          - /url: https://www.google.com/webhp?hl=ja&sa=X&ved=0ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQPAgJ
+          - img [ref=e15]
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - combobox "検索" [ref=e26]: 建築会社 ホームページ 必要なページ 構成 建築会社 ホームページ 必要なページ 構成
+            - generic [ref=e27]:
+              - button "消去" [ref=e29] [cursor=pointer]:
+                - img [ref=e31]
+              - generic [ref=e34]:
+                - button "音声で検索" [ref=e35] [cursor=pointer]:
+                  - img [ref=e36]
+                - button "画像で検索" [ref=e38] [cursor=pointer]:
+                  - img [ref=e39]
+          - button "検索" [ref=e41] [cursor=pointer]:
+            - img [ref=e44]
+    - generic [ref=e46]:
+      - button "設定" [ref=e48] [cursor=pointer]:
+        - img [ref=e51]
+      - generic [ref=e54]:
+        - button "Google アプリ" [ref=e56] [cursor=pointer]:
+          - img [ref=e57]
+        - link "ログイン" [ref=e61] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=ja&passive=true&continue=https://www.google.com/search%3Fq%3D%25E5%25BB%25BA%25E7%25AF%2589%25E4%25BC%259A%25E7%25A4%25BE%2B%25E3%2583%259B%25E3%2583%25BC%25E3%2583%25A0%25E3%2583%259A%25E3%2583%25BC%25E3%2582%25B8%2B%25E5%25BF%2585%25E8%25A6%2581%25E3%2581%25AA%25E3%2583%259A%25E3%2583%25BC%25E3%2582%25B8%2B%25E6%25A7%258B%25E6%2588%2590%26hl%3Dja%26sei%3DyTLNadaUHK2Zvr0PsoPp0AY&ec=futura_srp_og_si_72236_p
+  - generic [ref=e63]:
+    - navigation [ref=e69]:
+      - generic [ref=e73]:
+        - list [ref=e74]:
+          - listitem [ref=e75]:
+            - link "AI モード" [ref=e78] [cursor=pointer]:
+              - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&udm=50&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&aep=1&ntc=1&sa=X&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ2J8OegQIDhAE
+              - generic [ref=e81]: AI モード
+          - listitem [ref=e82]:
+            - link "すべて" [disabled] [ref=e83]:
+              - generic [ref=e85]: すべて
+          - listitem [ref=e86]:
+            - link "画像" [ref=e87] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=2&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sa=X&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQtKgLegQIEBAB
+              - generic [ref=e89]: 画像
+          - listitem [ref=e90]:
+            - link "ショッピング" [ref=e91] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=28&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&ved=1t:220175&ictx=111
+              - generic [ref=e93]: ショッピング
+          - listitem [ref=e94]:
+            - link "ショート動画" [ref=e95] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=39&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sa=X&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQs6gLegQIEhAB
+              - generic [ref=e97]: ショート動画
+          - listitem [ref=e98]:
+            - link "動画" [ref=e99] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&udm=7&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sa=X&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQtKgLegQIFBAB
+              - generic [ref=e101]: 動画
+          - listitem [ref=e102]:
+            - link "ニュース" [ref=e103] [cursor=pointer]:
+              - /url: /search?sca_esv=031e7e0cba0603c0&hl=ja&q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&tbm=nws&source=lnms&fbs=ADc_l-ZlCIK_ae5oKZcV5pK93vZHTNGrC6L2JcwF5fruDO_Pmjr5z1wvp84rqzq5-Lv6m-u2mW20qqjdELSkcXO1qEHX1NuAJYDJILoJVQDYKfaqr3AhUoiY6LH9y5_HCMJtQsxpyEaWFE2GTnZ-hePbQFkMP5iEt1TkShyw-0IpbYBl3Ix2-QuQbkbtGRpBjPee8GbIUBzJ245QGuYpHDmgjV8h4OojXNFKi2xKendpaLb-K24lHD4&sa=X&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ0pQJegQIExAB
+              - generic [ref=e105]: ニュース
+          - listitem [ref=e106]:
+            - button "その他のフィルタ" [ref=e107] [cursor=pointer]:
+              - generic "その他のフィルタ" [ref=e108]:
+                - generic [ref=e109]:
+                  - generic [ref=e110]: もっと見る
+                  - img [ref=e112]
+        - button "ツール" [ref=e115] [cursor=pointer]:
+          - generic [ref=e117]:
+            - generic [ref=e118]: ツール
+            - img [ref=e120]
+    - heading "検索結果" [level=1] [ref=e122]
+    - generic [ref=e127]:
+      - generic [ref=e128]:
+        - region "広告" [ref=e133]:
+          - generic [ref=e134]:
+            - heading "スポンサー広告" [level=2] [ref=e140]
+            - generic [ref=e141]:
+              - generic [ref=e153]:
+                - generic [ref=e154]:
+                  - link "ホームページ作成の正解はこれ | 初めてのホームページ作り方に お名前.com https://www.onamae.com › ホームページ › ai作成" [ref=e155] [cursor=pointer]:
+                    - /url: https://www.onamae.com/campaign/aihppack/004/
+                    - heading "ホームページ作成の正解はこれ | 初めてのホームページ作り方に" [level=3] [ref=e156]
+                    - generic [ref=e162]:
+                      - generic [ref=e164]: お名前.com
+                      - generic [ref=e165]: https://www.onamae.com › ホームページ › ai作成
+                  - button "広告の表示について" [ref=e168] [cursor=pointer]:
+                    - img [ref=e170]
+                - generic [ref=e174]: AIが最新トレンドを反映した信頼感のあるサイトを構築。文章作成から画像選定までAIがサポート。 業種と目的を伝えるだけで、AIが最適なサイトを自動生成。プロに頼んだような仕上がりを。 多彩なテンプレート。デザインもAIが提案。AIが...
+                - generic [ref=e176]:
+                  - text: ‎
+                  - link "初心者でもプロ級の仕上がり" [ref=e177] [cursor=pointer]:
+                    - /url: https://www.onamae.com/campaign/aihppack/004/?utm_source=Google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_hpkw_rsa_004&waad=lBkN7lxT
+                  - text: · ‎
+                  - link "知識ゼロ！ホームページ作り方" [ref=e178] [cursor=pointer]:
+                    - /url: https://www.onamae.com/campaign/aihppack/004/?utm_source=Google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_hpkw_rsa_004&waad=lBkN7lxT
+                  - text: · ‎
+                  - link "無料HPで後悔したくない方" [ref=e179] [cursor=pointer]:
+                    - /url: https://www.onamae.com/campaign/aihppack/006/?utm_source=google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_focus_sitelink-11&waad=xV9SMN0A
+                - generic [ref=e184]: "過去 1 か月間のアクセス数: 100 万件以上"
+              - button "「スポンサー」検索結果を非表示" [ref=e185] [cursor=pointer]:
+                - separator [ref=e186]
+                - generic [ref=e187]:
+                  - generic [ref=e188]: 「スポンサー」検索結果を非表示
+                  - img [ref=e190]
+        - generic [ref=e206]:
+          - generic [ref=e209]:
+            - generic [ref=e211]:
+              - generic [ref=e213]:
+                - generic [ref=e214]:
+                  - img [ref=e215]
+                  - heading "AI による概要" [level=2] [ref=e217]
+                - button "この結果について" [ref=e221]:
+                  - img [ref=e223]
+              - generic [ref=e249]:
+                - generic [ref=e250]: 建築会社のホームページには、
+                - mark [ref=e251]: 信頼性、専門性、そして「誰が、どんな想いで、どんな家を建てるか」を可視化する構成
+                - text: が必須です。特に
+                - strong [ref=e252]: 施工事例、会社概要（社長の想い・資格）、お問い合わせ
+                - text: は重要です。スマホで見やすく、エリア情報と採用情報（求人）を充実させると集客・採用力が強化されます。
+                - button "Wins Connect (+6) - 関連リンクを表示" [disabled] [ref=e255]:
+                  - generic [ref=e256]:
+                    - img "Wins Connect" [ref=e257]
+                    - generic [ref=e258]:
+                      - generic [ref=e259]: Wins Connect
+                      - generic [ref=e260]: "+6"
+            - progressbar [ref=e265]
+          - button "その他の AI による概要を表示" [ref=e289]:
+            - generic [ref=e291] [cursor=pointer]:
+              - generic [ref=e292]: もっと見る
+              - img [ref=e294]
+      - main [ref=e297]:
+        - generic [ref=e301]:
+          - generic [ref=e304]:
+            - heading "ウェブ検索結果" [level=2] [ref=e305]
+            - generic [ref=e306]:
+              - generic [ref=e309]:
+                - link "【保存版】建設業のホームページに必要なページ構成とは？ ... Wins Connect https://wins-connect.com › Uncategorized" [ref=e311] [cursor=pointer]:
+                  - /url: https://wins-connect.com/must-page-construction/
+                  - heading "【保存版】建設業のホームページに必要なページ構成とは？ ..." [level=3] [ref=e312]
+                  - generic [ref=e317]:
+                    - generic [ref=e319]: Wins Connect
+                    - generic [ref=e321]: https://wins-connect.com › Uncategorized
+                - button "この結果について" [ref=e322] [cursor=pointer]:
+                  - img [ref=e325]
+              - generic [ref=e328]:
+                - generic [ref=e329]: 2025/05/07 —
+                - generic [ref=e330]:
+                  - text: 1. ホームページに必要なページ構成とは？ ;
+                  - emphasis [ref=e331]: 会社概要, 信頼性・所在地・代表者情報などを明記
+                  - text: ; 事業内容, 対応工事の種類や業務範囲を明確に示す ; 施工事例 ...
+          - generic [ref=e335]:
+            - generic [ref=e338]:
+              - link "【これで解決！】建設業のホームページ作り方ガイド｜手順と ... KENTEM（建設システム） https://www.kentem.jp › construction-website-guide-tst" [ref=e340] [cursor=pointer]:
+                - /url: https://www.kentem.jp/blog/construction-website-guide-tst/
+                - heading "【これで解決！】建設業のホームページ作り方ガイド｜手順と ..." [level=3] [ref=e341]
+                - generic [ref=e346]:
+                  - generic [ref=e348]: KENTEM（建設システム）
+                  - generic [ref=e350]: https://www.kentem.jp › construction-website-guide-tst
+              - button "この結果について" [ref=e351] [cursor=pointer]:
+                - img [ref=e354]
+            - generic [ref=e357]:
+              - generic [ref=e358]: 2026/03/17 —
+              - generic [ref=e359]:
+                - emphasis [ref=e360]: 建設
+                - text: 業の
+                - emphasis [ref=e361]: ホームページ
+                - text: に
+                - emphasis [ref=e362]: 必要な
+                - text: 基本
+                - emphasis [ref=e363]: ページ
+                - text: は以下の通りです。業態に合わせ ... お問い合わせ, 仕事の依頼、求人応募、協力
+                - emphasis [ref=e364]: 会社
+                - text: 登録などの窓口.
+                - emphasis [ref=e365]: ページ構成
+                - text: が ...
+          - generic [ref=e369]:
+            - generic [ref=e372]:
+              - link "建設業のホームページで成果を出すには？必要なページ構成と ... ブラボーウェブ https://bravo-web.com › NEWS & COLUMNS › ALL" [ref=e374] [cursor=pointer]:
+                - /url: https://bravo-web.com/news/construction-homepage
+                - heading "建設業のホームページで成果を出すには？必要なページ構成と ..." [level=3] [ref=e375]
+                - generic [ref=e380]:
+                  - generic [ref=e382]: ブラボーウェブ
+                  - generic [ref=e384]: https://bravo-web.com › NEWS & COLUMNS › ALL
+              - button "この結果について" [ref=e385] [cursor=pointer]:
+                - img [ref=e388]
+            - generic [ref=e391]:
+              - generic [ref=e392]: 2025/10/15 —
+              - generic [ref=e393]:
+                - text: 建設業ホームページの基本ページ構成 ·
+                - emphasis [ref=e394]: 1. トップページ
+                - text: · 2. 施工事例ページ · 3. 事業案内ページ · 4. 会社案内ページ · 5. 採用情報ページ · 6. お問い合わせ ...
+          - generic [ref=e398]:
+            - generic [ref=e401]:
+              - link "建設業のホームページ制作完全ガイド｜成果を上げるデザイン ... Wepage https://wepage.com › ブログTOP › 業種・目的別" [ref=e403] [cursor=pointer]:
+                - /url: https://wepage.com/blog/article/43/index.html
+                - heading "建設業のホームページ制作完全ガイド｜成果を上げるデザイン ..." [level=3] [ref=e404]
+                - generic [ref=e409]:
+                  - generic [ref=e411]: Wepage
+                  - generic [ref=e413]: https://wepage.com › ブログTOP › 業種・目的別
+              - button "この結果について" [ref=e414] [cursor=pointer]:
+                - img [ref=e417]
+            - generic [ref=e421]:
+              - emphasis [ref=e422]: 建築
+              - text: ・
+              - emphasis [ref=e423]: 建設
+              - text: 業の
+              - emphasis [ref=e424]: ホームページ
+              - text: 作成について、
+              - emphasis [ref=e425]: ホームページ
+              - text: のデザイン事例、なぜ必要なのかの理由や作成前の準備、
+              - emphasis [ref=e426]: 必要なページ
+              - text: や失敗例まで徹底解説します。
+          - generic [ref=e430]:
+            - heading "スポンサー広告" [level=2] [ref=e436]
+            - generic [ref=e437]:
+              - generic [ref=e448]:
+                - link "onamae.com からの画像" [ref=e450] [cursor=pointer]:
+                  - /url: https://www.google.com/aclk?sa=L&ai=DChsSEwiSit-h9cyTAxUO1hYFHbJIEOQYACICCAIQAxoCdGw&co=1&ase=2&gclid=EAIaIQobChMIkorfofXMkwMVDtYWBR2ySBDkEAMYASADEgIQxPD_BwE&cid=CAASugHkaE35SrUEL5OYjOA4CBtKQBOwuKg8n2KZKcXDs8NQUdh3Cz7QfmukM2zF4UE9eebV4m1akP0MJ-Y2kUXYdsqFuyz-U9VZu9l8zGA5BSlGMtal22b-Im6dnDhn24mQ4V9BgJWT6G84z-_dtR__LcOix6G5QLAIfzFLIc6CYCPt5FIIdwKbxBfIozc9DK7wlKgN3yJD4t4qxo73U5IVhqFYs6iKxHOqB167JDhY76IZOJecNRW0a7mWgYY&cce=2&category=acrcp_v1_32&sig=AOD64_3od9rloIHxYzBqa4KjzyaLMgjWoA&q=&nis=4&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQh78CegQIVRAB&adurl=
+                  - img "onamae.com からの画像" [ref=e452]
+                - generic [ref=e453]:
+                  - link "ホームページ作成の正解はこれ | 作成方法どれが正解？ お名前.com https://www.onamae.com › ホームページ › ai作成" [ref=e454] [cursor=pointer]:
+                    - /url: https://www.onamae.com/campaign/aihppack/005/
+                    - heading "ホームページ作成の正解はこれ | 作成方法どれが正解？" [level=3] [ref=e456]
+                    - generic [ref=e462]:
+                      - generic [ref=e464]: お名前.com
+                      - generic [ref=e465]: https://www.onamae.com › ホームページ › ai作成
+                  - button "広告の表示について" [ref=e468] [cursor=pointer]:
+                    - img [ref=e470]
+                - generic [ref=e474]: 自分で作る？外注する？無駄な選択をして後悔したくない方に。AI対話形式で最短・理想のサイトへ。”WordPressのような自由度と作成サービスの手軽さ”を兼ね備えたものがAIホームページパック。
+                - generic [ref=e476]:
+                  - text: ‎
+                  - link "HPの作り方を徹底解説" [ref=e477] [cursor=pointer]:
+                    - /url: https://www.onamae.com/campaign/aihppack/004/?utm_source=google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_focus_sitelink-9&waad=xIQ1NKZ4
+                  - text: · ‎
+                  - link "どの方法がいいか迷ってる？" [ref=e478] [cursor=pointer]:
+                    - /url: /aclk?sa=L&ai=DChsSEwiSit-h9cyTAxUO1hYFHbJIEOQYACICCAIQBBoCdGw&co=1&ase=2&gclid=EAIaIQobChMIkorfofXMkwMVDtYWBR2ySBDkEAMYASAEEgI4EvD_BwE&cid=CAASugHkaE35SrUEL5OYjOA4CBtKQBOwuKg8n2KZKcXDs8NQUdh3Cz7QfmukM2zF4UE9eebV4m1akP0MJ-Y2kUXYdsqFuyz-U9VZu9l8zGA5BSlGMtal22b-Im6dnDhn24mQ4V9BgJWT6G84z-_dtR__LcOix6G5QLAIfzFLIc6CYCPt5FIIdwKbxBfIozc9DK7wlKgN3yJD4t4qxo73U5IVhqFYs6iKxHOqB167JDhY76IZOJecNRW0a7mWgYY&cce=2&category=acrcp_v1_32&sig=AOD64_2hB3l_1B5HPvEsuAaZALcXshxZHQ&adurl=&q=
+                  - text: · ‎
+                  - link "ホームページ作成がこれで完結" [ref=e479] [cursor=pointer]:
+                    - /url: https://www.onamae.com/campaign/aihppack/005/?utm_source=Google&utm_medium=paidsearch&banner_id=1138_kwt_aihp_bigaihp_hpkw_rsa_005&waad=E2cwVn14
+                - generic [ref=e484]: "過去 1 か月間のアクセス数: 100 万件以上"
+              - button "「スポンサー」検索結果を非表示" [ref=e485] [cursor=pointer]:
+                - separator [ref=e486]
+                - generic [ref=e487]:
+                  - generic [ref=e488]: 「スポンサー」検索結果を非表示
+                  - img [ref=e490]
+          - generic [ref=e495]:
+            - generic [ref=e498]:
+              - link "建設業ホームページに必要なページ一覧と理由｜成果を出す ... relations.ne.jp https://relations.ne.jp › ホーム › コラム記事一覧" [ref=e500] [cursor=pointer]:
+                - /url: https://relations.ne.jp/homesen/website-production/3912/
+                - heading "建設業ホームページに必要なページ一覧と理由｜成果を出す ..." [level=3] [ref=e501]
+                - generic [ref=e506]:
+                  - generic [ref=e508]: relations.ne.jp
+                  - generic [ref=e510]: https://relations.ne.jp › ホーム › コラム記事一覧
+              - button "この結果について" [ref=e511] [cursor=pointer]:
+                - img [ref=e514]
+            - generic [ref=e517]:
+              - generic [ref=e518]: 2025/12/13 —
+              - generic [ref=e519]:
+                - emphasis [ref=e520]: 建設
+                - text: 業
+                - emphasis [ref=e521]: ホームページ
+                - text: は“構造がすべて” · 必須
+                - emphasis [ref=e522]: ページ
+                - text: ①：工事別
+                - emphasis [ref=e523]: ページ
+                - text: （外構・舗装・造成・解体・塗装 など） · 必須
+                - emphasis [ref=e524]: ページ
+                - text: ②：施工実績
+                - emphasis [ref=e525]: ページ
+                - text: （工事名 × 地域名）.
+          - generic [ref=e529]:
+            - generic [ref=e532]:
+              - link "建築・建設業のホームページ制作デザイン14選！かっこいい ... titan-art.com https://titan-art.com › ..." [ref=e534] [cursor=pointer]:
+                - /url: https://titan-art.com/15168
+                - heading "建築・建設業のホームページ制作デザイン14選！かっこいい ..." [level=3] [ref=e535]
+                - generic [ref=e540]:
+                  - generic [ref=e542]: titan-art.com
+                  - generic [ref=e544]: https://titan-art.com › ...
+              - button "この結果について" [ref=e545] [cursor=pointer]:
+                - img [ref=e548]
+            - generic [ref=e551]:
+              - generic [ref=e552]: 2025/12/12 —
+              - generic [ref=e553]:
+                - emphasis [ref=e554]: 建築
+                - text: ・
+                - emphasis [ref=e555]: 建設
+                - text: 業の
+                - emphasis [ref=e556]: ホームページ
+                - text: 制作デザイン14選！かっこいい信頼感があるサイトとは？ ; タイタンアートが手がけた
+                - emphasis [ref=e557]: 建築
+                - text: ・
+                - emphasis [ref=e558]: 建設
+                - text: 業の
+                - emphasis [ref=e559]: ホームページ
+                - text: 制作事例4選.
+          - generic [ref=e563]:
+            - generic [ref=e566]:
+              - link "【建設業】カッコいいホームページ制作デザインまとめ！信頼感 ... 株式会社ウェブ企画パートナーズ https://wk-partners.co.jp › ... › ウェブデザイン" [ref=e568] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/construction-industry-web-design/
+                - heading "【建設業】カッコいいホームページ制作デザインまとめ！信頼感 ..." [level=3] [ref=e569]
+                - generic [ref=e574]:
+                  - generic [ref=e576]: 株式会社ウェブ企画パートナーズ
+                  - generic [ref=e578]: https://wk-partners.co.jp › ... › ウェブデザイン
+              - button "この結果について" [ref=e579] [cursor=pointer]:
+                - img [ref=e582]
+            - generic [ref=e585]:
+              - generic [ref=e586]: 2026/02/12 —
+              - generic [ref=e587]:
+                - text: 建設会社のホームページに必要なページ・コンテンツは？
+                - emphasis [ref=e588]: 企業概要
+                - text: . 会社背景・想い. 会社がいつ設立されたのか、どのような経緯で事業を始めたのかを ...
+          - generic [ref=e592]:
+            - generic [ref=e595]:
+              - link "建設業のホームページはこう作る！手順や作成費用・集客に ... ロリポップ！レンタルサーバー https://lolipop.jp › ... › ホームページ" [ref=e597] [cursor=pointer]:
+                - /url: https://lolipop.jp/media/construction-industry-homepage/
+                - heading "建設業のホームページはこう作る！手順や作成費用・集客に ..." [level=3] [ref=e598]
+                - generic [ref=e603]:
+                  - generic [ref=e605]: ロリポップ！レンタルサーバー
+                  - generic [ref=e607]: https://lolipop.jp › ... › ホームページ
+              - button "この結果について" [ref=e608] [cursor=pointer]:
+                - img [ref=e611]
+            - generic [ref=e614]:
+              - generic [ref=e615]: 2025/08/14 —
+              - generic [ref=e616]:
+                - text: 1. 目的とターゲットを明確にする · 2.
+                - emphasis [ref=e617]: ページ構成
+                - text: と
+                - emphasis [ref=e618]: 必要
+                - text: コンテンツを決める · 3. 写真・文章などを準備する · 4. デザインと制作ツールを選ぶ · 6. 公開後の ...
+          - generic [ref=e622]:
+            - generic [ref=e623]:
+              - heading "関連する質問" [level=2] [ref=e624]
+              - button "この結果について" [ref=e625] [cursor=pointer]:
+                - img [ref=e628]
+            - generic [ref=e630]:
+              - button "会社ホームページに必要とされる項目は？" [ref=e636] [cursor=pointer]:
+                - generic [ref=e638]: 会社ホームページに必要とされる項目は？
+                - img [ref=e641]
+              - button "ホームページ制作10ページの相場はいくらですか？" [ref=e650] [cursor=pointer]:
+                - generic [ref=e652]: ホームページ制作10ページの相場はいくらですか？
+                - img [ref=e655]
+              - button "会社ホームページの構成は？" [ref=e664] [cursor=pointer]:
+                - generic [ref=e666]: 会社ホームページの構成は？
+                - img [ref=e669]
+              - button "建設業でホームページは必要ですか？" [ref=e678] [cursor=pointer]:
+                - generic [ref=e680]: 建設業でホームページは必要ですか？
+                - img [ref=e683]
+          - generic [ref=e688]:
+            - heading "ウェブ検索結果" [level=2] [ref=e689]
+            - generic [ref=e690]:
+              - generic [ref=e693]:
+                - link "土木建築業界のホームページ制作に必要な要素とは？ growth-all.jp https://growth-all.jp › ブログ" [ref=e695] [cursor=pointer]:
+                  - /url: https://growth-all.jp/blog/20230418-2697/
+                  - heading "土木建築業界のホームページ制作に必要な要素とは？" [level=3] [ref=e696]
+                  - generic [ref=e698]:
+                    - img [ref=e702]
+                    - generic [ref=e704]:
+                      - generic [ref=e706]: growth-all.jp
+                      - generic [ref=e708]: https://growth-all.jp › ブログ
+                - button "この結果について" [ref=e709] [cursor=pointer]:
+                  - img [ref=e712]
+              - generic [ref=e715]:
+                - generic [ref=e716]: 2023/04/18 —
+                - generic [ref=e717]:
+                  - text: ...
+                  - emphasis [ref=e718]: 必要な
+                  - text: 要素を意識した
+                  - emphasis [ref=e719]: ページ構成
+                  - text: やデザインが必要不可欠です。その一つが、起承転結を意識した
+                  - emphasis [ref=e720]: ページ構成
+                  - text: です。また、ポートフォリオや実績紹介も重要な ...
+          - generic [ref=e724]:
+            - generic [ref=e727]:
+              - link "工務店・建築会社向けWebサイト制作ガイド【2025年版】 digrart.jp https://www.digrart.jp › ブログ › Web制作" [ref=e729] [cursor=pointer]:
+                - /url: https://www.digrart.jp/blog/web/construction-web-guide/
+                - heading "工務店・建築会社向けWebサイト制作ガイド【2025年版】" [level=3] [ref=e730]
+                - generic [ref=e735]:
+                  - generic [ref=e737]: digrart.jp
+                  - generic [ref=e739]: https://www.digrart.jp › ブログ › Web制作
+              - button "この結果について" [ref=e740] [cursor=pointer]:
+                - img [ref=e743]
+            - generic [ref=e746]:
+              - generic [ref=e747]: 2025/07/23 —
+              - generic [ref=e748]:
+                - text: 基本
+                - emphasis [ref=e749]: 構成
+                - text: （最低限
+                - emphasis [ref=e750]: 必要なページ
+                - text: ） ; 提供する商品・強みの明確化 · 地元密着性・安心感の提供 · 人柄・
+                - emphasis [ref=e751]: 会社
+                - text: の雰囲気の発信 · 見積・相談・資料請求・来場予約の ...
+        - navigation [ref=e754]:
+          - heading "ページの操作" [level=1] [ref=e755]
+          - text: "1"
+          - link "Page 2" [ref=e758] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=10&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAE
+            - text: "2"
+          - link "Page 3" [ref=e760] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=20&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAG
+            - text: "3"
+          - link "Page 4" [ref=e762] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=30&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAI
+            - text: "4"
+          - link "Page 5" [ref=e764] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=40&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAK
+            - text: "5"
+          - link "Page 6" [ref=e766] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=50&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAM
+            - text: "6"
+          - link "Page 7" [ref=e768] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=60&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAO
+            - text: "7"
+          - link "Page 8" [ref=e770] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=70&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAQ
+            - text: "8"
+          - link "Page 9" [ref=e772] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=80&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAS
+            - text: "9"
+          - link "Page 10" [ref=e774] [cursor=pointer]:
+            - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=90&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8tMDegQIDBAU
+            - text: "10"
+          - heading "次へ" [level=2] [ref=e776]:
+            - link "次へ" [ref=e777] [cursor=pointer]:
+              - /url: /search?q=%E5%BB%BA%E7%AF%89%E4%BC%9A%E7%A4%BE+%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8+%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%9A%E3%83%BC%E3%82%B8+%E6%A7%8B%E6%88%90&sca_esv=031e7e0cba0603c0&hl=ja&ei=yTLNabaQKI2p0-kPxc3EgAQ&start=10&sa=N&sstk=Af77f_cxG5_MIVI42YC6y_jXCQYc9OY3RoRpDMIXAO87tIJqZHGW8MqenYFYSw0o-XWg2UklkVE7YxPU4hhAiRhZVLrGzZ7bVISVlw&ved=2ahUKEwj2mNah9cyTAxWN1DQHHcUmEUAQ8NMDegQIDBAW
+              - generic [ref=e779]: 次へ
+        - navigation
+    - contentinfo [ref=e780]:
+      - heading "フッターのリンク" [level=1] [ref=e781]
+      - generic [ref=e785]:
+        - generic [ref=e787]:
+          - text: 日本
+          - generic [ref=e789]:
+            - 'button "越谷市、埼玉県 - ソース: あなたの IP アドレス" [ref=e791] [cursor=pointer]':
+              - generic [ref=e792]: 越谷市、埼玉県
+              - generic [ref=e794]:
+                - text: "-"
+                - generic [ref=e795]: "ソース: あなたの IP アドレス"
+            - text: "-"
+            - button "現在地を更新" [ref=e797] [cursor=pointer]: 現在地を更新
+        - generic [ref=e800]:
+          - link "ヘルプ" [ref=e801] [cursor=pointer]:
+            - /url: https://support.google.com/websearch/?p=ws_results_help&hl=ja&fg=1
+          - link "フィードバックを送信" [ref=e802] [cursor=pointer]:
+            - /url: "#"
+          - link "プライバシー" [ref=e803] [cursor=pointer]:
+            - /url: https://policies.google.com/privacy?hl=ja&fg=1
+          - link "規約" [ref=e804] [cursor=pointer]:
+            - /url: https://policies.google.com/terms?hl=ja&fg=1

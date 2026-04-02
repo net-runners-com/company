@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>土屋建築株式会社 | 確かな技術と信頼で、理想の住まいを。</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: '#1a365d',
+        'navy-light': '#2a4a7f',
+        'navy-dark': '#0f2440',
+        accent: '#dd6b20',
+        'accent-hover': '#c05621',
+        body: '#2d3748',
+        light: '#f7fafc',
+      },
+      fontFamily: {
+        sans: ['Noto Sans JP', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans JP', sans-serif; color: #2d3748; }
+.hero-gradient { background: linear-gradient(135deg, #1a365d 0%, #2a4a7f 50%, #1a365d 100%); }
+.card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+.hamburger-line { transition: all 0.3s ease; }
+.menu-open .hamburger-line:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.menu-open .hamburger-line:nth-child(2) { opacity: 0; }
+.menu-open .hamburger-line:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }
+.mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.mobile-menu.open { max-height: 500px; }
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body class="bg-white">
+
+<!-- Header -->
+<header id="header" class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 flex-shrink-0">
+        <div class="w-10 h-10 bg-navy rounded flex items-center justify-center">
+          <i class="fas fa-home text-white text-lg"></i>
+        </div>
+        <div>
+          <span class="text-navy font-bold text-lg md:text-xl tracking-wide">土屋建築株式会社</span>
+          <span class="hidden sm:block text-xs text-gray-400">Tsuchiya Architecture Co., Ltd.</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden lg:flex items-center gap-6">
+        <a href="#about" class="text-sm font-medium text-body hover:text-accent transition-colors">会社概要</a>
+        <a href="#services" class="text-sm font-medium text-body hover:text-accent transition-colors">事業内容</a>
+        <a href="#works" class="text-sm font-medium text-body hover:text-accent transition-colors">施工実績</a>
+        <a href="#news" class="text-sm font-medium text-body hover:text-accent transition-colors">お知らせ</a>
+        <a href="#recruit" class="text-sm font-medium text-body hover:text-accent transition-colors">採用情報</a>
+        <a href="#contact" class="text-sm font-medium text-body hover:text-accent transition-colors">お問い合わせ</a>
+      </nav>
+
+      <!-- Phone + Hamburger -->
+      <div class="flex items-center gap-4">
+        <a href="tel:0120000000" class="hidden md:flex items-center gap-2 text-navy font-bold">
+          <i class="fas fa-phone-alt text-accent"></i>
+          <span class="text-sm">0120-XXX-XXX</span>
+        </a>
+        <button id="hamburger" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="メニュー">
+          <span class="hamburger-line block w-6 h-0.5 bg-navy"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-navy"></span>
+          <span class="hamburger-line block w-6 h-0.5 bg-navy"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu lg:hidden">
+      <nav class="py-4 border-t border-gray-100">
+        <a href="#about" class="block py-3 text-body hover:text-accent font-medium mobile-link">会社概要</a>
+        <a href="#services" class="block py-3 text-body hover:text-accent font-medium mobile-link">事業内容</a>
+        <a href="#works" class="block py-3 text-body hover:text-accent font-medium mobile-link">施工実績</a>
+        <a href="#news" class="block py-3 text-body hover:text-accent font-medium mobile-link">お知らせ</a>
+        <a href="#recruit" class="block py-3 text-body hover:text-accent font-medium mobile-link">採用情報</a>
+        <a href="#contact" class="block py-3 text-body hover:text-accent font-medium mobile-link">お問い合わせ</a>
+        <a href="tel:0120000000" class="flex items-center gap-2 py-3 text-navy font-bold">
+          <i class="fas fa-phone-alt text-accent"></i>0120-XXX-XXX
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero-gradient relative min-h-[80vh] flex items-center justify-center pt-20">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect width=%2260%22 height=%2260%22 fill=%22none%22/><path d=%22M0 30h60M30 0v60%22 stroke=%22white%22 stroke-width=%220.5%22/></svg>');"></div>
+  </div>
+  <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+    <p class="text-accent font-bold text-sm md:text-base tracking-widest mb-6 uppercase">Tsuchiya Architecture</p>
+    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+      確かな技術と信頼で、<br class="hidden sm:block">理想の住まいを。
+    </h1>
+    <p class="text-white/80 text-base md:text-lg lg:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+      創業30年、地域に根ざした建築のプロフェッショナル。<br class="hidden md:block">
+      新築からリフォームまで、お客様の夢をカタチにします。
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#contact" class="inline-block bg-accent hover:bg-accent-hover text-white font-bold py-4 px-10 rounded-lg text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+        <i class="fas fa-envelope mr-2"></i>無料相談はこちら
+      </a>
+      <a href="#works" class="inline-block border-2 border-white/40 hover:border-white text-white font-bold py-4 px-10 rounded-lg text-lg transition-all duration-300 hover:bg-white/10">
+        <i class="fas fa-images mr-2"></i>施工実績を見る
+      </a>
+    </div>
+  </div>
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <i class="fas fa-chevron-down text-white/50 text-2xl"></i>
+  </div>
+</section>
+
+<!-- Strengths Section -->
+<section class="py-20 bg-light">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center mb-14 fade-in">
+      <p class="text-accent font-bold text-sm tracking-widest mb-3">OUR STRENGTHS</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-navy mb-4">土屋建築が選ばれる理由</h2>
+      <div class="w-16 h-1 bg-accent mx-auto rounded-full"></div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Card 1 -->
+      <div class="bg-white rounded-xl p-8 text-center card-hover shadow-sm fade-in">
+        <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-5">
+          <i class="fas fa-tools text-accent text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-navy mb-3">確かな技術力</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">一級建築士をはじめとする有資格者が多数在籍。高い技術力と豊富な知識で、安全で高品質な施工をお約束します。</p>
+      </div>
+      <!-- Card 2 -->
+      <div class="bg-white rounded-xl p-8 text-center card-hover shadow-sm fade-in">
+        <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-5">
+          <i class="fas fa-building text-accent text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-navy mb-3">豊富な実績</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">創業30年で累計3,000棟以上の施工実績。住宅から商業施設まで、幅広い建築ニーズにお応えしてきました。</p>
+      </div>
+      <!-- Card 3 -->
+      <div class="bg-white rounded-xl p-8 text-center card-hover shadow-sm fade-in">
+        <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-5">
+          <i class="fas fa-shield-alt text-accent text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-navy mb-3">安心の保証</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">最長30年の長期保証制度を完備。定期点検やアフターメンテナンスも充実しており、お引き渡し後も安心です。</p>
+      </div>
+      <!-- Card 4 -->
+      <div class="bg-white rounded-xl p-8 text-center card-hover shadow-sm fade-in">
+        <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-5">
+          <i class="fas fa-map-marker-alt text-accent text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-bold text-navy mb-3">地域密着</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">地元に根ざして30年。地域の気候風土を熟知し、その土地に最適な住まいづくりをご提案いたします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center mb-14 fade-in">
+      <p class="text-accent font-bold text-sm tracking-widest mb-3">SERVICES</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-navy mb-4">事業内容</h2>
+      <div class="w-16 h-1 bg-accent mx-auto rounded-full"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Service 1 -->
+      <div class="group rounded-xl overflow-hidden shadow-sm card-hover border border-gray-100 fade-in">
+        <div class="h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+          <i class="fas fa-home text-gray-400 text-5xl group-hover:text-accent transition-colors"></i>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-navy mb-3">新築工事</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-4">注文住宅から建売住宅まで、お客様のライフスタイルに合わせた理想の住まいを設計・施工いたします。省エネ性能や耐震性にも配慮した、長く住み続けられる家づくりをご提案します。</p>
+          <a href="#" class="text-accent font-medium text-sm hover:underline inline-flex items-center gap-1">
+            詳しく見る <i class="fas fa-arrow-right text-xs"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Service 2 -->
+      <div class="group rounded-xl overflow-hidden shadow-sm card-hover border border-gray-100 fade-in">
+        <div class="h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+          <i class="fas fa-paint-roller text-gray-400 text-5xl group-hover:text-accent transition-colors"></i>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-navy mb-3">リフォーム・リノベーション</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-4">キッチン・浴室などの水回りリフォームから、間取り変更を伴う大規模リノベーションまで対応。既存の住まいの価値を最大限に引き出し、新しい暮らしをデザインします。</p>
+          <a href="#" class="text-accent font-medium text-sm hover:underline inline-flex items-center gap-1">
+            詳しく見る <i class="fas fa-arrow-right text-xs"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Service 3 -->
+      <div class="group rounded-xl overflow-hidden shadow-sm card-hover border border-gray-100 fade-in">
+        <div class="h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+          <i class="fas fa-city text-gray-400 text-5xl group-hover:text-accent transition-colors"></i>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-navy mb-3">公共・商業施設</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-4">オフィスビル、店舗、公共施設など、多様な用途の建築に対応。機能性とデザイン性を両立させ、利用者にとって快適な空間づくりを実現します。</p>
+          <a href="#" class="text-accent font-medium text-sm hover:underline inline-flex items-center gap-1">
+            詳しく見る <i class="fas fa-arrow-right text-xs"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Works Section -->
+<section id="works" class="py-20 bg-light">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center mb-14 fade-in">
+      <p class="text-accent font-bold text-sm tracking-widest mb-3">WORKS</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-navy mb-4">施工実績</h2>
+      <div class="w-16 h-1 bg-accent mx-auto rounded-full"></div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Work 1 -->
+      <div class="group rounded-xl overflow-hidden bg-white shadow-sm card-hover fade-in">
+        <div class="h-52 bg-gradient-to-br from-gray-200 to-gray-300 relative flex items-center justify-center">
+          <i class="fas fa-camera text-gray-400 text-3xl"></i>
+          <span class="absolute top-3 left-3 bg-navy text-white text-xs font-bold px-3 py-1 rounded-full">新築</span>
+        </div>
+        <div class="p-5">
+          <h4 class="font-bold text-navy mb-1">S様邸 新築工事</h4>
+          <p class="text-xs text-gray-400 mb-2">東京都世田谷区 | 2025年12月竣工</p>
+          <p class="text-sm text-gray-500">木造2階建て、延床面積120m²。自然素材にこだわった温かみのある住空間を実現しました。</p>
+        </div>
+      </div>
+      <!-- Work 2 -->
+      <div class="group rounded-xl overflow-hidden bg-white shadow-sm card-hover fade-in">
+        <div class="h-52 bg-gradient-to-br from-gray-200 to-gray-300 relative flex items-center justify-center">
+          <i class="fas fa-camera text-gray-400 text-3xl"></i>
+          <span class="absolute top-3 left-3 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">リフォーム</span>
+        </div>
+        <div class="p-5">
+          <h4 class="font-bold text-navy mb-1">T様邸 全面リノベーション</h4>
+          <p class="text-xs text-gray-400 mb-2">神奈川県横浜市 | 2025年10月竣工</p>
+          <p class="text-sm text-gray-500">築35年の戸建てをフルリノベーション。断熱性能を大幅に向上させ、現代的な間取りに一新しました。</p>
+        </div>
+      </div>
+      <!-- Work 3 -->
+      <div class="group rounded-xl overflow-hidden bg-white shadow-sm card-hover fade-in">
+        <div class="h-52 bg-gradient-to-br from-gray-200 to-gray-300 relative flex items-center justify-center">
+          <i class="fas fa-camera text-gray-400 text-3xl"></i>
+          <span class="absolute top-3 left-3 bg-navy text-white text-xs font-bold px-3 py-1 rounded-full">商業施設</span>
+        </div>
+        <div class="p-5">
+          <h4 class="font-bold text-navy mb-1">〇〇クリニック 新築工事</h4>
+          <p class="text-xs text-gray-400 mb-2">東京都杉並区 | 2025年8月竣工</p>
+          <p class="text-sm text-gray-500">鉄骨造3階建ての医療施設。患者様に安心感を与える明るく清潔感のあるデザインを採用しました。</p>
+        </div>
+      </div>
+      <!-- Work 4 -->
+      <div class="group rounded-xl overflow-hidden bg-white shadow-sm card-hover fade-in">
+        <div class="h-52 bg-gradient-to-br from-gray-200 to-gray-300 relative flex items-center justify-center">
+          <i class="fas fa-camera text-gray-400 text-3xl"></i>
+          <span class="absolute top-3 left-3 bg-navy text-white text-xs font-bold px-3 py-1 rounded-full">新築</span>
+        </div>
+        <div class="p-5">
+          <h4 class="font-bold text-navy mb-1">M様邸 二世帯住宅</h4>
+          <p class="text-xs text-gray-400 mb-2">埼玉県さいたま市 | 2025年6月竣工</p>
+          <p class="text-sm text-gray-500">完全分離型の二世帯住宅。それぞれの世帯のプライバシーを確保しつつ、共有スペースで家族の絆を育む設計です。</p>
+        </div>
+      </div>
+      <!-- Work 5 -->
+      <div class="group rounded-xl overflow-hidden bg-white shadow-sm card-hover fade-in">
+        <div class="h-52 bg-gradient-to-br from-gray-200 to-gray-300 relative flex items-center justify-center">
+          <i class="fas fa-camera text-gray-400 text-3xl"></i>
+          <span class="absolute top-3 left-3 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">リフォーム</span>
+        </div>
+        <div class="p-5">
+          <h4 class="font-bold text-navy mb-1">K様邸 水回りリフォーム</h4>
+          <p class="text-xs text-gray-400 mb-2">千葉県船橋市 | 2025年4月竣工</p>
+          <p class="text-sm text-gray-500">キッチン・浴室・洗面所を一新。最新の住宅設備を導入し、家事動線を考慮した快適な水回り空間に生まれ変わりました。</p>
+        </div>
+      </div>
+      <!-- Work 6 -->
+      <div class="group rounded-xl overflow-hidden bg-white shadow-sm card-hover fade-in">
+        <div class="h-52 bg-gradient-to-br from-gray-200 to-gray-300 relative flex items-center justify-center">
+          <i class="fas fa-camera text-gray-400 text-3xl"></i>
+          <span class="absolute top-3 left-3 bg-navy text-white text-xs font-bold px-3 py-1 rounded-full">公共施設</span>
+        </div>
+        <div class="p-5">
+          <h4 class="font-bold text-navy mb-1">〇〇市立コミュニティセンター</h4>
+          <p class="text-xs text-gray-400 mb-2">東京都多摩市 | 2025年3月竣工</p>
+          <p class="text-sm text-gray-500">RC造2階建ての地域交流施設。バリアフリー設計を徹底し、すべての方が利用しやすい空間を実現しました。</p>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-10 fade-in">
+      <a href="#" class="inline-block border-2 border-navy text-navy hover:bg-navy hover:text-white font-bold py-3 px-8 rounded-lg transition-all duration-300">
+        すべての実績を見る <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- News Section -->
+<section id="news" class="py-20 bg-white">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="text-center mb-14 fade-in">
+      <p class="text-accent font-bold text-sm tracking-widest mb-3">NEWS</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-navy mb-4">お知らせ</h2>
+      <div class="w-16 h-1 bg-accent mx-auto rounded-full"></div>
+    </div>
+    <div class="space-y-0 fade-in">
+      <a href="#" class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-5 border-b border-gray-100 hover:bg-gray-50 px-4 -mx-4 rounded transition-colors">
+        <time class="text-sm text-gray-400 flex-shrink-0">2026.04.01</time>
+        <span class="inline-block bg-accent text-white text-xs font-bold px-3 py-0.5 rounded-full flex-shrink-0 w-fit">お知らせ</span>
+        <span class="text-body text-sm md:text-base">ゴールデンウィーク期間の営業日のご案内</span>
+      </a>
+      <a href="#" class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-5 border-b border-gray-100 hover:bg-gray-50 px-4 -mx-4 rounded transition-colors">
+        <time class="text-sm text-gray-400 flex-shrink-0">2026.03.25</time>
+        <span class="inline-block bg-navy text-white text-xs font-bold px-3 py-0.5 rounded-full flex-shrink-0 w-fit">施工事例</span>
+        <span class="text-body text-sm md:text-base">S様邸（世田谷区）の施工事例を掲載しました</span>
+      </a>
+      <a href="#" class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-5 border-b border-gray-100 hover:bg-gray-50 px-4 -mx-4 rounded transition-colors">
+        <time class="text-sm text-gray-400 flex-shrink-0">2026.03.15</time>
+        <span class="inline-block bg-green-600 text-white text-xs font-bold px-3 py-0.5 rounded-full flex-shrink-0 w-fit">採用</span>
+        <span class="text-body text-sm md:text-base">2027年度 新卒採用エントリーの受付を開始しました</span>
+      </a>
+      <a href="#" class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-5 border-b border-gray-100 hover:bg-gray-50 px-4 -mx-4 rounded transition-colors">
+        <time class="text-sm text-gray-400 flex-shrink-0">2026.03.01</time>
+        <span class="inline-block bg-accent text-white text-xs font-bold px-3 py-0.5 rounded-full flex-shrink-0 w-fit">イベント</span>
+        <span class="text-body text-sm md:text-base">春の完成見学会を開催いたします（4月12日・13日）</span>
+      </a>
+      <a href="#" class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-5 border-b border-gray-100 hover:bg-gray-50 px-4 -mx-4 rounded transition-colors">
+        <time class="text-sm text-gray-400 flex-shrink-0">2026.02.20</time>
+        <span class="inline-block bg-navy text-white text-xs font-bold px-3 py-0.5 rounded-full flex-shrink-0 w-fit">メディア</span>
+        <span class="text-body text-sm md:text-base">住宅専門誌「月刊ハウジング」に当社の施工事例が掲載されました</span>
+      </a>
+    </div>
+    <div class="text-center mt-10 fade-in">
+      <a href="#" class="inline-block border-2 border-navy text-navy hover:bg-navy hover:text-white font-bold py-3 px-8 rounded-lg transition-all duration-300">
+        お知らせ一覧 <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-20 bg-light">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center mb-14 fade-in">
+      <p class="text-accent font-bold text-sm tracking-widest mb-3">ABOUT US</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-navy mb-4">会社概要</h2>
+      <div class="w-16 h-1 bg-accent mx-auto rounded-full"></div>
+    </div>
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-8 fade-in">
+      <table class="w-full text-sm">
+        <tbody>
+          <tr class="border-b border-gray-100"><td class="py-4 pr-6 font-bold text-navy w-32 align-top">会社名</td><td class="py-4 text-gray-600">土屋建築株式会社</td></tr>
+          <tr class="border-b border-gray-100"><td class="py-4 pr-6 font-bold text-navy align-top">代表者</td><td class="py-4 text-gray-600">代表取締役 土屋 太郎</td></tr>
+          <tr class="border-b border-gray-100"><td class="py-4 pr-6 font-bold text-navy align-top">設立</td><td class="py-4 text-gray-600">1996年4月</td></tr>
+          <tr class="border-b border-gray-100"><td class="py-4 pr-6 font-bold text-navy align-top">資本金</td><td class="py-4 text-gray-600">5,000万円</td></tr>
+          <tr class="border-b border-gray-100"><td class="py-4 pr-6 font-bold text-navy align-top">従業員数</td><td class="py-4 text-gray-600">85名（2026年4月現在）</td></tr>
+          <tr class="border-b border-gray-100"><td class="py-4 pr-6 font-bold text-navy align-top">所在地</td><td class="py-4 text-gray-600">〒160-0023 東京都新宿区西新宿1-1-1 ○○ビル5F</td></tr>
+          <tr class="border-b border-gray-100"><td class="py-4 pr-6 font-bold text-navy align-top">事業内容</td><td class="py-4 text-gray-600">建築工事の設計・施工・監理、リフォーム・リノベーション、公共施設・商業施設の建設</td></tr>
+          <tr><td class="py-4 pr-6 font-bold text-navy align-top">許可番号</td><td class="py-4 text-gray-600">国土交通大臣許可（特-XX）第XXXXX号</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Recruit Section -->
+<section id="recruit" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center mb-14 fade-in">
+      <p class="text-accent font-bold text-sm tracking-widest mb-3">RECRUIT</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-navy mb-4">採用情報</h2>
+      <div class="w-16 h-1 bg-accent mx-auto rounded-full"></div>
+    </div>
+    <div class="max-w-3xl mx-auto text-center fade-in">
+      <p class="text-gray-500 leading-relaxed mb-8">土屋建築では、共に成長し、地域の未来を築いていく仲間を募集しています。<br>経験者はもちろん、建築に情熱を持つ方なら未経験の方も歓迎します。</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto mb-8">
+        <div class="bg-light rounded-lg p-5">
+          <i class="fas fa-hard-hat text-accent text-2xl mb-2"></i>
+          <p class="font-bold text-navy text-sm">施工管理</p>
+          <p class="text-xs text-gray-400 mt-1">正社員 / 経験者優遇</p>
+        </div>
+        <div class="bg-light rounded-lg p-5">
+          <i class="fas fa-drafting-compass text-accent text-2xl mb-2"></i>
+          <p class="font-bold text-navy text-sm">設計</p>
+          <p class="text-xs text-gray-400 mt-1">正社員 / 2027年新卒可</p>
+        </div>
+      </div>
+      <a href="#" class="inline-block bg-navy hover:bg-navy-light text-white font-bold py-3 px-8 rounded-lg transition-all duration-300">
+        採用情報を詳しく見る <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section id="contact" class="py-20 hero-gradient relative">
+  <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+    <div class="fade-in">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">お気軽にご相談ください</h2>
+      <p class="text-white/80 leading-relaxed mb-10 max-w-2xl mx-auto">新築・リフォームのご相談から、お見積りまで無料で承ります。<br class="hidden md:block">まずはお気軽にお問い合わせください。</p>
+      <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+        <a href="#" class="inline-block bg-accent hover:bg-accent-hover text-white font-bold py-4 px-10 rounded-lg text-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+          <i class="fas fa-envelope mr-2"></i>お問い合わせフォーム
+        </a>
+        <div class="text-white">
+          <p class="text-sm text-white/60 mb-1">お電話でのお問い合わせ</p>
+          <a href="tel:0120000000" class="text-2xl md:text-3xl font-bold flex items-center gap-2">
+            <i class="fas fa-phone-alt text-accent"></i>0120-XXX-XXX
+          </a>
+          <p class="text-xs text-white/50 mt-1">受付時間 9:00〜18:00（土日祝除く）</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-navy-dark text-white pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+      <!-- Company Info -->
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-white/10 rounded flex items-center justify-center">
+            <i class="fas fa-home text-accent text-lg"></i>
+          </div>
+          <span class="font-bold text-lg">土屋建築株式会社</span>
+        </div>
+        <p class="text-sm text-white/60 leading-relaxed mb-4">
+          〒160-0023<br>
+          東京都新宿区西新宿1-1-1 ○○ビル5F
+        </p>
+        <p class="text-sm text-white/60 mb-1">
+          <i class="fas fa-phone-alt text-accent mr-2"></i>0120-XXX-XXX
+        </p>
+        <p class="text-sm text-white/60">
+          <i class="fas fa-envelope text-accent mr-2"></i>info@tsuchiya-arch.co.jp
+        </p>
+      </div>
+      <!-- Sitemap -->
+      <div>
+        <h4 class="font-bold text-sm mb-4 text-white/80">サイトマップ</h4>
+        <nav class="grid grid-cols-2 gap-2">
+          <a href="#" class="text-sm text-white/50 hover:text-accent transition-colors">ホーム</a>
+          <a href="#about" class="text-sm text-white/50 hover:text-accent transition-colors">会社概要</a>
+          <a href="#services" class="text-sm text-white/50 hover:text-accent transition-colors">事業内容</a>
+          <a href="#works" class="text-sm text-white/50 hover:text-accent transition-colors">施工実績</a>
+          <a href="#news" class="text-sm text-white/50 hover:text-accent transition-colors">お知らせ</a>
+          <a href="#recruit" class="text-sm text-white/50 hover:text-accent transition-colors">採用情報</a>
+          <a href="#contact" class="text-sm text-white/50 hover:text-accent transition-colors">お問い合わせ</a>
+          <a href="#" class="text-sm text-white/50 hover:text-accent transition-colors">プライバシーポリシー</a>
+        </nav>
+      </div>
+      <!-- Contact -->
+      <div>
+        <h4 class="font-bold text-sm mb-4 text-white/80">お問い合わせ</h4>
+        <p class="text-sm text-white/50 leading-relaxed mb-4">ご相談・お見積りは無料です。<br>お気軽にお問い合わせください。</p>
+        <a href="#contact" class="inline-block bg-accent hover:bg-accent-hover text-white font-bold py-2 px-6 rounded-lg text-sm transition-all duration-300">
+          <i class="fas fa-envelope mr-2"></i>お問い合わせ
+        </a>
+        <div class="flex gap-3 mt-6">
+          <a href="#" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-accent transition-colors">
+            <i class="fab fa-facebook-f text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-accent transition-colors">
+            <i class="fab fa-instagram text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-accent transition-colors">
+            <i class="fab fa-line text-sm"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10 pt-8 text-center">
+      <p class="text-xs text-white/40">&copy; 2026 土屋建築株式会社 All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- JavaScript -->
+<script>
+// Hamburger Menu
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('menu-open');
+  mobileMenu.classList.toggle('open');
+});
+document.querySelectorAll('.mobile-link').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('menu-open');
+    mobileMenu.classList.remove('open');
+  });
+});
+
+// Header scroll effect
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('header');
+  const currentScroll = window.pageYOffset;
+  if (currentScroll > 100) {
+    header.classList.add('shadow-lg');
+  } else {
+    header.classList.remove('shadow-lg');
+  }
+  lastScroll = currentScroll;
+});
+
+// Fade-in animation on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

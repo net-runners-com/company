@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>施工実績 | 土屋建築株式会社</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <i class="fas fa-building"></i>
+        土屋建築株式会社
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">ホーム</a>
+        <a href="about.html">会社概要</a>
+        <a href="services.html">事業内容</a>
+        <a href="works.html" class="active">施工実績</a>
+        <a href="news.html">お知らせ</a>
+        <a href="recruit.html">採用情報</a>
+        <a href="contact.html">お問い合わせ</a>
+      </nav>
+      <a href="tel:0120-XXX-XXX" class="header-tel">
+        <i class="fas fa-phone-alt"></i>
+        0120-XXX-XXX
+      </a>
+      <button class="hamburger" aria-label="メニュー">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav">
+    <a href="index.html">ホーム</a>
+    <a href="about.html">会社概要</a>
+    <a href="services.html">事業内容</a>
+    <a href="works.html">施工実績</a>
+    <a href="news.html">お知らせ</a>
+    <a href="recruit.html">採用情報</a>
+    <a href="contact.html">お問い合わせ</a>
+    <div class="mobile-tel">
+      <i class="fas fa-phone-alt"></i> 0120-XXX-XXX
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <h1>施工実績</h1>
+    <p class="en">Works</p>
+  </section>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="index.html">ホーム</a>
+    <span>&gt;</span>
+    施工実績
+  </div>
+
+  <!-- Works Section -->
+  <section class="section">
+    <div class="section-inner">
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">すべて</button>
+        <button class="filter-tab" data-filter="new">新築</button>
+        <button class="filter-tab" data-filter="reform">リフォーム</button>
+        <button class="filter-tab" data-filter="commercial">商業施設</button>
+      </div>
+
+      <!-- Works Grid -->
+      <div class="works-grid">
+
+        <!-- 1. A邸新築工事 -->
+        <div class="work-card fade-in" data-category="new">
+          <div class="work-image w1"></div>
+          <div class="work-overlay">
+            <span class="badge">新築</span>
+            <h3>A邸新築工事</h3>
+          </div>
+        </div>
+
+        <!-- 2. B邸リフォーム -->
+        <div class="work-card fade-in" data-category="reform">
+          <div class="work-image w2"></div>
+          <div class="work-overlay">
+            <span class="badge">リフォーム</span>
+            <h3>B邸リフォーム</h3>
+          </div>
+        </div>
+
+        <!-- 3. Cオフィスビル -->
+        <div class="work-card fade-in" data-category="commercial">
+          <div class="work-image w3"></div>
+          <div class="work-overlay">
+            <span class="badge">商業施設</span>
+            <h3>Cオフィスビル</h3>
+          </div>
+        </div>
+
+        <!-- 4. D邸注文住宅 -->
+        <div class="work-card fade-in" data-category="new">
+          <div class="work-image w4"></div>
+          <div class="work-overlay">
+            <span class="badge">新築</span>
+            <h3>D邸注文住宅</h3>
+          </div>
+        </div>
+
+        <!-- 5. E邸全面改修 -->
+        <div class="work-card fade-in" data-category="reform">
+          <div class="work-image w5"></div>
+          <div class="work-overlay">
+            <span class="badge">リフォーム</span>
+            <h3>E邸全面改修</h3>
+          </div>
+        </div>
+
+        <!-- 6. F公民館改修 -->
+        <div class="work-card fade-in" data-category="commercial">
+          <div class="work-image w6"></div>
+          <div class="work-overlay">
+            <span class="badge">商業施設</span>
+            <h3>F公民館改修</h3>
+          </div>
+        </div>
+
+        <!-- 7. G邸新築 -->
+        <div class="work-card fade-in" data-category="new">
+          <div class="work-image w1"></div>
+          <div class="work-overlay">
+            <span class="badge">新築</span>
+            <h3>G邸新築</h3>
+          </div>
+        </div>
+
+        <!-- 8. H店舗リノベ -->
+        <div class="work-card fade-in" data-category="commercial">
+          <div class="work-image w2"></div>
+          <div class="work-overlay">
+            <span class="badge">商業施設</span>
+            <h3>H店舗リノベ</h3>
+          </div>
+        </div>
+
+        <!-- 9. I学校体育館 -->
+        <div class="work-card fade-in" data-category="commercial">
+          <div class="work-image w3"></div>
+          <div class="work-overlay">
+            <span class="badge">商業施設</span>
+            <h3>I学校体育館</h3>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>お気軽にご相談ください</h2>
+    <p>新築・リフォーム・商業施設まで、お客様のご要望に合わせた最適なプランをご提案いたします。</p>
+    <div class="cta-buttons">
+      <a href="contact.html" class="btn-primary"><i class="fas fa-envelope"></i>&nbsp; お問い合わせ</a>
+      <a href="tel:0120-XXX-XXX" class="cta-tel">
+        <i class="fas fa-phone-alt"></i>
+        <span>0120-XXX-XXX<small>受付時間 8:00〜18:00（日祝除く）</small></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-main">
+      <div class="footer-company">
+        <div class="footer-logo"><i class="fas fa-building"></i> 土屋建築株式会社</div>
+        <p>
+          〒000-0000 ○○県○○市○○町1-2-3<br>
+          TEL: 0120-XXX-XXX<br>
+          FAX: 0XX-XXX-XXXX
+        </p>
+      </div>
+      <div class="footer-nav">
+        <h4>ナビゲーション</h4>
+        <ul>
+          <li><a href="index.html">ホーム</a></li>
+          <li><a href="about.html">会社概要</a></li>
+          <li><a href="services.html">事業内容</a></li>
+          <li><a href="works.html">施工実績</a></li>
+          <li><a href="news.html">お知らせ</a></li>
+          <li><a href="recruit.html">採用情報</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-info">
+        <h4>営業時間</h4>
+        <p>平日 8:00〜18:00</p>
+        <p>土曜 8:00〜17:00</p>
+        <p>定休日: 日曜・祝日</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-line"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 土屋建築株式会社 All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

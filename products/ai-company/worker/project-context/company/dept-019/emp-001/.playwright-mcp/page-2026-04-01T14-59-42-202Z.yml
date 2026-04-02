@@ -1,0 +1,414 @@
+- generic [ref=e2]:
+  - text:       
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Wins Connect" [ref=e7] [cursor=pointer]:
+        - /url: https://wins-connect.com/
+      - navigation [ref=e8]:
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "サービス" [ref=e11] [cursor=pointer]:
+              - /url: https://wins-connect.com/#service
+              - generic [ref=e12]: サービス
+          - listitem [ref=e13]:
+            - link "制作実績" [ref=e14] [cursor=pointer]:
+              - /url: https://wins-connect.com/#work
+              - generic [ref=e15]: 制作実績
+          - listitem [ref=e16]:
+            - link "お客様の声" [ref=e17] [cursor=pointer]:
+              - /url: https://wins-connect.com/#review
+              - generic [ref=e18]: お客様の声
+          - listitem [ref=e19]:
+            - link "取引実績" [ref=e20] [cursor=pointer]:
+              - /url: https://wins-connect.com/#track-record
+              - generic [ref=e21]: 取引実績
+          - listitem [ref=e22]:
+            - link "お役立ちコラム" [ref=e23] [cursor=pointer]:
+              - /url: https://wins-connect.com/column/
+              - generic [ref=e24]: お役立ちコラム
+          - listitem [ref=e25]:
+            - link "ホーム" [ref=e26] [cursor=pointer]:
+              - /url: https://wins-connect.com/
+              - generic [ref=e27]: ホーム
+      - link "お問い合わせ" [ref=e34] [cursor=pointer]:
+        - /url: https://wins-connect.com/contact-form/
+        - strong [ref=e36]: お問い合わせ
+      - text:  
+  - list [ref=e38]:
+    - listitem [ref=e39]:
+      - link " ホーム" [ref=e40] [cursor=pointer]:
+        - /url: https://wins-connect.com/
+        - generic [ref=e41]:  ホーム
+    - listitem [ref=e42]:
+      - link "Uncategorized" [ref=e43] [cursor=pointer]:
+        - /url: https://wins-connect.com/category/uncategorized/
+        - generic [ref=e44]: Uncategorized
+    - listitem
+  - generic [ref=e45]:
+    - main [ref=e46]:
+      - article [ref=e47]:
+        - generic [ref=e48]:
+          - heading "【保存版】建設業のホームページに必要なページ構成とは？失敗しないための必須項目リスト" [level=1] [ref=e49]
+          - time [ref=e50]:
+            - generic [ref=e51]: "2025"
+            - generic [ref=e52]: 5/07
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - text: 
+            - link "Uncategorized" [ref=e55] [cursor=pointer]:
+              - /url: https://wins-connect.com/category/uncategorized/
+          - time [ref=e57]: May 7, 2025
+        - figure [ref=e58]
+        - generic [ref=e59]:
+          - separator [ref=e60]
+          - generic [ref=e61]:
+            - generic [ref=e62]:  目次
+            - list [ref=e63]:
+              - listitem [ref=e64]:
+                - link "はじめに：建設業のホームページは「信頼」をつくるための最強ツール" [ref=e65] [cursor=pointer]:
+                  - /url: "#index_id0"
+              - listitem [ref=e66]:
+                - link "1. ホームページに必要なページ構成とは？" [ref=e67] [cursor=pointer]:
+                  - /url: "#index_id1"
+              - listitem [ref=e68]:
+                - link "2. トップページ：第一印象で選ばれる構成とは？" [ref=e69] [cursor=pointer]:
+                  - /url: "#index_id2"
+                - list [ref=e70]:
+                  - listitem [ref=e71]:
+                    - link "必要な要素：" [ref=e72] [cursor=pointer]:
+                      - /url: "#index_id3"
+              - listitem [ref=e73]:
+                - link "3. 会社概要ページ：信頼を得る情報開示" [ref=e74] [cursor=pointer]:
+                  - /url: "#index_id4"
+                - list [ref=e75]:
+                  - listitem [ref=e76]:
+                    - link "記載すべき内容：" [ref=e77] [cursor=pointer]:
+                      - /url: "#index_id5"
+              - listitem [ref=e78]:
+                - link "4. 事業内容ページ：何ができるかを明確に" [ref=e79] [cursor=pointer]:
+                  - /url: "#index_id6"
+              - listitem [ref=e80]:
+                - link "5. 施工事例ページ：信頼を可視化する最重要コンテンツ" [ref=e81] [cursor=pointer]:
+                  - /url: "#index_id7"
+                - list [ref=e82]:
+                  - listitem [ref=e83]:
+                    - link "良い施工事例ページのポイント：" [ref=e84] [cursor=pointer]:
+                      - /url: "#index_id8"
+              - listitem [ref=e85]:
+                - link "6. お問い合わせページ：迷わせず、安心させる設計を" [ref=e86] [cursor=pointer]:
+                  - /url: "#index_id9"
+                - list [ref=e87]:
+                  - listitem [ref=e88]:
+                    - link "必要な要素：" [ref=e89] [cursor=pointer]:
+                      - /url: "#index_id10"
+              - listitem [ref=e90]:
+                - link "7. 採用情報ページ：人手不足を解消するページ" [ref=e91] [cursor=pointer]:
+                  - /url: "#index_id11"
+                - list [ref=e92]:
+                  - listitem [ref=e93]:
+                    - link "掲載すべき内容：" [ref=e94] [cursor=pointer]:
+                      - /url: "#index_id12"
+              - listitem [ref=e95]:
+                - link "8. ブログ・お知らせ：SEOと人間味の両立" [ref=e96] [cursor=pointer]:
+                  - /url: "#index_id13"
+              - listitem [ref=e97]:
+                - link "✅ 最後に：ホームページ制作をご検討の方へ" [ref=e98] [cursor=pointer]:
+                  - /url: "#index_id14"
+          - heading "はじめに：建設業のホームページは「信頼」をつくるための最強ツール" [level=2] [ref=e99]
+          - paragraph [ref=e100]:
+            - text: 現在、多くの建設業者がホームページを持つようになり、
+            - strong [ref=e101]: インターネット経由での集客や求人
+            - text: が当たり前の時代になっています。
+            - text: 特に東京都・横浜市・名古屋市・神戸市・大阪市などといった地域では、競合も非常に多い状況です。
+          - paragraph [ref=e102]: そんな中で「どんなページを作るか」が、ホームページの成否を分ける大きなポイントになります。
+          - paragraph [ref=e103]:
+            - text: この記事では、
+            - strong [ref=e104]: 成果を出すホームページの構成例・必要ページ一覧
+            - text: を丁寧に解説します。
+          - link "まずはお気軽にお問い合わせ" [ref=e108] [cursor=pointer]:
+            - /url: https://wins-connect.com/contact-form/
+            - strong [ref=e110]: まずはお気軽にお問い合わせ
+          - separator [ref=e111]
+          - heading "1. ホームページに必要なページ構成とは？" [level=2] [ref=e112]
+          - paragraph [ref=e113]: 建設業のホームページで最低限必要なのは、以下のような構成です：
+          - figure [ref=e114]:
+            - table [ref=e115]:
+              - rowgroup [ref=e116]:
+                - row "ページ名 目的・役割" [ref=e117]:
+                  - columnheader "ページ名" [ref=e118]
+                  - columnheader "目的・役割" [ref=e119]
+              - rowgroup [ref=e120]:
+                - row "トップページ 第一印象を決め、導線を張る中枢ページ" [ref=e121]:
+                  - cell "トップページ" [ref=e122]
+                  - cell "第一印象を決め、導線を張る中枢ページ" [ref=e123]
+                - row "会社概要 信頼性・所在地・代表者情報などを明記" [ref=e124]:
+                  - cell "会社概要" [ref=e125]
+                  - cell "信頼性・所在地・代表者情報などを明記" [ref=e126]
+                - row "事業内容 対応工事の種類や業務範囲を明確に示す" [ref=e127]:
+                  - cell "事業内容" [ref=e128]
+                  - cell "対応工事の種類や業務範囲を明確に示す" [ref=e129]
+                - row "施工事例 実績を通じて信頼を得るコンテンツ" [ref=e130]:
+                  - cell "施工事例" [ref=e131]
+                  - cell "実績を通じて信頼を得るコンテンツ" [ref=e132]
+                - row "お客様の声 第三者評価で信頼度アップ" [ref=e133]:
+                  - cell "お客様の声" [ref=e134]
+                  - cell "第三者評価で信頼度アップ" [ref=e135]
+                - row "お問い合わせ 見積もり・依頼・相談の導線" [ref=e136]:
+                  - cell "お問い合わせ" [ref=e137]
+                  - cell "見積もり・依頼・相談の導線" [ref=e138]
+                - row "採用情報 求人の強化に不可欠" [ref=e139]:
+                  - cell "採用情報" [ref=e140]
+                  - cell "求人の強化に不可欠" [ref=e141]
+                - row "ブログ・お知らせ 更新情報・SEO強化・企業の人間味を伝える" [ref=e142]:
+                  - cell "ブログ・お知らせ" [ref=e143]
+                  - cell "更新情報・SEO強化・企業の人間味を伝える" [ref=e144]
+          - separator [ref=e145]
+          - heading "2. トップページ：第一印象で選ばれる構成とは？" [level=2] [ref=e146]
+          - heading "必要な要素：" [level=3] [ref=e147]
+          - list [ref=e148]:
+            - listitem [ref=e149]: 強みを一目で伝えるキャッチコピー（例：「明石市で30年の実績！外構工事のプロ」）
+            - listitem [ref=e150]: 最新の施工事例のダイジェスト表示
+            - listitem [ref=e151]: 対応エリアの記載（例：兵庫県・大阪府全域対応）
+            - listitem [ref=e152]: お問い合わせボタンの設置
+            - listitem [ref=e153]: スマホ対応の見やすいデザイン
+          - paragraph [ref=e154]:
+            - strong [ref=e155]: トップページは「信頼」と「導線設計」が命
+            - text: です。
+            - text: 特に東京都・横浜市・神戸市・大阪市など都市部では、ユーザーは複数社のサイトを比較して判断します。強みを明確に表現しましょう。
+          - separator [ref=e156]
+          - heading "3. 会社概要ページ：信頼を得る情報開示" [level=2] [ref=e157]
+          - heading "記載すべき内容：" [level=3] [ref=e158]
+          - list [ref=e159]:
+            - listitem [ref=e160]: 会社名・所在地（例：兵庫県神戸市西区…）
+            - listitem [ref=e161]: 代表者名・挨拶文
+            - listitem [ref=e162]: 設立年・沿革
+            - listitem [ref=e163]: 事業内容の要約
+            - listitem [ref=e164]: 建設業許可番号など法的情報
+          - paragraph [ref=e165]:
+            - text: 近年は特に
+            - strong [ref=e166]: 所在地（地域密着）を重視するユーザーが多く
+            - text: 、
+            - text: 「神戸市 工務店 信頼できる」「尼崎市 リフォーム会社 評判」といった検索が増えています。
+          - paragraph [ref=e167]: 地域密着であることを明記することで、信頼と安心を獲得できます。
+          - separator [ref=e168]
+          - heading "4. 事業内容ページ：何ができるかを明確に" [level=2] [ref=e169]
+          - paragraph [ref=e170]:
+            - text: 業種に応じた専門性を出すことで、
+            - strong [ref=e171]: 「自分のニーズに合っている業者だ」と思ってもらえる
+            - text: 構成になります。
+          - paragraph [ref=e172]:
+            - text: 以下に記載例です。事業内容を明確にすることはもちろんですが、
+            - strong [ref=e173]: 対応エリアや強みを記載することも重要です。
+          - paragraph [ref=e174]:
+            - strong [ref=e175]: "-記載例-"
+            - text: 兵庫県や大阪府エリア（神戸市・明石市・西宮市・尼崎市・姫路市・大阪市など）を中心に、個人様・法人様問わず幅広い施工に対応しています。戸建て住宅の外構工事から、公共工事、法人施設のリノベーション、マンション・ビルの修繕まで、地域密着で高品質な施工を行っております。
+            - text: 「どこに頼めばいいかわからない」「複数の工事をまとめて依頼したい」などのお悩みも、当社にご相談ください。
+          - paragraph [ref=e176]:
+            - strong [ref=e177]: 選ばれる理由
+            - text: ▶ 自社施工だから中間マージンなしで高品質
+            - text: 長年の経験を持つ職人が直接施工を行います。お客様との打ち合わせ内容をしっかり現場に反映できます。
+          - paragraph [ref=e178]:
+            - text: ▶ 地域密着で迅速対応
+            - text: 兵庫県・大阪府全域対応。神戸市・明石市・尼崎市・大阪市など近隣エリアは即日対応も可能です。
+          - paragraph [ref=e179]:
+            - text: ▶ 一貫対応で安心のワンストップサービス
+            - text: 見積もり・設計・施工・アフターサービスまで一社で完結。リフォームや小規模改修にも柔軟に対応可能です。
+          - paragraph [ref=e180]:
+            - strong [ref=e181]: 実際のホームページに掲載する際には、写真・施工例などを入れることでより効果的です。
+          - separator [ref=e182]
+          - heading "5. 施工事例ページ：信頼を可視化する最重要コンテンツ" [level=2] [ref=e183]
+          - paragraph [ref=e184]:
+            - text: 兵庫県や大阪市周辺では、
+            - strong [ref=e185]: 競合との差別化
+            - text: が難しくなっています。
+            - text: そこで最も効果的なのが「施工事例の写真と説明」です。
+          - heading "良い施工事例ページのポイント：" [level=3] [ref=e186]
+          - list [ref=e187]:
+            - listitem [ref=e188]: ビフォー・アフターの写真
+            - listitem [ref=e189]: 工事内容の詳細
+            - listitem [ref=e190]: 工期・金額帯（可能な範囲で）
+            - listitem [ref=e191]: お客様の声のリンク
+          - paragraph [ref=e192]:
+            - text: ユーザーは「実績のある会社」に依頼したいと思っています。
+            - text: 特に地域名（例：神戸市で外構工事を行いました）を入れることでSEOにも効果があります。
+          - separator [ref=e193]
+          - heading "6. お問い合わせページ：迷わせず、安心させる設計を" [level=2] [ref=e194]
+          - paragraph [ref=e195]: ユーザーが「問い合わせてみよう」と思っても、ページがわかりにくいと離脱してしまいます。
+          - heading "必要な要素：" [level=3] [ref=e196]
+          - list [ref=e197]:
+            - listitem [ref=e198]: フォーム（氏名・電話・メール・相談内容）
+            - listitem [ref=e199]: 受付時間の明記
+            - listitem [ref=e200]: プライバシーポリシーリンク
+            - listitem [ref=e201]: 地図やアクセス情報
+          - paragraph [ref=e202]:
+            - text: 特に、
+            - strong [ref=e203]: スマホでの問い合わせのしやすさ
+            - text: は絶対に意識しましょう。
+          - separator [ref=e204]
+          - heading "7. 採用情報ページ：人手不足を解消するページ" [level=2] [ref=e205]
+          - paragraph [ref=e206]:
+            - text: 建設業界は慢性的な人手不足です。
+            - text: そのため、求人ページをしっかり作ることが重要です。
+          - heading "掲載すべき内容：" [level=3] [ref=e207]
+          - list [ref=e208]:
+            - listitem [ref=e209]: 募集職種と仕事内容
+            - listitem [ref=e210]: 勤務地（例：神戸市・大阪市など）
+            - listitem [ref=e211]: 給与・福利厚生
+            - listitem [ref=e212]: 職場の雰囲気を伝える写真
+            - listitem [ref=e213]: 先輩社員の声
+          - paragraph [ref=e214]:
+            - strong [ref=e215]: 検索ワード例：大阪市 建設会社 求人／姫路市 工務店 就職
+            - text: などのキーワードでの流入を期待できます。
+          - separator [ref=e216]
+          - heading "8. ブログ・お知らせ：SEOと人間味の両立" [level=2] [ref=e217]
+          - paragraph [ref=e218]: 継続的な更新は、Googleからの評価を高め、「生きているホームページ」と見なされます。
+          - paragraph [ref=e219]: 更新内容の例：
+          - list [ref=e220]:
+            - listitem [ref=e221]: 施工事例の詳細紹介（地域名込み）
+            - listitem [ref=e222]: スタッフ紹介
+            - listitem [ref=e223]: お客様の声
+            - listitem [ref=e224]: イベント出展や休業日の案内
+          - paragraph [ref=e225]:
+            - strong [ref=e226]: 例：横浜市でフェンス設置工事を行いました（ブログ記事タイトル）
+            - text: → これが検索に引っかかりやすくなります。
+          - separator [ref=e227]
+          - heading "✅ 最後に：ホームページ制作をご検討の方へ" [level=2] [ref=e228]
+          - paragraph [ref=e229]:
+            - text: 当社では、
+            - strong [ref=e230]: 建設業・工務店・製造業に特化したホームページ制作
+            - text: を行っています。
+            - text: 「施工事例を自分で更新したい」「スマホで簡単に編集したい」などのご要望にも対応可能です。
+          - blockquote [ref=e231]:
+            - paragraph [ref=e232]: 💡「自社で簡単に更新できるホームページ」にご興味がある方は、ぜひお気軽にご相談ください！
+          - link "まずはお気軽にお問い合わせ" [ref=e236] [cursor=pointer]:
+            - /url: https://wins-connect.com/contact-form/
+            - strong [ref=e238]: まずはお気軽にお問い合わせ
+        - generic [ref=e241]:
+          - text: 
+          - link "Uncategorized" [ref=e242] [cursor=pointer]:
+            - /url: https://wins-connect.com/category/uncategorized/
+        - generic [ref=e243]:
+          - generic [ref=e245]: よかったらシェアしてね！
+          - list [ref=e246]:
+            - listitem [ref=e247]:
+              - button "Facebookでシェア" [ref=e248] [cursor=pointer]:
+                - generic [ref=e249]: 
+            - listitem [ref=e250]:
+              - button "X(Twitter)でシェア" [ref=e251] [cursor=pointer]:
+                - generic [ref=e252]: 
+            - listitem [ref=e253]:
+              - button "はてなブックマークに登録" [ref=e254] [cursor=pointer]:
+                - generic [ref=e255]: 
+            - listitem [ref=e256]:
+              - button "Pocketに保存" [ref=e257] [cursor=pointer]:
+                - generic [ref=e258]: 
+            - listitem [ref=e259]:
+              - button "LINEに送る" [ref=e260] [cursor=pointer]:
+                - generic [ref=e261]: 
+            - listitem [ref=e262]:
+              - button "URLをコピーする" [ref=e263] [cursor=pointer]:
+                - generic [ref=e264]:
+                  - img [ref=e265]
+                  - img [ref=e268]
+        - list [ref=e272]:
+          - listitem [ref=e273]:
+            - button "Facebookでシェア" [ref=e274] [cursor=pointer]:
+              - generic [ref=e275]: 
+          - listitem [ref=e276]:
+            - button "X(Twitter)でシェア" [ref=e277] [cursor=pointer]:
+              - generic [ref=e278]: 
+          - listitem [ref=e279]:
+            - button "はてなブックマークに登録" [ref=e280] [cursor=pointer]:
+              - generic [ref=e281]: 
+          - listitem [ref=e282]:
+            - button "Pocketに保存" [ref=e283] [cursor=pointer]:
+              - generic [ref=e284]: 
+          - listitem [ref=e285]:
+            - button "LINEに送る" [ref=e286] [cursor=pointer]:
+              - generic [ref=e287]: 
+          - listitem [ref=e288]:
+            - button "URLをコピーする" [ref=e289] [cursor=pointer]:
+              - generic [ref=e290]:
+                - img [ref=e291]
+                - img [ref=e294]
+        - generic [ref=e297]:
+          - list
+          - generic [ref=e298]:
+            - heading "この記事を書いた人" [level=2] [ref=e299]
+            - link "winsconnect" [ref=e302] [cursor=pointer]:
+              - /url: https://wins-connect.com/author/winsconnect/
+          - generic [ref=e304]:
+            - heading "関連記事" [level=2] [ref=e305]
+            - paragraph [ref=e306]: 関連する記事はまだ見つかりませんでした。
+    - complementary [ref=e307]:
+      - search [ref=e309]:
+        - textbox "検索ワード" [ref=e310]:
+          - /placeholder: 検索
+        - button "検索を実行する" [ref=e311] [cursor=pointer]: 
+      - generic [ref=e312]:
+        - generic [ref=e313]: 人気記事
+        - list [ref=e314]:
+          - listitem [ref=e315]:
+            - link "地域密着の中小企業に強いホームページ制作会社を選ぶポイントとは？" [ref=e316] [cursor=pointer]:
+              - /url: https://wins-connect.com/local-company-website/
+              - figure [ref=e318]
+              - generic [ref=e320]: 地域密着の中小企業に強いホームページ制作会社を選ぶポイントとは？
+          - listitem [ref=e321]:
+            - link "建設業の人手不足を解決！採用につながるホームページの作り方とは？" [ref=e322] [cursor=pointer]:
+              - /url: https://wins-connect.com/eliminate-labor-shortage/
+              - figure [ref=e324]
+              - generic [ref=e326]: 建設業の人手不足を解決！採用につながるホームページの作り方とは？
+          - listitem [ref=e327]:
+            - link "【保存版】建設業のホームページに必要なページ構成とは？失敗しないための必須項目リスト" [ref=e328] [cursor=pointer]:
+              - /url: https://wins-connect.com/must-page-construction/
+              - figure [ref=e330]
+              - generic [ref=e332]: 【保存版】建設業のホームページに必要なページ構成とは？失敗しないための必須項目リスト
+          - listitem [ref=e333]:
+            - link "建築業にホームページが必要なのか？" [ref=e334] [cursor=pointer]:
+              - /url: https://wins-connect.com/construction-hp-need/
+              - figure [ref=e336]
+              - generic [ref=e338]: 建築業にホームページが必要なのか？
+          - listitem [ref=e339]:
+            - link "建設業の採用課題をホームページで解決！人手不足に効くWebリニューアルのポイントとは" [ref=e340] [cursor=pointer]:
+              - /url: https://wins-connect.com/construction-recruit/
+              - figure [ref=e342]
+              - generic [ref=e344]: 建設業の採用課題をホームページで解決！人手不足に効くWebリニューアルのポイントとは
+      - generic [ref=e345]:
+        - generic [ref=e346]: 最近の投稿
+        - list [ref=e347]:
+          - listitem [ref=e348]:
+            - link "【保存版】建設業のホームページに必要なページ構成とは？失敗しないための必須項目リスト" [ref=e349] [cursor=pointer]:
+              - /url: https://wins-connect.com/must-page-construction/
+          - listitem [ref=e350]:
+            - link "建設業の人手不足を解決！採用につながるホームページの作り方とは？" [ref=e351] [cursor=pointer]:
+              - /url: https://wins-connect.com/eliminate-labor-shortage/
+          - listitem [ref=e352]:
+            - link "知らないと損する！中小建設会社がWordPressサイト保守管理を怠ると起こる5つの悲劇" [ref=e353] [cursor=pointer]:
+              - /url: https://wins-connect.com/wordpress-error/
+          - listitem [ref=e354]:
+            - link "中小企業がホームページ制作を丸っとお任せ！ 準備ゼロでも安心のフルサポート" [ref=e355] [cursor=pointer]:
+              - /url: https://wins-connect.com/full-support/
+          - listitem [ref=e356]:
+            - link "地域密着の中小企業に強いホームページ制作会社を選ぶポイントとは？" [ref=e357] [cursor=pointer]:
+              - /url: https://wins-connect.com/local-company-website/
+      - generic [ref=e358]:
+        - generic [ref=e359]: カテゴリー
+        - list [ref=e360]:
+          - listitem [ref=e361]:
+            - link " Uncategorized" [ref=e362] [cursor=pointer]:
+              - /url: https://wins-connect.com/category/uncategorized/
+          - listitem [ref=e363]:
+            - link " メディア掲載" [ref=e364] [cursor=pointer]:
+              - /url: https://wins-connect.com/category/%e3%83%a1%e3%83%87%e3%82%a3%e3%82%a2%e6%8e%b2%e8%bc%89/
+          - listitem [ref=e365]:
+            - link " 中小企業" [ref=e366] [cursor=pointer]:
+              - /url: https://wins-connect.com/category/%e4%b8%ad%e5%b0%8f%e4%bc%81%e6%a5%ad/
+          - listitem [ref=e367]:
+            - link " 建設業界ホームページ" [ref=e368] [cursor=pointer]:
+              - /url: https://wins-connect.com/category/%e5%bb%ba%e8%a8%ad%e6%a5%ad%e7%95%8c%e3%83%9b%e3%83%bc%e3%83%a0%e3%83%9a%e3%83%bc%e3%82%b8/
+          - listitem [ref=e369]:
+            - link " 採用サイト" [ref=e370] [cursor=pointer]:
+              - /url: https://wins-connect.com/category/%e6%8e%a1%e7%94%a8%e3%82%b5%e3%82%a4%e3%83%88/
+  - contentinfo [ref=e371]:
+    - paragraph [ref=e375]: © Wins Connect.
+  - text:  

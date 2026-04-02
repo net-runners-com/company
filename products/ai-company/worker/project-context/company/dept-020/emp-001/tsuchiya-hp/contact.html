@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お問い合わせ | 土屋建築株式会社</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <i class="fas fa-building"></i>
+        土屋建築株式会社
+      </a>
+      <nav class="main-nav">
+        <a href="index.html">ホーム</a>
+        <a href="about.html">会社概要</a>
+        <a href="services.html">事業内容</a>
+        <a href="works.html">施工実績</a>
+        <a href="news.html">お知らせ</a>
+        <a href="recruit.html">採用情報</a>
+        <a href="contact.html" class="active">お問い合わせ</a>
+      </nav>
+      <div class="header-tel">
+        <i class="fas fa-phone-alt"></i>
+        0120-XXX-XXX
+      </div>
+      <button class="hamburger" aria-label="メニュー">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav">
+    <a href="index.html">ホーム</a>
+    <a href="about.html">会社概要</a>
+    <a href="services.html">事業内容</a>
+    <a href="works.html">施工実績</a>
+    <a href="news.html">お知らせ</a>
+    <a href="recruit.html">採用情報</a>
+    <a href="contact.html">お問い合わせ</a>
+    <div class="mobile-tel">
+      <i class="fas fa-phone-alt"></i> 0120-XXX-XXX
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>お問い合わせ</h1>
+    <p class="en">Contact</p>
+  </div>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="index.html">ホーム</a>
+    <span>&gt;</span>
+    お問い合わせ
+  </div>
+
+  <!-- Contact Info Cards -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="contact-info-cards fade-in">
+        <div class="contact-info-card">
+          <i class="fas fa-phone-alt"></i>
+          <h3>お電話でのお問い合わせ</h3>
+          <p class="big-number">048-XXX-XXXX</p>
+          <p>平日 8:00〜18:00</p>
+        </div>
+        <div class="contact-info-card">
+          <i class="fas fa-envelope"></i>
+          <h3>メールでのお問い合わせ</h3>
+          <p class="big-number">info@tsuchiya-kensetsu.co.jp</p>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form fade-in">
+        <div class="section-title">
+          <h2>お問い合わせフォーム</h2>
+          <p class="en">Contact Form</p>
+        </div>
+
+        <form id="contact-form">
+          <div class="form-group">
+            <label>お名前 <span class="required">必須</span></label>
+            <input type="text" name="name" placeholder="例：土屋 太郎" required>
+          </div>
+
+          <div class="form-group">
+            <label>フリガナ</label>
+            <input type="text" name="furigana" placeholder="例：ツチヤ タロウ">
+          </div>
+
+          <div class="form-group">
+            <label>メールアドレス <span class="required">必須</span></label>
+            <input type="email" name="email" placeholder="例：info@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label>電話番号</label>
+            <input type="tel" name="phone" placeholder="例：048-000-0000">
+          </div>
+
+          <div class="form-group">
+            <label>お問い合わせ種別</label>
+            <select name="type">
+              <option value="">選択してください</option>
+              <option value="new-build">新築について</option>
+              <option value="reform">リフォームについて</option>
+              <option value="other">その他</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>お問い合わせ内容 <span class="required">必須</span></label>
+            <textarea name="message" placeholder="お問い合わせ内容をご記入ください" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="privacy" required>
+              <a href="privacy.html" target="_blank">プライバシーポリシー</a>に同意する
+            </label>
+          </div>
+
+          <div class="form-submit">
+            <button type="submit" class="btn-primary">送信する</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-main">
+      <div class="footer-company">
+        <div class="footer-logo">
+          <i class="fas fa-building"></i> 土屋建築株式会社
+        </div>
+        <p>〒330-0001<br>埼玉県さいたま市大宮区○○町1-2-3</p>
+      </div>
+      <div class="footer-nav">
+        <h4>サイトマップ</h4>
+        <ul>
+          <li><a href="index.html">ホーム</a></li>
+          <li><a href="about.html">会社概要</a></li>
+          <li><a href="services.html">事業内容</a></li>
+          <li><a href="works.html">施工実績</a></li>
+          <li><a href="news.html">お知らせ</a></li>
+          <li><a href="recruit.html">採用情報</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-info">
+        <h4>営業時間</h4>
+        <p>平日 8:00〜18:00</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 土屋建築株式会社 | <a href="privacy.html">プライバシーポリシー</a></p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

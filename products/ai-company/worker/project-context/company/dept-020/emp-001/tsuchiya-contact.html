@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お問い合わせ | 土屋建築株式会社</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#1a365d',
+            'navy-light': '#2a4a7f',
+            orange: '#dd6b20',
+            'orange-hover': '#c05621',
+            'bg-light': '#f7fafc',
+            'text-main': '#2d3748',
+          },
+          fontFamily: {
+            sans: ['"Noto Sans JP"', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Noto Sans JP', sans-serif; color: #2d3748; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #fff; margin: 5px 0; transition: all 0.3s; }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .mobile-menu.open { max-height: 400px; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #1a365d; box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.15); }
+    .error-msg { color: #e53e3e; font-size: 0.8rem; margin-top: 2px; display: none; }
+    .error-msg.show { display: block; }
+    .field-error { border-color: #e53e3e !important; }
+  </style>
+</head>
+<body class="bg-white">
+
+  <!-- Header -->
+  <header class="bg-navy sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="#" class="flex items-center space-x-3">
+          <div class="bg-orange w-10 h-10 rounded flex items-center justify-center">
+            <i class="fas fa-building text-white text-lg"></i>
+          </div>
+          <div>
+            <span class="text-white font-bold text-lg tracking-wide">土屋建築株式会社</span>
+            <span class="hidden sm:block text-gray-300 text-xs">TSUCHIYA ARCHITECTURE Co., Ltd.</span>
+          </div>
+        </a>
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="#" class="text-gray-200 hover:text-orange transition text-sm font-medium">ホーム</a>
+          <a href="#" class="text-gray-200 hover:text-orange transition text-sm font-medium">会社概要</a>
+          <a href="#" class="text-gray-200 hover:text-orange transition text-sm font-medium">事業内容</a>
+          <a href="#" class="text-gray-200 hover:text-orange transition text-sm font-medium">施工実績</a>
+          <a href="#" class="text-gray-200 hover:text-orange transition text-sm font-medium">採用情報</a>
+          <a href="#" class="bg-orange hover:bg-orange-hover text-white px-5 py-2 rounded text-sm font-medium transition">お問い合わせ</a>
+        </nav>
+        <!-- Hamburger -->
+        <button class="hamburger md:hidden focus:outline-none" id="hamburgerBtn" aria-label="メニュー">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <!-- Mobile Menu -->
+      <div class="mobile-menu md:hidden" id="mobileMenu">
+        <nav class="pb-4 space-y-2">
+          <a href="#" class="block text-gray-200 hover:text-orange py-2 text-sm">ホーム</a>
+          <a href="#" class="block text-gray-200 hover:text-orange py-2 text-sm">会社概要</a>
+          <a href="#" class="block text-gray-200 hover:text-orange py-2 text-sm">事業内容</a>
+          <a href="#" class="block text-gray-200 hover:text-orange py-2 text-sm">施工実績</a>
+          <a href="#" class="block text-gray-200 hover:text-orange py-2 text-sm">採用情報</a>
+          <a href="#" class="block bg-orange text-white text-center py-2 rounded text-sm font-medium mt-2">お問い合わせ</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="bg-navy py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">お問い合わせ</h1>
+      <p class="text-gray-300 text-sm md:text-base">お気軽にご相談ください。専門スタッフが丁寧にご対応いたします。</p>
+      <!-- Breadcrumb -->
+      <nav class="mt-6" aria-label="パンくずリスト">
+        <ol class="flex items-center justify-center space-x-2 text-sm text-gray-400">
+          <li><a href="#" class="hover:text-orange transition"><i class="fas fa-home mr-1"></i>ホーム</a></li>
+          <li><i class="fas fa-chevron-right text-xs mx-1"></i></li>
+          <li class="text-orange font-medium">お問い合わせ</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Phone / FAX Section -->
+  <section class="bg-bg-light py-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- TEL -->
+        <div class="bg-white rounded-xl shadow-md p-8 text-center hover:shadow-lg transition">
+          <div class="bg-orange w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-phone-alt text-white text-2xl"></i>
+          </div>
+          <p class="text-sm text-gray-500 mb-2">お電話でのお問い合わせ</p>
+          <a href="tel:0120-456-789" class="text-navy text-3xl md:text-4xl font-bold hover:text-orange transition block">
+            0120-456-789
+          </a>
+          <p class="text-xs text-gray-500 mt-2">フリーダイヤル（通話料無料）</p>
+          <p class="text-sm text-gray-600 mt-3">
+            <i class="far fa-clock mr-1"></i>受付時間：平日 9:00〜18:00
+          </p>
+        </div>
+        <!-- FAX -->
+        <div class="bg-white rounded-xl shadow-md p-8 text-center hover:shadow-lg transition">
+          <div class="bg-navy w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-fax text-white text-2xl"></i>
+          </div>
+          <p class="text-sm text-gray-500 mb-2">FAXでのお問い合わせ</p>
+          <p class="text-navy text-3xl md:text-4xl font-bold">03-5678-9012</p>
+          <p class="text-xs text-gray-500 mt-2">24時間受付</p>
+          <p class="text-sm text-gray-600 mt-3">
+            <i class="far fa-file-alt mr-1"></i>所定のFAX用紙にてお送りください
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section class="bg-white py-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold text-navy mb-3">メールでのお問い合わせ</h2>
+        <p class="text-gray-600 text-sm">下記フォームにご入力の上、送信してください。<br class="hidden sm:block">担当者より2営業日以内にご回答いたします。</p>
+        <p class="text-xs text-red-500 mt-2"><span class="text-red-500 font-bold">*</span> は必須項目です</p>
+      </div>
+
+      <form id="contactForm" novalidate class="space-y-6">
+        <!-- お名前 -->
+        <div>
+          <label for="name" class="block text-sm font-medium text-text-main mb-1">
+            お名前 <span class="text-red-500 font-bold">*</span>
+          </label>
+          <input type="text" id="name" name="name" required placeholder="例）土屋 太郎"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm transition">
+          <p class="error-msg" id="nameError">お名前を入力してください。</p>
+        </div>
+
+        <!-- メールアドレス -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-text-main mb-1">
+            メールアドレス <span class="text-red-500 font-bold">*</span>
+          </label>
+          <input type="email" id="email" name="email" required placeholder="例）info@example.com"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm transition">
+          <p class="error-msg" id="emailError">正しいメールアドレスを入力してください。</p>
+        </div>
+
+        <!-- お電話番号 -->
+        <div>
+          <label for="phone" class="block text-sm font-medium text-text-main mb-1">
+            お電話番号
+          </label>
+          <input type="tel" id="phone" name="phone" placeholder="例）03-1234-5678"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm transition">
+        </div>
+
+        <!-- お問い合わせ種別 -->
+        <div>
+          <label for="category" class="block text-sm font-medium text-text-main mb-1">
+            お問い合わせ種別
+          </label>
+          <select id="category" name="category"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm transition bg-white">
+            <option value="">選択してください</option>
+            <option value="新築">新築</option>
+            <option value="リフォーム">リフォーム</option>
+            <option value="商業施設">商業施設</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+
+        <!-- お問い合わせ内容 -->
+        <div>
+          <label for="message" class="block text-sm font-medium text-text-main mb-1">
+            お問い合わせ内容 <span class="text-red-500 font-bold">*</span>
+          </label>
+          <textarea id="message" name="message" rows="6" required
+            placeholder="ご質問やご相談内容をご記入ください"
+            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm transition resize-y"></textarea>
+          <p class="error-msg" id="messageError">お問い合わせ内容を入力してください。</p>
+        </div>
+
+        <!-- Privacy Policy -->
+        <div class="bg-bg-light rounded-lg p-5">
+          <div class="flex items-start space-x-3">
+            <input type="checkbox" id="privacy" name="privacy" required
+              class="mt-1 w-4 h-4 text-navy border-gray-300 rounded focus:ring-navy">
+            <label for="privacy" class="text-sm text-gray-600 leading-relaxed">
+              <a href="#" class="text-navy underline hover:text-orange transition">プライバシーポリシー</a>に同意の上、お問い合わせください。
+              <span class="text-red-500 font-bold">*</span>
+            </label>
+          </div>
+          <p class="error-msg ml-7" id="privacyError">プライバシーポリシーへの同意が必要です。</p>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center pt-2">
+          <button type="submit"
+            class="bg-orange hover:bg-orange-hover text-white font-bold px-12 py-4 rounded-lg text-base transition transform hover:scale-105 shadow-md hover:shadow-lg">
+            <i class="far fa-paper-plane mr-2"></i>送信する
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Map / Access Section -->
+  <section class="bg-bg-light py-16">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold text-navy mb-3">アクセス</h2>
+        <p class="text-gray-600 text-sm">お越しの際はお気軽にお立ち寄りください。</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8 items-start">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3240.828030985498!2d139.76493!3d35.68124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQwJzUyLjQiTiAxMznCsDQ1JzUzLjgiRQ!5e0!3m2!1sja!2sjp!4v1600000000000"
+            width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" class="w-full"></iframe>
+        </div>
+        <div class="space-y-4">
+          <div class="flex items-start space-x-3">
+            <i class="fas fa-map-marker-alt text-orange mt-1"></i>
+            <div>
+              <p class="font-medium text-sm">所在地</p>
+              <p class="text-gray-600 text-sm">〒100-0001 東京都千代田区千代田1-1-1<br>土屋建築ビル 3F</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <i class="fas fa-train text-orange mt-1"></i>
+            <div>
+              <p class="font-medium text-sm">最寄り駅</p>
+              <p class="text-gray-600 text-sm">東京メトロ丸ノ内線「大手町駅」C13b出口 徒歩5分<br>JR「東京駅」丸の内北口 徒歩10分</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <i class="fas fa-car text-orange mt-1"></i>
+            <div>
+              <p class="font-medium text-sm">駐車場</p>
+              <p class="text-gray-600 text-sm">ビル地下に来客用駐車場あり（3台）</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-navy text-gray-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Company Info -->
+        <div>
+          <div class="flex items-center space-x-2 mb-4">
+            <div class="bg-orange w-8 h-8 rounded flex items-center justify-center">
+              <i class="fas fa-building text-white text-sm"></i>
+            </div>
+            <span class="text-white font-bold">土屋建築株式会社</span>
+          </div>
+          <p class="text-xs leading-relaxed text-gray-400">
+            〒100-0001<br>
+            東京都千代田区千代田1-1-1<br>
+            土屋建築ビル 3F
+          </p>
+          <p class="text-xs text-gray-400 mt-2">TEL: 0120-456-789</p>
+        </div>
+        <!-- Links 1 -->
+        <div>
+          <h4 class="text-white font-medium mb-4 text-sm">事業内容</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" class="hover:text-orange transition">新築住宅</a></li>
+            <li><a href="#" class="hover:text-orange transition">リフォーム</a></li>
+            <li><a href="#" class="hover:text-orange transition">商業施設</a></li>
+            <li><a href="#" class="hover:text-orange transition">設計・監理</a></li>
+          </ul>
+        </div>
+        <!-- Links 2 -->
+        <div>
+          <h4 class="text-white font-medium mb-4 text-sm">企業情報</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" class="hover:text-orange transition">会社概要</a></li>
+            <li><a href="#" class="hover:text-orange transition">施工実績</a></li>
+            <li><a href="#" class="hover:text-orange transition">採用情報</a></li>
+            <li><a href="#" class="hover:text-orange transition">お知らせ</a></li>
+          </ul>
+        </div>
+        <!-- Social -->
+        <div>
+          <h4 class="text-white font-medium mb-4 text-sm">SNS</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 bg-navy-light rounded-full flex items-center justify-center hover:bg-orange transition">
+              <i class="fab fa-instagram text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-navy-light rounded-full flex items-center justify-center hover:bg-orange transition">
+              <i class="fab fa-facebook-f text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-navy-light rounded-full flex items-center justify-center hover:bg-orange transition">
+              <i class="fab fa-line text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-navy-light rounded-full flex items-center justify-center hover:bg-orange transition">
+              <i class="fab fa-youtube text-white"></i>
+            </a>
+          </div>
+          <div class="mt-6">
+            <a href="#" class="inline-block bg-orange hover:bg-orange-hover text-white text-xs px-5 py-2 rounded transition">
+              <i class="far fa-envelope mr-1"></i>お問い合わせ
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom -->
+      <div class="border-t border-gray-700 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500">
+        <p>&copy; 2026 土屋建築株式会社 All Rights Reserved.</p>
+        <div class="flex space-x-4 mt-2 sm:mt-0">
+          <a href="#" class="hover:text-orange transition">プライバシーポリシー</a>
+          <a href="#" class="hover:text-orange transition">サイトマップ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="backToTop" class="fixed bottom-6 right-6 bg-orange text-white w-12 h-12 rounded-full shadow-lg hidden hover:bg-orange-hover transition transform hover:scale-110 z-40" aria-label="ページトップへ">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <script>
+    // Hamburger menu
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburgerBtn.addEventListener('click', () => {
+      hamburgerBtn.classList.toggle('active');
+      mobileMenu.classList.toggle('open');
+    });
+
+    // Back to top
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('hidden', window.scrollY < 300);
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Form validation
+    const form = document.getElementById('contactForm');
+
+    function showError(id) {
+      const el = document.getElementById(id);
+      el.classList.add('show');
+      const input = el.previousElementSibling || document.getElementById(id.replace('Error', ''));
+      if (input && input.tagName !== 'DIV') input.classList.add('field-error');
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      clearErrors();
+      let valid = true;
+
+      const name = document.getElementById('name');
+      const email = document.getElementById('email');
+      const message = document.getElementById('message');
+      const privacy = document.getElementById('privacy');
+
+      if (!name.value.trim()) {
+        showError('nameError');
+        name.classList.add('field-error');
+        valid = false;
+      }
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email.value.trim() || !emailPattern.test(email.value.trim())) {
+        showError('emailError');
+        email.classList.add('field-error');
+        valid = false;
+      }
+
+      if (!message.value.trim()) {
+        showError('messageError');
+        message.classList.add('field-error');
+        valid = false;
+      }
+
+      if (!privacy.checked) {
+        showError('privacyError');
+        valid = false;
+      }
+
+      if (valid) {
+        alert('送信完了しました');
+        form.reset();
+      }
+    });
+
+    // Clear individual field errors on input
+    ['name', 'email', 'message'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function() {
+        this.classList.remove('field-error');
+        document.getElementById(id + 'Error').classList.remove('show');
+      });
+    });
+    document.getElementById('privacy').addEventListener('change', function() {
+      document.getElementById('privacyError').classList.remove('show');
+    });
+  </script>
+</body>
+</html>

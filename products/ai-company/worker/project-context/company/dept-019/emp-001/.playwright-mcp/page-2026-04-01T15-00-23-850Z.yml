@@ -1,0 +1,930 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - paragraph [ref=e6]: ホームページ制作会社 ウェブ企画パートナーズ
+          - link "株式会社ウェブ企画パートナーズ ロゴ" [ref=e7] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/homepage/
+            - img "株式会社ウェブ企画パートナーズ ロゴ" [ref=e8]
+        - navigation [ref=e9]:
+          - generic [ref=e10]:
+            - list [ref=e11]:
+              - listitem [ref=e12]:
+                - link [ref=e14] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/plan/
+                  - text: 制作プラン
+              - listitem [ref=e15]:
+                - link [ref=e17] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/service/
+                  - text: サービス・技術
+              - listitem [ref=e18]:
+                - link [ref=e19] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/works/
+                  - text: 制作実績
+              - listitem [ref=e20]:
+                - link [ref=e21] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/flow/
+                  - text: 制作の流れ
+              - listitem [ref=e22]:
+                - link [ref=e24] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/company/
+                  - text: 会社概要
+              - listitem [ref=e25]:
+                - link [ref=e26] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/offer/
+                  - text: 資料請求
+              - listitem [ref=e27]:
+                - link [ref=e28] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/contact/
+                  - text: ご相談・お問い合わせ
+            - generic [ref=e29]:
+              - paragraph [ref=e30]:
+                - link [ref=e31] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/blog/
+                  - text: ブログ 
+                - link [ref=e32] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/area/
+                  - text: オフィス一覧 
+                - generic [ref=e33]: 総合受付
+                - link [ref=e34] [cursor=pointer]:
+                  - /url: tel:03-6682-4554
+                  - text: 03-6682-4554
+              - paragraph [ref=e35]: 受付時間 9:00～18:00(土・日・祝除く)
+            - text:       
+    - main [ref=e36]:
+      - list [ref=e39]:
+        - listitem [ref=e40]:
+          - link "ホームページ制作 TOP" [ref=e41] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/homepage/
+          - text: 
+        - listitem [ref=e42]:
+          - link "WEB企画ラボ" [ref=e43] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/homepage/blog/
+          - text: 
+        - listitem [ref=e44]:
+          - link "ホームページ制作" [ref=e45] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/
+          - text: 
+        - listitem [ref=e46]:
+          - link "ウェブデザイン" [ref=e47] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/webdesign/
+          - text: 
+        - listitem [ref=e48]:
+          - link "【建設業】カッコいいホームページ制作デザインまとめ！信頼感のあるデザインは？":
+            - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/construction-industry-web-design/
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - heading "【建設業】カッコいいホームページ制作デザインまとめ！信頼感のあるデザインは？" [level=1] [ref=e51]
+          - generic [ref=e52]:
+            - link "ウェブデザイン" [ref=e53] [cursor=pointer]:
+              - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/webdesign/
+            - generic [ref=e54]: 最終更新日：2026/02/12
+          - generic [ref=e55]:
+            - paragraph [ref=e56]:
+              - iframe [ref=e58]:
+                - generic [active] [ref=f6e1]:
+                  - generic "YouTube Video Player" [ref=f6e3]
+                  - generic [ref=f6e5]:
+                    - generic:
+                      - generic:
+                        - button "Play video" [ref=f6e10] [cursor=pointer]
+                        - button "Hide player controls" [ref=f6e12] [cursor=pointer]
+                        - generic [ref=f6e14]:
+                          - generic [ref=f6e19]:
+                            - generic [ref=f6e20]:
+                              - link "【実例あり】建設業のホームページ必須コンテンツはこれ！他社と差がつくポイントは？" [ref=f6e21] [cursor=pointer]:
+                                - /url: https://www.youtube.com/watch?v=VV2ruRbSmZg
+                              - link "ウェブ担チャンネル" [ref=f6e22] [cursor=pointer]:
+                                - /url: /channel/UCjZ0xNeuLf9L4KIVkPmbZfA
+                                - generic [ref=f6e23]: ウェブ担チャンネル
+                            - generic [ref=f6e24]:
+                              - button "thumbnail-image" [ref=f6e25] [cursor=pointer]:
+                                - img "thumbnail-image" [ref=f6e26]
+                              - generic [ref=f6e28]:
+                                - generic: ウェブ担チャンネル
+                                - generic: 697 subscribers
+                          - generic [ref=f6e29]:
+                            - button "Share" [ref=f6e32] [cursor=pointer]:
+                              - generic [ref=f6e36]:
+                                - img
+                            - link "Watch on YouTube" [ref=f6e43] [cursor=pointer]:
+                              - /url: https://www.youtube.com/watch?v=VV2ruRbSmZg
+                              - generic [ref=f6e46]:
+                                - text: Watch on
+                                - img [ref=f6e48]:
+                                  - generic [ref=f6e50]:
+                                    - img
+            - paragraph [ref=e60]: 今回は建設業（建設会社）に絞った、Web制作会社が、おしゃれなホームページデザインや印象に残ったホームページを集めました。
+            - paragraph [ref=e61]: デザインだけでなく、コンテンツにも注目すると、より理解が深まるのではないでしょうか。トレンドの参考にもなります。
+            - paragraph [ref=e62]: 建築会社や工務店のホームページデザインとは違い、しっかりとした会社であるという印象を訪問者に持ってもらいたいという会社が多かったように感じます。
+            - paragraph [ref=e63]: 巨大なプロジェクトが多いでしょうから、クリエイティブさよりも信頼感が大切なのでしょう。
+            - 'link "【建築・設計会社】おしゃれで印象的なホームページ制作デザイン11選！写真をうまく見せるコツは？ | 株式会社ウェブ企画パートナーズ 【建築・設計会社】おしゃれで印象的なホームページ制作デザイン11選！写真をうまく見せるコツは？ | 株式会社ウェブ企画パートナーズ window._wpemojiSettings = {\"baseUrl\":\"h... wk-partners.co.jp" [ref=e65] [cursor=pointer]':
+              - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/architecture-and-design-company-web-design/
+              - generic [ref=e66]:
+                - generic [ref=e67]: 【建築・設計会社】おしゃれで印象的なホームページ制作デザイン11選！写真をうまく見せるコツは？ | 株式会社ウェブ企画パートナーズ
+                - generic [ref=e68]: "【建築・設計会社】おしゃれで印象的なホームページ制作デザイン11選！写真をうまく見せるコツは？ | 株式会社ウェブ企画パートナーズ window._wpemojiSettings = {\"baseUrl\":\"h..."
+                - generic [ref=e69]:
+                  - img [ref=e70]
+                  - text: wk-partners.co.jp
+              - img [ref=e72]
+            - 'link "工務店で参考になるホームページ制作デザインまとめ！基本は親しみやすさが重要？ | 株式会社ウェブ企画パートナーズ window._wpemojiSettings = {\"baseUrl\":\"https:\\/\\/... wk-partners.co.jp" [ref=e74] [cursor=pointer]':
+              - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/construction-company-web-design/
+              - generic [ref=e75]:
+                - generic [ref=e76]: "工務店で参考になるホームページ制作デザインまとめ！基本は親しみやすさが重要？ | 株式会社ウェブ企画パートナーズ window._wpemojiSettings = {\"baseUrl\":\"https:\\/\\/..."
+                - generic [ref=e77]:
+                  - img [ref=e78]
+                  - text: wk-partners.co.jp
+              - img [ref=e80]
+            - heading "公開可能な弊社事例・事例" [level=2] [ref=e81]
+            - heading "株式会社タケウチ建設" [level=3] [ref=e82]
+            - paragraph [ref=e83]:
+              - img "株式会社タケウチ建設" [ref=e84]
+            - link "株式会社タケウチ建設｜地盤改良工事、軟弱地盤基礎工法 タケウチ建設は、TNF2.0工法・T-BAGS減震工法など独自の技術を活かし、安心・安全で環境に優しい地盤改良を実現。長年培った知識と革新的な発想で、常に変革を追求する“オンリーワン企業”を目指しています。 www.takeuchi-const.co.jp" [ref=e86] [cursor=pointer]:
+              - /url: https://www.takeuchi-const.co.jp/
+              - generic [ref=e87]:
+                - generic [ref=e88]: 株式会社タケウチ建設｜地盤改良工事、軟弱地盤基礎工法
+                - generic [ref=e89]: タケウチ建設は、TNF2.0工法・T-BAGS減震工法など独自の技術を活かし、安心・安全で環境に優しい地盤改良を実現。長年培った知識と革新的な発想で、常に変革を追求する“オンリーワン企業”を目指しています。
+                - generic [ref=e90]:
+                  - img [ref=e91]
+                  - text: www.takeuchi-const.co.jp
+              - img [ref=e93]
+            - paragraph [ref=e94]: 特殊な地盤基礎工法が強みである株式会社タケウチ建設様のホームページをリニューアルさせていただきました。企業規模も年々大きくなられている会社ですので、大手感があり、信頼を得られるようなデザインにすることをベースに、社内にウェブを編集できる方がいらっしゃった関係で、社内でも新しい広報の追加があった際に更新が可能なようなデザインの両立というところをテーマにしました。また、メインビジュアルは動画にし、特に伝えたい情報のお知らせを視覚的にもおしゃれに見やすくPRできるようなデザインになったのではないかと思います。
+            - heading "信頼感のある建設会社のホームページデザイン" [level=2] [ref=e95]
+            - heading "村本建設" [level=3] [ref=e96]
+            - paragraph [ref=e97]:
+              - img "村本建設" [ref=e98]
+            - paragraph [ref=e99]:
+              - link "https://www.muramoto.co.jp/" [ref=e100] [cursor=pointer]:
+                - /url: https://www.muramoto.co.jp/
+            - paragraph [ref=e101]: 「愛をもっと村元という」キャッチコピーとセットのムービーで始まるメインビジュアルを使用しています。様々な現場の人間が誠実に働いている様子が伝わってきます。全体的に水色をベースにデザインし、爽やかで信頼を得られそうなデザインをしています。「愛のあるエピソード」というユニークなコンテンツが、会社のカラーがとてもよく出ている良いコンテンツではないかと思いました。
+            - heading "七浦建設株式会社" [level=3] [ref=e102]
+            - paragraph [ref=e103]:
+              - img "七浦建設株式会社" [ref=e104]
+            - paragraph [ref=e105]:
+              - link "https://www.7ura.jp/" [ref=e106] [cursor=pointer]:
+                - /url: https://www.7ura.jp/
+            - paragraph [ref=e107]: 栃木県の建設会社のホームページです。最近では少し珍しいですが、マウスにアニメーションが付いてきます。いやらしくない程度のアニメーションとなっており、またリンクをクリックすると追従するアニメーションが目立つようになるなど、ユーザビリティの面でも配慮されています。オレンジをポイントに使ったデザインとなっており、フッターには適切なCTAも設置されています。
+            - heading "共立建設株式会社" [level=3] [ref=e108]
+            - paragraph [ref=e109]:
+              - img "共立建設株式会社" [ref=e110]
+            - paragraph [ref=e111]:
+              - link "https://www.kyoritsu-con.co.jp/" [ref=e112] [cursor=pointer]:
+                - /url: https://www.kyoritsu-con.co.jp/
+            - paragraph [ref=e113]: NTTの関連会社である建設会社のホームページです。赤色で全体がまとめられています。赤色は攻めたイメージになりがちですが、ポイントで必要最低限に赤色を利用することで、イケイケというよりは情熱的なイメージが伝わってきます。ソリューション部分のリンク先がシンプルな文字のボタンになっているのですが、こういったリンクも意外にわかりやすいなと参考になりました。沿革が非常にボリューミーで、3ページに渡ってまとめられている沿革は初めて見ました。「街をつくる、人をつなぐ、技術を活かす」というアニメーションが、キャッチコピーとマッチしたアニメーションになっている点も素晴らしいです。
+            - heading "誠実さを感じる建設会社のホームページデザイン" [level=2] [ref=e114]
+            - heading "西野建設工業株式会社" [level=3] [ref=e115]
+            - paragraph [ref=e116]:
+              - img "西野建設工業株式会社" [ref=e117]
+            - paragraph [ref=e118]:
+              - link "https://nishinokensetsukogyo.co.jp/" [ref=e119] [cursor=pointer]:
+                - /url: https://nishinokensetsukogyo.co.jp/
+            - paragraph [ref=e120]: 印象的なキャッチコピーを明朝でシンプルに打ち出したファーストビューが印象的です。全体として優しい印象になっており、誠実な印象を持たせてくれます。ポイントで縦書きを利用しており、メニューであることが縦に記載されている影響でわかりやすいです。授業内容などシンプルにまとまっており、建設会社として最低限シンプルにまとまっている良い事例ではないでしょうか。
+            - heading "松栄建設" [level=3] [ref=e121]
+            - paragraph [ref=e122]:
+              - img "松栄建設" [ref=e123]
+            - paragraph [ref=e124]:
+              - link "https://syo-ei.com/" [ref=e125] [cursor=pointer]:
+                - /url: https://syo-ei.com/
+            - paragraph [ref=e126]: 優しい黄緑色で全体がまとめられています。おそらくロゴのカラーに合わせたのでしょう。柔らかい印象だけでなく、所々に細かいデザインのこだわりが感じられます。ハンバーガーメニューはメニューではなく「OPEN」というラベリングになっていたり、電話番号もポイントでカラーが変わっています。更新頻度の高いブログも日付の部分が可愛らしく差し込まれているのが印象的です。
+            - heading "株式会社スミカ" [level=3] [ref=e127]
+            - paragraph [ref=e128]:
+              - img "株式会社スミカ" [ref=e129]
+            - paragraph [ref=e130]:
+              - link "https://www.smica.net/" [ref=e131] [cursor=pointer]:
+                - /url: https://www.smica.net/
+            - paragraph [ref=e132]: インパクトのあるメインビジュアルではなく、メインビジュアルがアニメーションを含んだメニューになっているのが非常に個性的ですが、使いやすい感じがします。ロゴに合わせてゴールドをベースにまとめられているのですが、いやらしさは全くなく、上品で現代的な印象になっています。全体的に少し堅い印象を差し込まれる、1筆書きで書いたようなイラストが中和してくれています。
+            - heading "カッコいい建設会社のホームページデザイン" [level=2] [ref=e133]
+            - heading "株式会社尾上建設" [level=3] [ref=e134]
+            - paragraph [ref=e135]:
+              - img "株式会社尾上建設" [ref=e136]
+            - paragraph [ref=e137]:
+              - link "https://www.ogami.co.jp/" [ref=e138] [cursor=pointer]:
+                - /url: https://www.ogami.co.jp/
+            - paragraph [ref=e139]: 濃いネイビーで全体がまとめられた、とにかくかっこいいホームページデザインの建設会社のホームページです。スクロールすると追従するタイプのメニューはよく見かけますが、このように立てて追従してくるパターンは珍しく印象的です。大きな写真を気持ちよく、しかも効果的に利用しているデザインは参考になります。これだけデザインにこだわると、制作物も建設物もこだわりを持ったクオリティの高いものに仕上げてくれそうなイメージになりますね。
+            - heading "日建設計コンストラクション・マネジメント" [level=3] [ref=e140]
+            - paragraph [ref=e141]:
+              - img "日建設計コンストラクション・マネジメント" [ref=e142]
+            - paragraph [ref=e143]:
+              - link "https://www.nikken-cm.com/" [ref=e144] [cursor=pointer]:
+                - /url: https://www.nikken-cm.com/
+            - paragraph [ref=e145]: キャッチコピーと次々と切り替わる動画、そして最新のインフォメーションが全て表示されるメインビジュアルが印象的です。細目の文字をスペースを活かして効果的に配置しています。WEBフォントが効果的に利用されていますね。シンプルに掲載されがちな施工実績も写真がしっかり映えるような構成となっており、更新は少し大変かもしれませんが、お客様からの印象は非常に良いのではないでしょうか。
+            - heading "大豊建設" [level=3] [ref=e146]
+            - paragraph [ref=e147]:
+              - img "大豊建設" [ref=e148]
+            - paragraph [ref=e149]:
+              - link "https://www.daiho.co.jp/" [ref=e150] [cursor=pointer]:
+                - /url: https://www.daiho.co.jp/
+            - paragraph [ref=e151]: 印象的なアニメーションと赤色でインパクトの強いアルファベットが印象的なホームページデザインです。ポイントで明朝の文字を利用し、メインビジュアルだけでなく、スクロールしていてもかっこいいです。ギャラリーは今となっては珍しいコンテンツですが、写真のクオリティが高いので、会社のブランディングに一役買っている形となっています。トップページだけでなく技術ソリューションページもかなりこだわっていて、とにかくアニメーションを効果的に利用し、顧客に世界観を伝えられているのではないでしょうか。
+            - heading "世界観を感じる建設会社のホームページデザイン" [level=2] [ref=e152]
+            - heading "山﨑建設工業株式会社" [level=3] [ref=e153]
+            - paragraph [ref=e154]:
+              - img "山﨑建設工業株式会社" [ref=e155]
+            - paragraph [ref=e156]:
+              - link "https://www.yamazaki-kk.jp/" [ref=e157] [cursor=pointer]:
+                - /url: https://www.yamazaki-kk.jp/
+            - paragraph [ref=e158]: あえてレトロにした写真加工を効果的に利用したホームページデザインです。ノスタルジックな雰囲気が独特の世界観を持っていてオシャレです。どういった狙いなのかはわかりませんが、フッターにメニューが一切なく、挑戦的な構成となっています。グーグルマップに過去の実績がまとめられている形式は、培った歴史をビジュアル的にわかりやすく表示する手法として大変有効ではないかと思いました。
+            - heading "株式会社野村建設" [level=3] [ref=e159]
+            - paragraph [ref=e160]:
+              - img "株式会社野村建設" [ref=e161]
+            - paragraph [ref=e162]:
+              - link "https://www.clasico-nomura.jp/" [ref=e163] [cursor=pointer]:
+                - /url: https://www.clasico-nomura.jp/
+            - paragraph [ref=e164]: 建設会社でも、住宅を前面に打ち出した建設会社もあります。モダンな感じや和風な感じ、そしておしゃれな感じを同時に実現するような、シンプルながらもオシャレさが伝わってくるデザインです。写真のセンスがとにかく良いです。スクロールに合わせて写真が上下方向に少しずつずれる、気持ちのいいアニメーションは、ぜひどこかで取り入れたくなりますね。
+            - heading "大手感のある建設会社のホームページデザイン" [level=2] [ref=e165]
+            - heading "戸田建設株式会社" [level=3] [ref=e166]
+            - paragraph [ref=e167]:
+              - img "戸田建設株式会社" [ref=e168]
+            - paragraph [ref=e169]:
+              - link "https://www.toda.co.jp/" [ref=e170] [cursor=pointer]:
+                - /url: https://www.toda.co.jp/
+            - paragraph [ref=e171]: とにかく様々なステークホルダーに様々な導線を用意したトップページは、大手である印象を感じさせます。フッターあたりに掲載されているたくさんのバナーも、大手のホームページにありがちで、大手感の演出に一役かっているのではないでしょうか。デザイン的に特別お洒落というわけではありませんが、シンプルながらも見やすく、そして現代的にまとめる、ユーザービリティを意識したデザインとなっている点は参考になる企業も多いのではないでしょうか。
+            - heading "大成建設株式会社" [level=3] [ref=e172]
+            - paragraph [ref=e173]:
+              - img "大成建設株式会社" [ref=e174]
+            - paragraph [ref=e175]:
+              - link "https://www.taisei.co.jp/" [ref=e176] [cursor=pointer]:
+                - /url: https://www.taisei.co.jp/
+            - paragraph [ref=e177]: TVCMでも有名な大成建設のホームページです。大きなコンテンツを大胆に表示させるデザインが印象的です。ロゴのカラーに合わせて全体がまとまっているところを見ると、デザインポリシーが決まっているのではないかという印象があります。実績がサイト内検索でフリーワードで探せる仕様になっており、数多くの実績がある場合はこういったユーザビリティも必要になってくるのかと感じさせられました。
+            - heading "西松建設株式会社" [level=3] [ref=e178]
+            - paragraph [ref=e179]:
+              - img "西松建設株式会社" [ref=e180]
+            - paragraph [ref=e181]:
+              - link "https://www.nishimatsu.co.jp/" [ref=e182] [cursor=pointer]:
+                - /url: https://www.nishimatsu.co.jp/
+            - paragraph [ref=e183]: 大手感満載の、様々なページに移動しやすいハブに特化したトップページのホームページデザインです。「数字で見る西松建設」というコンテンツはインパクトがあって、会社としての迫力を感じます。全体として綺麗にまとまっているのですが、技術ページなどが他の資料からの使いまわしだろうというデザインで、バナーが一致しないデザインが所々挟み込まれており、この辺を統一できるともっと世界観の伝わるホームページデザインになるんだろうなと感じました。
+            - heading "建設会社のホームページに必要なページ・コンテンツは？" [level=2] [ref=e184]
+            - heading "企業概要" [level=3] [ref=e185]
+            - heading "会社背景・想い" [level=4] [ref=e186]
+            - paragraph [ref=e187]: 会社がいつ設立されたのか、どのような経緯で事業を始めたのかを説明することで、それが強みや仕事ぶりに伝わってきますから、会社の背景を理解してもらうことは重要です。また同様に会社の歴史、ミッション（使命）、ビジョン（将来の目標）、価値観を掲載することも重要になってきます。
+            - paragraph [ref=e188]:
+              - img "建設会社のミッション・ビジョン・バリュー" [ref=e189]
+            - 'link "ミッション・ビジョン・バリュー・パーパス｜皆成建設株式会社 window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag(''js'', new Date()); gtag(''config... www.kaiseikensetsu.com" [ref=e191] [cursor=pointer]':
+              - /url: https://www.kaiseikensetsu.com/company02.html
+              - generic [ref=e192]:
+                - generic [ref=e193]: ミッション・ビジョン・バリュー・パーパス｜皆成建設株式会社
+                - generic [ref=e194]: "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config..."
+                - generic [ref=e195]:
+                  - img [ref=e196]
+                  - text: www.kaiseikensetsu.com
+              - img [ref=e198]
+            - heading "経営陣紹介" [level=4] [ref=e199]
+            - paragraph [ref=e200]: 会社のMVVだけでは伝わりきらなかった部分であったり、会社のこれから目指している未来についてなど、経営陣の想いとして紹介できると、より会社の魅力が伝わります。
+            - paragraph [ref=e201]: また顔写真を掲載することで、安心感を伝えることにも繋がります。
+            - paragraph [ref=e202]:
+              - img "代表挨拶" [ref=e203]
+            - paragraph [ref=e204]: こちらの会社さんのように、複数のお写真があると、プロフィール写真のような堅い印象以外も伝えることができて素敵ですね。
+            - link "代表挨拶｜村本建設｜建設（ゼネコン）会社 村本建設の代表挨拶を紹介します。総合建設会社として人々の暮らしを支える社会資本の整備に携わり、自然災害の復旧・復興事業などを通して、社会への貢献を果たしてまいります。 www.muramoto.co.jp" [ref=e206] [cursor=pointer]:
+              - /url: https://www.muramoto.co.jp/greetings
+              - generic [ref=e207]:
+                - generic [ref=e208]: 代表挨拶｜村本建設｜建設（ゼネコン）会社
+                - generic [ref=e209]: 村本建設の代表挨拶を紹介します。総合建設会社として人々の暮らしを支える社会資本の整備に携わり、自然災害の復旧・復興事業などを通して、社会への貢献を果たしてまいります。
+                - generic [ref=e210]:
+                  - img [ref=e211]
+                  - text: www.muramoto.co.jp
+              - img [ref=e213]
+            - heading "事業拠点・対応エリア" [level=4] [ref=e214]
+            - paragraph [ref=e215]: 地域密着であったり、複数拠点で事業を展開している場合は、どこにオフィスがあるのかを示すことにより、今回の建設物に対応できるのかどうかの判断に繋がります。
+            - paragraph [ref=e216]:
+              - img "事業所紹介" [ref=e217]
+            - paragraph [ref=e218]: 地図などもセットで掲載できると、よりパッと見で判断しやすいですね。Googleマップで表示する技術もあります。
+            - link "事業所一覧 | 高松建設 ���Ə��ꗗ | �������� if ((navigator.userAgent.indexOf('iPhone') > 0) || navigator.userAgent.in... www.takamatsu-const.co.jp" [ref=e220] [cursor=pointer]:
+              - /url: https://www.takamatsu-const.co.jp/profile/office/
+              - generic [ref=e221]:
+                - generic [ref=e222]: 事業所一覧 | 高松建設
+                - generic [ref=e223]: ���Ə��ꗗ | �������� if ((navigator.userAgent.indexOf('iPhone') > 0) || navigator.userAgent.in...
+                - generic [ref=e224]:
+                  - img [ref=e225]
+                  - text: www.takamatsu-const.co.jp
+              - img [ref=e227]
+            - heading "サービス紹介" [level=3] [ref=e228]
+            - heading "主要な事業分野" [level=4] [ref=e229]
+            - paragraph [ref=e230]: 一言で建設といっても幅広いですから、どのような事業分野を展開しているのか、可能な限り詳しく書きましょう。
+            - paragraph [ref=e231]: 土木工事、公共事業、民間事業、大規模開発プロジェクトなどから、ニッチな対応建設物まで細かく紹介してください。その中で得意な事業や、技術力に他社に比べ強みのある事業があれば、その理由も掲載しましょう。
+            - paragraph [ref=e232]:
+              - img "事業紹介" [ref=e233]
+            - paragraph [ref=e234]: こちらの会社さんのように事業をグラフで可視化してあげるとさらにわかりやすくていいですね。
+            - link "事業紹介 地域密着の総合建設業、前川建設株式会社の事業紹介 maekawa-jp.com" [ref=e236] [cursor=pointer]:
+              - /url: https://maekawa-jp.com/business/
+              - generic [ref=e237]:
+                - generic [ref=e238]: 事業紹介
+                - generic [ref=e239]: 地域密着の総合建設業、前川建設株式会社の事業紹介
+                - generic [ref=e240]:
+                  - img [ref=e241]
+                  - text: maekawa-jp.com
+              - img [ref=e243]
+            - heading "技術・設備" [level=4] [ref=e244]
+            - paragraph [ref=e245]: 他社との差別化をするために建設技術や設備の紹介も重要です。また紹介する設備や技術に詳しくないお客様もいらっしゃるかもしれませんので、それがどのようなメリットをもたらすかまでしっかりと掲載しましょう。最新技術の場合は特に重要です。
+            - paragraph [ref=e246]:
+              - img "設備紹介" [ref=e247]
+            - paragraph [ref=e248]: メーカーまで紹介されていると、わかりる人にはさらにわかって良いですね。
+            - link "設備紹介 - 株式会社西栄建設 土木工事、とび・土工、コンクリート工事ならお任せください。西栄建設ではお客様に喜ばれる建造物とサービスをご提供致します。 www.nishieikensetsu.com" [ref=e250] [cursor=pointer]:
+              - /url: https://www.nishieikensetsu.com/equipment/
+              - generic [ref=e251]:
+                - generic [ref=e252]: 設備紹介 - 株式会社西栄建設
+                - generic [ref=e253]: 土木工事、とび・土工、コンクリート工事ならお任せください。西栄建設ではお客様に喜ばれる建造物とサービスをご提供致します。
+                - generic [ref=e254]:
+                  - img [ref=e255]
+                  - text: www.nishieikensetsu.com
+              - img [ref=e257]
+            - heading "施工実績" [level=4] [ref=e258]
+            - paragraph [ref=e259]: 建設業界だけに言えることだけではありませんが、過去の実績は非常に重要視されます。単に過去の建設物の写真を掲載するだけでも悪くはありませんが、プロジェクトの概要や規模、施工期間、施工内容などを詳しく説明できると尚良しです。
+            - paragraph [ref=e260]: 写真も１枚だけではなく、複数写真を掲載できると良いので、最初からホームページに掲載されるであろうことを想定して、プロジェクトの進行中になるべく写真を撮っておくようにしましょう。
+            - paragraph [ref=e261]:
+              - img "施工実績" [ref=e262]
+            - paragraph [ref=e263]: こちらの会社さんのように事例がカテゴリ分けされていると、さらに使いやすくて良いと思います。
+            - link "施工実績 | 三井住友建設 三井住友建設がこれまで手掛けてきた国内外の実績を用途別、竣工年別、地域別でご覧いただけます。 www.smcon.co.jp" [ref=e265] [cursor=pointer]:
+              - /url: https://www.smcon.co.jp/works/
+              - generic [ref=e266]:
+                - generic [ref=e267]: 施工実績 | 三井住友建設
+                - generic [ref=e268]: 三井住友建設がこれまで手掛けてきた国内外の実績を用途別、竣工年別、地域別でご覧いただけます。
+                - generic [ref=e269]:
+                  - img [ref=e270]
+                  - text: www.smcon.co.jp
+              - img [ref=e272]
+            - heading "認証・資格" [level=3] [ref=e273]
+            - heading "業界資格・認証" [level=4] [ref=e274]
+            - paragraph [ref=e275]: 建設業界では、ISO認証（国際標準化機構が定める品質管理の国際規格）や建設業許可証など、様々な資格や認証が存在します。
+            - paragraph [ref=e276]: もちろん資格がすべてだとは思いませんが、資格や認証を重要視している企業も多いのは事実ですから、掲載できるのであれば掲載しましょう。
+            - heading "安全管理" [level=4] [ref=e277]
+            - paragraph [ref=e278]: 現場は危険ですので、プロジェクトに支障がでないように安全管理をすることは、みなさんも重々承知のことで申し訳ないんですが、やはり重要です。
+            - paragraph [ref=e279]: 当然クライアントも同様に感じていますので、安全管理のために行っていることはしっかりと掲載しましょう。
+            - paragraph [ref=e280]: また、実績も以外にPRに繋がります。過去にどれだけ事故を起こさずに、プロジェクトを推進させたか、数値とセットで掲載することで信頼アップに繋げられます。
+            - paragraph [ref=e281]:
+              - img "安全管理" [ref=e282]
+            - paragraph [ref=e283]: 体制の図解もあると、イメージしやすいはずです。
+            - link "建設現場における安全衛生管理 | サステナビリティ | 鹿島建設株式会社 建設現場における安全衛生管理 | サステナビリティ | 鹿島建設株式会社 FAQ お問... www.kajima.co.jp" [ref=e285] [cursor=pointer]:
+              - /url: https://www.kajima.co.jp/sustainability/society/safety/index-j.html
+              - generic [ref=e286]:
+                - generic [ref=e287]: 建設現場における安全衛生管理 | サステナビリティ | 鹿島建設株式会社
+                - generic [ref=e288]: 建設現場における安全衛生管理 | サステナビリティ | 鹿島建設株式会社 FAQ お問...
+                - generic [ref=e289]:
+                  - img [ref=e290]
+                  - text: www.kajima.co.jp
+              - img [ref=e292]
+            - heading "技術力・環境保護" [level=3] [ref=e293]
+            - heading "技術研究" [level=4] [ref=e294]
+            - paragraph [ref=e295]: 競合との差別化で技術研究をどの会社も行っていらっしゃるのではないでしょうか。また単純に建設技術の研究だけではなく、最近ではAIやIoTなどテクノロジー分野にも力をいれていらっしゃる会社もあると思います。
+            - paragraph [ref=e296]: 他にも大学・研究機関・他業種企業などと提携をしている取り組みの紹介などもおすすめです。
+            - heading "環境への取り組み" [level=4] [ref=e297]
+            - paragraph [ref=e298]: SDGsを始めとした環境保護への機運は年々高まっています。当たり前に行っていることでも、面倒くさがらずにしっかりとPRすることが重要です。
+            - paragraph [ref=e299]: 例えば、再生可能エネルギーの利用、省エネルギー設計の導入、リサイクル材の活用、廃棄物の削減、環境認証（LEED認証など）の取得状況や、環境保護団体との協力事例などです。
+            - paragraph [ref=e300]:
+              - img "環境への取組" [ref=e301]
+            - paragraph [ref=e302]: SDGsのアイコンとセットだとわかりやすいです。
+            - 'link "環境への取り組み | サステナビリティ | 大阪の建設会社 前田組 (function(w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ ''gtm.start'': new Date().getTime(), event: ''gtm.js'' }); ... www.maedagumi.co.jp" [ref=e304] [cursor=pointer]':
+              - /url: https://www.maedagumi.co.jp/sustainability/environment/
+              - generic [ref=e305]:
+                - generic [ref=e306]: 環境への取り組み | サステナビリティ | 大阪の建設会社 前田組
+                - generic [ref=e307]: "(function(w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); ..."
+                - generic [ref=e308]:
+                  - img [ref=e309]
+                  - text: www.maedagumi.co.jp
+              - img [ref=e311]
+            - heading "法規制・コンプライアンス" [level=3] [ref=e312]
+            - heading "法的情報" [level=4] [ref=e313]
+            - paragraph [ref=e314]: 建設業界は法規制が多い業界です。
+            - paragraph [ref=e315]: 建設業法や労働安全衛生法、環境関連法規などへの対応状況を説明し、法令順守を徹底していることをアピールします。
+            - paragraph [ref=e316]: ホームページ上で、会社が関連法規をどのように遵守しているのか、コンプライアンス（法令順守）に関する方針を掲載しましょう。
+            - heading "リスク管理" [level=4] [ref=e317]
+            - paragraph [ref=e318]: 会社のリスク管理体制や、リスクアセスメント（リスク評価）の取り組みを紹介しましょう。
+            - paragraph [ref=e319]: 具体的には、リスク管理部門の設置状況や、リスク管理マニュアルの整備状況、定期的なリスクアセスメントの実施状況などを説明します。
+            - paragraph [ref=e320]:
+              - img "リスク管理" [ref=e321]
+            - paragraph [ref=e322]: どのようにリスクを回避しているか視覚的にわかりやすくしてあげたいです。
+            - link "リスク管理 | ガバナンス | 戸田建設 一人ひとりのお客様に最適な技術とソリューションを提供する戸田建設のサステナビリティ。「リスク管理」をご紹介。 www.toda.co.jp" [ref=e324] [cursor=pointer]:
+              - /url: https://www.toda.co.jp/sustainability/governance/risk.html
+              - generic [ref=e325]:
+                - generic [ref=e326]: リスク管理 | ガバナンス | 戸田建設
+                - generic [ref=e327]: 一人ひとりのお客様に最適な技術とソリューションを提供する戸田建設のサステナビリティ。「リスク管理」をご紹介。
+                - generic [ref=e328]:
+                  - img [ref=e329]
+                  - text: www.toda.co.jp
+              - img [ref=e331]
+            - heading "地域貢献活動" [level=3] [ref=e332]
+            - paragraph [ref=e333]: 地域密着型の企業の場合は「密着しています」と言葉で説明するだけでなく、そのためにどのような取り組みを行っているか紹介することで、地元の皆様に好感を持ってもらえます。
+            - paragraph [ref=e334]: 定期的に行っている場合はわざわざページを作るんじゃなくて、お知らせなどでイベントカテゴリを新設して紹介していくのもアリです。
+            - paragraph [ref=e335]:
+              - img "地域貢献" [ref=e336]
+            - paragraph [ref=e337]: こういう言い方してしまっては印象が悪いですが、ボランティア活動も会社の魅力を伝えるのに一役買います。
+            - paragraph [ref=e338]: インターンシップの受け入れも行っているのであれば掲載しましょう。
+            - link "地域社会と共に｜企業情報｜クレハ建設株式会社 建設業は地域社会との共生が不可欠です。文化や習慣等を尊重し合う土壌づくりを継続的に行うことで信頼される「良き企業市民」を目指します。 www.kureha-const.co.jp" [ref=e340] [cursor=pointer]:
+              - /url: https://www.kureha-const.co.jp/about/community/
+              - generic [ref=e341]:
+                - generic [ref=e342]: 地域社会と共に｜企業情報｜クレハ建設株式会社
+                - generic [ref=e343]: 建設業は地域社会との共生が不可欠です。文化や習慣等を尊重し合う土壌づくりを継続的に行うことで信頼される「良き企業市民」を目指します。
+                - generic [ref=e344]:
+                  - img [ref=e345]
+                  - text: www.kureha-const.co.jp
+              - img [ref=e347]
+            - heading "デジタルツールの利用" [level=3] [ref=e348]
+            - heading "BIM（Building Information Modeling）" [level=4] [ref=e349]
+            - paragraph [ref=e350]: BIM（ビルディング・インフォメーション・モデリング）を活用した技術のPRで、コスト削減に繋げていることなどをPRできれば、どうして提供するサービスが安いのかどうかを想像することができます。
+            - heading "ドローン" [level=4] [ref=e351]
+            - paragraph [ref=e352]: ドローンも同様です。ドローンを活用すると逆にコストは上がりますが（下がることもありますが）、どうしてその品質を担保できるかの想像に繋げることができるかもしれません。
+            - paragraph [ref=e353]:
+              - img "ドローン活用" [ref=e354]
+            - paragraph [ref=e355]: 具体的にどのようなシーンで活用できるのかわからない人も多いでしょうから、そのあたりも説明してあげましょう。
+            - link "ドローン活用 | 中央建設株式会社 chuo-kensetsu.co.jp" [ref=e357] [cursor=pointer]:
+              - /url: https://chuo-kensetsu.co.jp/information/%E3%83%89%E3%83%AD%E3%83%BC%E3%83%B3%E6%B4%BB%E7%94%A8/
+              - generic [ref=e358]:
+                - generic [ref=e359]: ドローン活用 | 中央建設株式会社
+                - generic [ref=e360]:
+                  - img [ref=e361]
+                  - text: chuo-kensetsu.co.jp
+              - img [ref=e363]
+            - heading "建設会社のホームページ制作なら" [level=2] [ref=e364]
+            - paragraph [ref=e365]: 弊社でも建設会社のホームページ制作を承っておりますので、これからリニューアルや新規立ち上げをお考えの方はぜひ一度ご相談ください。
+            - link "東京渋谷のホームページ制作会社【創業20年】ウェブ企画パートナーズ ホームページ制作・作成＆サイトリニューアルなら、集客・SEO・採用に強い株式会社ウェブ企画パートナーズにお任せください。東京都渋谷区を拠点としています。成果を生み出すための企画・設計・ご提案から、ホームページ運用まで。アクセス解析だけにとどまらずコンサルティング型のサポートで多くのお客様を成功へと導いてきた実績がございます。 wk-partners.co.jp" [ref=e367] [cursor=pointer]:
+              - /url: https://wk-partners.co.jp/homepage/
+              - generic [ref=e368]:
+                - generic [ref=e369]: 東京渋谷のホームページ制作会社【創業20年】ウェブ企画パートナーズ
+                - generic [ref=e370]: ホームページ制作・作成＆サイトリニューアルなら、集客・SEO・採用に強い株式会社ウェブ企画パートナーズにお任せください。東京都渋谷区を拠点としています。成果を生み出すための企画・設計・ご提案から、ホームページ運用まで。アクセス解析だけにとどまらずコンサルティング型のサポートで多くのお客様を成功へと導いてきた実績がございます。
+                - generic [ref=e371]:
+                  - img [ref=e372]
+                  - text: wk-partners.co.jp
+              - img [ref=e374]
+          - list [ref=e375]:
+            - listitem [ref=e376]:
+              - link "シェア" [ref=e377] [cursor=pointer]:
+                - /url: https://www.facebook.com/share.php?u=https%3A%2F%2Fwk-partners.co.jp%2Fhomepage%2Fblog%2Fhpseisaku%2Fwebdesign%2Fconstruction-industry-web-design%2F
+            - listitem [ref=e378]:
+              - link "つぶやく" [ref=e379] [cursor=pointer]:
+                - /url: https://twitter.com/share?url=https%3A%2F%2Fwk-partners.co.jp%2Fhomepage%2Fblog%2Fhpseisaku%2Fwebdesign%2Fconstruction-industry-web-design%2F&text=%E3%80%90%E5%BB%BA%E8%A8%AD%E6%A5%AD%E3%80%91%E3%82%AB%E3%83%83%E3%82%B3%E3%81%84%E3%81%84%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8%E5%88%B6%E4%BD%9C%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%81%BE%E3%81%A8%E3%82%81%EF%BC%81%E4%BF%A1%E9%A0%BC%E6%84%9F%E3%81%AE%E3%81%82%E3%82%8B%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%81%AF%EF%BC%9F%20%7C%20%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE%E3%82%A6%E3%82%A7%E3%83%96%E4%BC%81%E7%94%BB%E3%83%91%E3%83%BC%E3%83%88%E3%83%8A%E3%83%BC%E3%82%BA&hashtags=%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BEWEB%E4%BC%81%E7%94%BB
+            - listitem [ref=e380]:
+              - link "ブックマーク" [ref=e381] [cursor=pointer]:
+                - /url: https://b.hatena.ne.jp/entry/https%3A%2F%2Fwk-partners.co.jp%2Fhomepage%2Fblog%2Fhpseisaku%2Fwebdesign%2Fconstruction-industry-web-design%2F
+            - listitem [ref=e382]:
+              - link "LINE" [ref=e383] [cursor=pointer]:
+                - /url: https://social-plugins.line.me/lineit/share?url=https%3A%2F%2Fwk-partners.co.jp%2Fhomepage%2Fblog%2Fhpseisaku%2Fwebdesign%2Fconstruction-industry-web-design%2F
+            - listitem [ref=e384]:
+              - link "Pocket" [ref=e385] [cursor=pointer]:
+                - /url: https://getpocket.com/edit?url=https%3A%2F%2Fwk-partners.co.jp%2Fhomepage%2Fblog%2Fhpseisaku%2Fwebdesign%2Fconstruction-industry-web-design%2F&title=%E3%80%90%E5%BB%BA%E8%A8%AD%E6%A5%AD%E3%80%91%E3%82%AB%E3%83%83%E3%82%B3%E3%81%84%E3%81%84%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%9A%E3%83%BC%E3%82%B8%E5%88%B6%E4%BD%9C%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%81%BE%E3%81%A8%E3%82%81%EF%BC%81%E4%BF%A1%E9%A0%BC%E6%84%9F%E3%81%AE%E3%81%82%E3%82%8B%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%81%AF%EF%BC%9F%20%7C%20%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE%E3%82%A6%E3%82%A7%E3%83%96%E4%BC%81%E7%94%BB%E3%83%91%E3%83%BC%E3%83%88%E3%83%8A%E3%83%BC%E3%82%BA
+          - link "このページのタイトルとURLをコピーする" [ref=e387] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e389]:
+            - link "前の記事へ" [ref=e391] [cursor=pointer]:
+              - /url: https://wk-partners.co.jp/homepage/blog/software/vscode-extension-settings/
+            - link "一覧に戻る" [ref=e393] [cursor=pointer]:
+              - /url: https://wk-partners.co.jp/homepage/blog/
+            - link "次の記事へ" [ref=e395] [cursor=pointer]:
+              - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/renewal/the-importance-of-production-experience/
+          - generic [ref=e397]:
+            - heading "おすすめの記事はこちら" [level=3] [ref=e398]:
+              - generic [ref=e400]: おすすめの記事はこちら
+            - list [ref=e401]:
+              - listitem [ref=e402]:
+                - link "ウェブデザイン ｜ 2024/08/01 【お掃除代行・ハウスクリーニング】参考になるホームページ制作デザイン！大手から中小までの事例を紹介" [ref=e403] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/house-cleaning-homepage/
+                  - generic [ref=e405]:
+                    - generic [ref=e406]: ウェブデザイン ｜ 2024/08/01
+                    - heading "【お掃除代行・ハウスクリーニング】参考になるホームページ制作デザイン！大手から中小までの事例を紹介" [level=4] [ref=e407]
+              - listitem [ref=e408]:
+                - link "ウェブデザイン ｜ 2024/06/04 【心療内科】参考になるホームページ制作デザイン13選！患者に寄り添ったデザインとは？" [ref=e409] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/psychosomatic-clinic-web-design/
+                  - generic [ref=e411]:
+                    - generic [ref=e412]: ウェブデザイン ｜ 2024/06/04
+                    - heading "【心療内科】参考になるホームページ制作デザイン13選！患者に寄り添ったデザインとは？" [level=4] [ref=e413]
+              - listitem [ref=e414]:
+                - link "ウェブデザイン ｜ 2024/05/24 SaaS系で参考になるホームページデザイン制作22選【最新から大手まで】どんなページが必要？" [ref=e415] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/saas-webdesign/
+                  - generic [ref=e417]:
+                    - generic [ref=e418]: ウェブデザイン ｜ 2024/05/24
+                    - heading "SaaS系で参考になるホームページデザイン制作22選【最新から大手まで】どんなページが必要？" [level=4] [ref=e419]
+              - listitem [ref=e420]:
+                - link "ウェブデザイン ｜ 2018/01/25 追従型メニュー（フローティングメニュー）のアイデアまとめ９選・PCサイト編" [ref=e421] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/pc-floating-menu/
+                  - generic [ref=e423]:
+                    - generic [ref=e424]: ウェブデザイン ｜ 2018/01/25
+                    - heading "追従型メニュー（フローティングメニュー）のアイデアまとめ９選・PCサイト編" [level=4] [ref=e425]
+              - listitem [ref=e426]:
+                - link "ウェブデザイン ｜ 2016/09/28 どんな業界でも使える！ホームページで商品・サービスに安心感を持ってもらうための基本テクニック９選" [ref=e427] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/website-sense-of-security/
+                  - generic [ref=e429]:
+                    - generic [ref=e430]: ウェブデザイン ｜ 2016/09/28
+                    - heading "どんな業界でも使える！ホームページで商品・サービスに安心感を持ってもらうための基本テクニック９選" [level=4] [ref=e431]
+              - listitem [ref=e432]:
+                - link "ウェブデザイン ｜ 2013/04/04 参考になる！紫を効果的に使用しているハイクオリティなWebデザイン制作まとめ" [ref=e433] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/webdesign/purple-webdesign/
+                  - generic [ref=e435]:
+                    - generic [ref=e436]: ウェブデザイン ｜ 2013/04/04
+                    - heading "参考になる！紫を効果的に使用しているハイクオリティなWebデザイン制作まとめ" [level=4] [ref=e437]
+        - generic [ref=e439]:
+          - generic [ref=e442]:
+            - textbox "気になるワードを入力" [ref=e443]
+            - button "検索" [ref=e444] [cursor=pointer]:  検索
+          - link "運営会社 ウェブ企画パートナーズ 東京都を中心にウェブマーケテイング支援を行っている会社です。ホームページ制作からSEO・リスティング広告まで幅広くサービスをご提供。" [ref=e446] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/
+            - img "運営会社 ウェブ企画パートナーズ 東京都を中心にウェブマーケテイング支援を行っている会社です。ホームページ制作からSEO・リスティング広告まで幅広くサービスをご提供。" [ref=e447]
+          - link "「成果の仕組み」をつくるホームページ制作サービス ウェブ企画パートナーズ" [ref=e449] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/homepage/
+            - img "「成果の仕組み」をつくるホームページ制作サービス ウェブ企画パートナーズ" [ref=e450]
+          - heading "人気の記事 Ranking" [level=3] [ref=e451]:
+            - generic [ref=e452]:
+              - generic [ref=e453]: 人気の記事
+              - img "Ranking" [ref=e454]
+          - list [ref=e456]:
+            - listitem [ref=e457]:
+              - link "1 VSCodeでの文字化け問題の解決方法まとめ" [ref=e458] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/software/how-to-solve-garbled-characters-problem-in-vscode/
+                - text: "1"
+                - generic [ref=e460]: VSCodeでの文字化け問題の解決方法まとめ
+            - listitem [ref=e461]:
+              - link "2 サイト高速化に必須の link rel=preload とは？（使い方とサンプルHTML・CSS）" [ref=e462] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/htmlcss/preload/
+                - text: "2"
+                - generic [ref=e464]: サイト高速化に必須の link rel=preload とは？（使い方とサンプルHTML・CSS）
+            - listitem [ref=e465]:
+              - link "3 横並びメニューの区切り線を隣接セレクタを使ってスマートに実装する方法" [ref=e466] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/htmlcss/adjacent-sibling-combinator/
+                - text: "3"
+                - generic [ref=e468]: 横並びメニューの区切り線を隣接セレクタを使ってスマートに実装する方法
+            - listitem [ref=e469]:
+              - link "【GoogleAnalytics4】直帰率とエンゲージメント率の定義・違い・確認方法まとめ" [ref=e470] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/googleanalytics/ga4-engagement-rate-bounce-rate/
+                - generic [ref=e472]: 【GoogleAnalytics4】直帰率とエンゲージメント率の定義・違い・確認方法まとめ
+            - listitem [ref=e473]:
+              - link "「とりあえず導入」は絶対ダメ！Web制作のプロが語る、WordPressプラグインとの賢い付き合い方。" [ref=e474] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/hpseisaku/wordpress/wordpress-plugin-disadvantages/
+                - generic [ref=e476]: 「とりあえず導入」は絶対ダメ！Web制作のプロが語る、WordPressプラグインとの賢い付き合い方。
+          - heading "カテゴリから記事をさがす Categories" [level=3] [ref=e477]:
+            - generic [ref=e478]:
+              - generic [ref=e479]: カテゴリから記事をさがす
+              - img "Categories" [ref=e480]
+          - list [ref=e482]:
+            - listitem [ref=e483]:
+              - link " GoogleAnalytics初心者講座" [ref=e484] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/googleanalytics/
+            - listitem [ref=e485]:
+              - link " PPC広告" [ref=e486] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/ppc/
+            - listitem [ref=e487]:
+              - link " SEO" [ref=e488] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/seo/
+            - listitem [ref=e489]:
+              - link " WEBサービス" [ref=e490] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/webservices/
+            - listitem [ref=e491]:
+              - link " お知らせ・会社広報" [ref=e492] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/event/
+            - listitem [ref=e493]:
+              - link " インターネット集客" [ref=e494] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/attract/
+            - listitem [ref=e495]:
+              - link " サイト改善・分析" [ref=e496] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/improvement/
+            - listitem [ref=e497]:
+              - link " セミナー・勉強会" [ref=e498] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/seminar/
+            - listitem [ref=e499]:
+              - link " ソフトウェア・アプリ" [ref=e500] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/software/
+            - listitem [ref=e501]:
+              - link " ハードウェア・ガジェット" [ref=e502] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/hardware/
+            - listitem [ref=e503]:
+              - link " ブランディング" [ref=e504] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/blanding/
+            - listitem [ref=e505]:
+              - link " ホームページ制作" [ref=e506] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/
+              - list [ref=e507]:
+                - listitem [ref=e508]:
+                  - link "- HTML・CSS" [ref=e509] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/htmlcss/
+                - listitem [ref=e510]:
+                  - link "- JavaScript" [ref=e511] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/javascript/
+                - listitem [ref=e512]:
+                  - link "- MovableType" [ref=e513] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/mt/
+                - listitem [ref=e514]:
+                  - link "- WordPress" [ref=e515] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/wordpress/
+                - listitem [ref=e516]:
+                  - link "- ウェブデザイン" [ref=e517] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/webdesign/
+                - listitem [ref=e518]:
+                  - link "- コンテンツ" [ref=e519] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/contents/
+                - listitem [ref=e520]:
+                  - link "- セキュリティ" [ref=e521] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/security/
+                - listitem [ref=e522]:
+                  - link "- ユーザービリティ" [ref=e523] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/usability/
+                - listitem [ref=e524]:
+                  - link "- リニューアル" [ref=e525] [cursor=pointer]:
+                    - /url: https://wk-partners.co.jp/homepage/blog/category/hpseisaku/renewal/
+            - listitem [ref=e526]:
+              - link " 心理学" [ref=e527] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/psychology/
+            - listitem [ref=e528]:
+              - link " 求人・採用" [ref=e529] [cursor=pointer]:
+                - /url: https://wk-partners.co.jp/homepage/blog/category/recruit/
+          - link "業界震撼 今だけ初期費用0円で「検索連動型広告」が始められます" [ref=e531] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/ppc/
+            - img "業界震撼 今だけ初期費用0円で「検索連動型広告」が始められます" [ref=e532]
+          - heading "毎週1回以上更新中！" [level=3] [ref=e533]:
+            - generic [ref=e535]: 毎週1回以上更新中！
+          - generic [ref=e536]:
+            - img "WEB企画 LABO" [ref=e538]
+            - paragraph [ref=e539]:
+              - text: 公式Facebook、Twitterから
+              - text: 情報を受け取る
+            - link "フォローする" [ref=e540] [cursor=pointer]:
+              - /url: https://twitter.com/wk_partners
+      - generic [ref=e542]:
+        - generic [ref=e543]:
+          - heading "CONTACT" [level=3] [ref=e544]:
+            - strong [ref=e545]: CONTACT
+          - paragraph [ref=e546]:
+            - text: Webサイト制作のご相談やご質問、ご不明点などございましたらこちらよりお問い合わせください。
+            - text: 「ホームページ制作について」とお伝えください。担当者におつなぎいたします。
+        - generic [ref=e547]:
+          - generic [ref=e548]:
+            - link " オフィス一覧へ" [ref=e549] [cursor=pointer]:
+              - /url: https://wk-partners.co.jp/homepage/area/
+            - paragraph [ref=e550]: 受付時間｜9:00～18:00(土・日・祝除く)
+            - paragraph [ref=e551]: ※お電話にてお問い合わせの際はオフィス一覧からお近くのオフィスにご連絡ください
+            - paragraph [ref=e552]: ※全国対応
+          - link " ご相談・お問い合わせフォーム" [ref=e554] [cursor=pointer]:
+            - /url: https://wk-partners.co.jp/homepage/contact/
+      - generic [ref=e557]:
+        - heading "ホームページ無料診断 毎月10社限定" [level=3] [ref=e558]:
+          - strong [ref=e559]: ホームページ無料診断
+          - generic [ref=e560]: 毎月10社限定
+        - paragraph [ref=e561]:
+          - text: ホームページ制作のプロがユーザビリティ・SEO・競合などを多角的に分析し、
+          - text: 具体的な改善案をご提案します。
+        - link " 無料診断する" [ref=e562] [cursor=pointer]:
+          - /url: https://wk-partners.co.jp/homepage/diagnosis-form/
+    - contentinfo [ref=e563]:
+      - link "PAGE TOP" [ref=e564] [cursor=pointer]:
+        - /url: "#top"
+        - text: 
+      - generic [ref=e565]:
+        - generic [ref=e566]:
+          - generic [ref=e567]:
+            - link "株式会社ウェブ企画パートナーズ ロゴ" [ref=e569] [cursor=pointer]:
+              - /url: https://wk-partners.co.jp/homepage/
+              - img "株式会社ウェブ企画パートナーズ ロゴ" [ref=e570]
+            - list [ref=e571]:
+              - listitem [ref=e572]:
+                - link "YouTube" [ref=e573] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@webtanch
+                  - img "YouTube" [ref=e574]
+              - listitem [ref=e575]:
+                - link "Twitter" [ref=e576] [cursor=pointer]:
+                  - /url: https://twitter.com/wk_partners
+                  - img "Twitter" [ref=e577]
+            - paragraph [ref=e578]:
+              - strong [ref=e579]: ［東京都（本社）］
+              - text: 〒150-0002
+              - text: 東京都渋谷区渋谷3丁目6番2号 エクラート渋谷5F
+              - text: TEL：
+              - link "03-6682-4554" [ref=e580] [cursor=pointer]:
+                - /url: tel:03-6682-4554
+            - paragraph [ref=e581]:
+              - strong [ref=e582]: ［神奈川県］
+              - text: 〒220-0004
+              - text: 神奈川県横浜市西区北幸1丁目11番1号 水信ビル7階
+              - text: TEL：
+              - link "045-550-5659" [ref=e583] [cursor=pointer]:
+                - /url: tel:045-550-5659
+            - paragraph [ref=e584]:
+              - strong [ref=e585]: ［埼玉県］
+              - text: 〒330-0854
+              - text: 埼玉県さいたま市大宮区桜木町2-446-548（号）
+              - text: TEL：
+              - link "048-729-5741" [ref=e586] [cursor=pointer]:
+                - /url: tel:048-729-5741
+            - paragraph [ref=e587]:
+              - strong [ref=e588]: ［愛知県］
+              - text: 〒460-0011
+              - text: 愛知県名古屋市中区大須４丁目１１−２３ ２Ａ
+              - text: TEL：
+              - link "052-414-7245" [ref=e589] [cursor=pointer]:
+                - /url: tel:052-414-7245
+            - paragraph [ref=e590]:
+              - strong [ref=e591]: ［熊本県］
+              - text: 〒860-0806
+              - text: 熊本県熊本市中央区花畑町1番14号 A&M HANABATA301号
+              - text: TEL：
+              - link "096-277-1712" [ref=e592] [cursor=pointer]:
+                - /url: tel:096-277-1712
+          - generic [ref=e594]:
+            - list [ref=e596]:
+              - listitem [ref=e597]:
+                - link "トップページ" [ref=e598] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/
+              - listitem [ref=e599]:
+                - link "制作実績" [ref=e600] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/works/
+              - listitem [ref=e601]:
+                - link "制作の流れ" [ref=e602] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/flow/
+              - listitem [ref=e603]:
+                - link "ご相談・お問い合わせ" [ref=e604] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/contact/
+              - listitem [ref=e605]:
+                - link "資料請求" [ref=e606] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/offer/
+              - listitem [ref=e607]:
+                - link "プライバシーポリシー" [ref=e608] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/privacy-policy/
+              - listitem [ref=e609]:
+                - link "会社概要" [ref=e610] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/company/
+              - listitem [ref=e611]:
+                - link "採用情報" [ref=e612] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/recruit-entry/
+              - listitem [ref=e613]:
+                - link "オフィス一覧" [ref=e614] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/area/
+                - list [ref=e615]:
+                  - listitem [ref=e616]:
+                    - link "- 東京・渋谷" [ref=e617] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/area/tokyo/
+                  - listitem [ref=e618]:
+                    - link "- 神奈川・横浜" [ref=e619] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/area/kanagawa/
+                  - listitem [ref=e620]:
+                    - link "- 埼玉県" [ref=e621] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/area/saitama/
+                  - listitem [ref=e622]:
+                    - link "- 愛知・名古屋" [ref=e623] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/area/nagoya/
+                  - listitem [ref=e624]:
+                    - link "- 熊本県" [ref=e625] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/area/kumamoto/
+            - list [ref=e627]:
+              - listitem [ref=e628]:
+                - link "制作プラン" [ref=e629] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/plan/
+                - list [ref=e630]:
+                  - listitem [ref=e631]:
+                    - link "- リード創出したい（BtoB）" [ref=e632] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/btob/
+                  - listitem [ref=e633]:
+                    - link "- 集客がしたい（BtoC）" [ref=e634] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/atract/
+                  - listitem [ref=e635]:
+                    - link "- リニューアルがしたい" [ref=e636] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/renewal/
+                  - listitem [ref=e637]:
+                    - link "- 採用サイトをつくりたい" [ref=e638] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/recruit/
+                  - listitem [ref=e639]:
+                    - link "- ランディングページを作りたい" [ref=e640] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/landing/
+                  - listitem [ref=e641]:
+                    - link "- ブランディングがしたい" [ref=e642] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/branding/
+                  - listitem [ref=e643]:
+                    - link "- 女性向けサイトがつくりたい" [ref=e644] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/women/
+                  - listitem [ref=e645]:
+                    - link "- スマートフォンに最適化したい" [ref=e646] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/smartphone/
+            - list [ref=e648]:
+              - listitem [ref=e649]:
+                - link "サービス・技術" [ref=e650] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/service/
+                - list [ref=e651]:
+                  - listitem [ref=e652]:
+                    - link "- Webコンサルティング支援" [ref=e653] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/web-consulting/
+                  - listitem [ref=e654]:
+                    - link "- ホームページの分析・解析" [ref=e655] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/analysis/
+                  - listitem [ref=e656]:
+                    - link "- Indeed・Googleしごと検索対応" [ref=e657] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/job-search/
+                  - listitem [ref=e658]:
+                    - link "- SEOへのこだわり" [ref=e659] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/seo/
+                  - listitem [ref=e660]:
+                    - link "- CMS導入・開発・構築" [ref=e661] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/cms-wordpress-movabletype/
+                  - listitem [ref=e662]:
+                    - link "- ページ表示速度高速化" [ref=e663] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/website-pagespeed/
+                  - listitem [ref=e664]:
+                    - link "- 提案書・営業資料・会社案内の作成代行" [ref=e665] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/outsorce-powerpoint/
+            - list [ref=e667]:
+              - listitem [ref=e668]:
+                - link "便利ツール" [ref=e669] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/tools/
+                - list [ref=e670]:
+                  - listitem [ref=e671]:
+                    - link "- ERC（ECサイトランキングチェッカー）" [ref=e672] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/erc/
+                  - listitem [ref=e673]:
+                    - link "- スタフル（顧客評価・口コミ収集ツール）" [ref=e674] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/star-full/
+                  - listitem [ref=e675]:
+                    - link "- CSS 単位変換" [ref=e676] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/css-unit-converter/
+                  - listitem [ref=e677]:
+                    - link "- フォントサイズの値変換" [ref=e678] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/font-size-converter/
+                  - listitem [ref=e679]:
+                    - link "- ChatGPT Auto Post / ChatGPT 予約投稿・投稿自動化" [ref=e680] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/chatgpt-auto-post/
+                  - listitem [ref=e681]:
+                    - link "- PタグBRタグ挿入ツール" [ref=e682] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/p-br-tags-insertion/
+                  - listitem [ref=e683]:
+                    - link "- Markdown to HTML Converter" [ref=e684] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/markdown-to-html-converter/
+                  - listitem [ref=e685]:
+                    - link "- HTML to PHP Converter" [ref=e686] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/html-to-php-converter/
+                  - listitem [ref=e687]:
+                    - link "- HTML to CSS Generator" [ref=e688] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/html-to-css-generator/
+                  - listitem [ref=e689]:
+                    - link "- Excel と HTML テーブル相互変換ツール" [ref=e690] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/html-table-and-excel-mutual-conversion/
+                  - listitem [ref=e691]:
+                    - link "- 改行を倍にするツール" [ref=e692] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/double-newline/
+                  - listitem [ref=e693]:
+                    - link "- 英単語半角スペース自動挿入ツール" [ref=e694] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/automatic-space-insertion/
+                  - listitem [ref=e695]:
+                    - link "- IPアドレス／ドメイン変換（正引き・逆引き）" [ref=e696] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/ip-address-domain-converter/
+                  - listitem [ref=e697]:
+                    - link "- QRコード作成" [ref=e698] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/qrcode-generator/
+                  - listitem [ref=e699]:
+                    - link "- 文字数カウント" [ref=e700] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/text-counter/
+                  - listitem [ref=e701]:
+                    - link "- IPアドレスチェック" [ref=e702] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/ip-address-checker/
+                  - listitem [ref=e703]:
+                    - link "- JOB POSTING GENERATOR" [ref=e704] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/job-posting/
+                  - listitem [ref=e705]:
+                    - link "- 引用符ジェネレーター" [ref=e706] [cursor=pointer]:
+                      - /url: https://wk-partners.co.jp/homepage/tools/inyofu/
+            - list [ref=e708]:
+              - listitem [ref=e709]:
+                - link "ホームページ制作依頼の教科書" [ref=e710] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/beginner/
+                  - text: ホームページ制作依頼の教科書
+                  - generic [ref=e711]: 
+              - listitem [ref=e712]:
+                - link "Web制作会社まとめ図鑑" [ref=e713] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/dictionary/
+                  - text: Web制作会社まとめ図鑑
+                  - generic [ref=e714]: 
+              - listitem [ref=e715]:
+                - link "PPC広告をお考えの方" [ref=e716] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/ppc/
+                  - text: PPC広告をお考えの方
+                  - generic [ref=e717]: 
+              - listitem [ref=e718]:
+                - link "Web担当者向け動画講座" [ref=e719] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/webtanch/
+                  - text: Web担当者向け動画講座
+                  - generic [ref=e720]: 
+              - listitem [ref=e721]:
+                - link "ウェブ企画ラボ（ブログ）" [ref=e722] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/blog/
+                  - text: ウェブ企画ラボ（ブログ）
+                  - generic [ref=e723]: 
+              - listitem [ref=e724]:
+                - link "企業向けWordPressテンプレート" [ref=e725] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/template/
+                  - text: 企業向けWordPressテンプレート
+                  - generic [ref=e726]: 
+              - listitem [ref=e727]:
+                - link "採用サイトのかんたん作成ツール" [ref=e728] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/jobcms/
+                  - text: 採用サイトのかんたん作成ツール
+                  - generic [ref=e729]: 
+              - listitem [ref=e730]:
+                - link "医療用ホームページ制作" [ref=e731] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/medical/
+                  - text: 医療用ホームページ制作
+                  - generic [ref=e732]: 
+              - listitem [ref=e733]:
+                - link "用語集" [ref=e734] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp/homepage/glossary/
+                  - text: 用語集
+                  - generic [ref=e735]: 
+              - listitem [ref=e736]:
+                - link "コーポレートサイト" [ref=e737] [cursor=pointer]:
+                  - /url: https://wk-partners.co.jp
+                  - text: コーポレートサイト
+                  - generic [ref=e738]: 
+        - paragraph [ref=e739]: © 2020-2026 株式会社ウェブ企画パートナーズ
+      - link " ご相談・お問い合わせ" [ref=e741] [cursor=pointer]:
+        - /url: https://wk-partners.co.jp/homepage/contact/
+  - button "チャットボットを開く" [ref=e745] [cursor=pointer]:
+    - img "チャットボットを開く" [ref=e746]
