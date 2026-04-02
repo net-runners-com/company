@@ -110,11 +110,6 @@ def _ensure_mcp_symlink(workdir: str):
     dst.symlink_to(src)
 
 
-def _ensure_employees_file():
-    """後方互換用（何もしない。SQLiteは_init_dbで初期化済み）"""
-    pass
-
-
 def _build_roster(exclude_id: str = "") -> str:
     """自分以外の社員一覧を生成（役割外誘導用）"""
     employees = load_employees()

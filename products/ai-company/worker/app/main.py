@@ -7,11 +7,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.plugin_loader import load_all_plugins
-from app.employee import _ensure_employees_file
 
 # Route modules
 from app.routes.health import router as health_router
-from app.routes.employees import router as employees_router
 from app.routes.chat import router as chat_router
 from app.routes.accounting import router as accounting_router
 from app.routes.projects import router as projects_router
@@ -34,7 +32,6 @@ app.add_middleware(
 
 # Include all routers
 app.include_router(health_router)
-app.include_router(employees_router)
 app.include_router(chat_router)
 app.include_router(accounting_router)
 app.include_router(projects_router)
@@ -50,7 +47,6 @@ app.include_router(general_chat_router)
 @app.on_event("startup")
 async def on_startup():
     load_all_plugins()
-    _ensure_employees_file()
 
 
 
