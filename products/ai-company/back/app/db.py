@@ -4,10 +4,7 @@ import os
 import psycopg2
 import psycopg2.extras
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "postgresql://postgres:postgres@db:5432/aicompany"
-)
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
 
 
 def get_db():
