@@ -1,1 +1,37 @@
-/workspace/.mcp.json
+{
+  "mcpServers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {}
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic-ai/mcp-server-playwright",
+        "--caps",
+        "vision"
+      ],
+      "env": {
+        "DISPLAY": ":99"
+      }
+    },
+    "nango": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://api.nango.dev/mcp",
+        "--header",
+        "Authorization: Bearer ${NANGO_SECRET_KEY}"
+      ]
+    }
+  }
+}

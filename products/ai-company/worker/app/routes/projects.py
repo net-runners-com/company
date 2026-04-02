@@ -1,8 +1,10 @@
-"""Projects, pipeline, directive."""
+"""Projects, pipeline, directive — background execution with cancellation."""
 
 import asyncio
 import json
+import os
 import re
+import signal
 import uuid
 import time as _time
 
@@ -17,6 +19,15 @@ from app.routes.chat import _create_thread, _append_chat_log
 
 router = APIRouter()
 
+_HEAVY_KEYWORDS = ["実装", "開発", "コーディング", "制作", "構築", "デザイン"]
+_STEP_TIMEOUT = int(os.environ.get("STEP_TIMEOUT", 600))
+
+# --- Running task registry (for cancellation) ---
+# key: "project_id-step_num", value: asyncio.Task
+_running_tasks: dict[str, asyncio.Task] = {}
+# subprocess references for kill
+_running_procs: dict[str, list[asyncio.subprocess.Process]] = {}
+
 
 def _save_project(project_id: str, project: dict):
     conn = _get_db()
@@ -30,6 +41,19 @@ def _save_project(project_id: str, project: dict):
         conn.close()
 
 
+def _load_project(project_id: str) -> dict | None:
+    conn = _get_db()
+    try:
+        row = conn.execute(
+            "SELECT data FROM data_store WHERE collection = 'projects' AND id = ?", [project_id]
+        ).fetchone()
+        return json.loads(row["data"]) if row else None
+    finally:
+        conn.close()
+
+
+# ─── Directive ───
+
 @router.post("/directive")
 async def execute_directive(request: Request):
     """全体への指示を受け、秘書が計画分解 → 各エージェントに振り分け"""
@@ -42,13 +66,11 @@ async def execute_directive(request: Request):
     if not employees:
         return {"error": "No employees registered"}
 
-    # 社員一覧を構築
     roster = "\n".join(
         f"- {eid}: {emp.get('name')} ({emp.get('role')}, {emp.get('department')}) [{', '.join(emp.get('skills', []))}]"
         for eid, emp in employees.items()
     )
 
-    # 秘書（プランナー）に計画分解させる
     plan_prompt = f"""あなたはプロジェクトプランナーです。オーナーからの指示を分析し、各社員に具体的なタスクを割り振ってください。
 
 ## 社員一覧
@@ -82,7 +104,6 @@ async def execute_directive(request: Request):
     except Exception as e:
         return {"error": f"Planning failed: {e}"}
 
-    # JSONパース
     match = re.search(r'```json\s*(\[.*?\])\s*```', plan_text, re.DOTALL)
     if not match:
         match = re.search(r'\[.*\]', plan_text, re.DOTALL)
@@ -94,7 +115,6 @@ async def execute_directive(request: Request):
     except json.JSONDecodeError:
         return {"error": "Invalid JSON in plan", "raw": plan_text[:500]}
 
-    # 各エージェントに並列実行
     results = []
     for task_item in tasks:
         emp_id = task_item.get("empId", "")
@@ -104,14 +124,10 @@ async def execute_directive(request: Request):
             results.append({"empId": emp_id, "status": "skipped", "reason": "not found"})
             continue
 
-        # チャットスレッド作成
         thread = _create_thread(emp_id, f"指示: {directive[:20]}...")
-
-        # 同期チャットで実行
         workdir = _get_employee_workdir(emp)
         system_prompt = _build_employee_system_prompt(emp)
         system_prompt += f"\n# 指示\nオーナーからの全体指示に基づくタスクです。結果は作業フォルダにmdファイルで保存してください。\n今日は{_time.strftime('%Y-%m-%d')}です。\n"
-
         _append_chat_log(emp_id, "user", task_msg, thread["id"])
 
         try:
@@ -134,6 +150,8 @@ async def execute_directive(request: Request):
 
     return {"directive": directive, "plan": tasks, "results": results}
 
+
+# ─── Project CRUD ───
 
 @router.post("/projects")
 async def create_project(request: Request):
@@ -191,7 +209,6 @@ async def create_project(request: Request):
     except json.JSONDecodeError:
         return {"error": "Invalid JSON", "raw": plan_text[:500]}
 
-    # プロジェクトをSQLiteに保存
     project_id = str(uuid.uuid4())[:8]
     project = {
         "id": project_id,
@@ -201,7 +218,6 @@ async def create_project(request: Request):
         "createdAt": _time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
 
-    # 各ステップにstatus追加
     for s in project["steps"]:
         s["status"] = "pending"
         s["result"] = ""
@@ -223,7 +239,6 @@ async def create_project(request: Request):
 
 @router.get("/projects")
 async def list_projects():
-    """プロジェクト一覧"""
     conn = _get_db()
     try:
         rows = conn.execute(
@@ -236,125 +251,347 @@ async def list_projects():
 
 @router.get("/projects/{project_id}")
 async def get_project(project_id: str):
-    """プロジェクト詳細"""
-    conn = _get_db()
+    project = _load_project(project_id)
+    if not project:
+        return {"error": "Not found"}
+    return project
+
+
+# ─── Agent helpers ───
+
+def _is_heavy_step(step: dict) -> bool:
+    text = (step.get("title", "") + step.get("description", "")).lower()
+    return any(kw in text for kw in _HEAVY_KEYWORDS)
+
+
+async def _run_single_agent(task_msg: str, system_prompt: str, workdir: str, max_turns: str = "15", task_key: str = "") -> tuple[str, str]:
+    """単一エージェント実行。task_key があればプロセスを登録（cancel用）"""
+    proc = await asyncio.create_subprocess_exec(
+        "claude", "--dangerously-skip-permissions", "-p", task_msg,
+        "--system-prompt", system_prompt, "--max-turns", max_turns,
+        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=workdir,
+    )
+    if task_key:
+        _running_procs.setdefault(task_key, []).append(proc)
     try:
-        row = conn.execute(
-            "SELECT data FROM data_store WHERE collection = 'projects' AND id = ?", [project_id]
-        ).fetchone()
-        if not row:
-            return {"error": "Not found"}
-        return json.loads(row["data"])
+        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=_STEP_TIMEOUT)
+        return stdout.decode().strip(), stderr.decode().strip() if stderr else ""
     finally:
-        conn.close()
+        if task_key and task_key in _running_procs:
+            try:
+                _running_procs[task_key].remove(proc)
+            except ValueError:
+                pass
 
 
-@router.post("/projects/{project_id}/execute/{step_num}")
-async def execute_project_step(project_id: str, step_num: int):
-    """プロジェクトの指定ステップを実行"""
-    conn = _get_db()
-    try:
-        row = conn.execute(
-            "SELECT data FROM data_store WHERE collection = 'projects' AND id = ?", [project_id]
-        ).fetchone()
-        if not row:
-            return {"error": "Project not found"}
-        project = json.loads(row["data"])
-    finally:
-        conn.close()
-
-    steps = project.get("steps", [])
-    step = next((s for s in steps if s.get("step") == step_num), None)
-    if not step:
-        return {"error": f"Step {step_num} not found"}
-
-    emp_id = step.get("empId", "")
+async def _split_and_run_parallel(step: dict, project: dict, emp: dict, emp_id: str, workdir: str, system_prompt: str, task_key: str = "") -> str:
     employees = load_employees()
-    emp = employees.get(emp_id)
-    if not emp:
-        step["status"] = "error"
-        step["result"] = "社員が見つかりません"
-        _save_project(project_id, project)
-        return {"error": "Employee not found", "step": step}
+    roster = "\n".join(f"- {eid}: {e.get('name')} ({e.get('role')})" for eid, e in employees.items())
 
-    step["status"] = "running"
-    _save_project(project_id, project)
+    split_prompt = f"""あなたはタスク分割の専門家です。以下の工程を2〜4個の並列実行可能なサブタスクに分解してください。
 
-    # 社員のタスク一覧に追加
-    task_id = f"{project_id}-{step_num}"
-    conn = _get_db()
+## 工程
+タイトル: {step.get('title', '')}
+内容: {step.get('description', '')}
+プロジェクト: {project.get('brief', '')}
+
+## 社員一覧
+{roster}
+
+## 出力形式（JSON配列のみ）
+```json
+[
+  {{"subtask": "具体的なサブタスク内容", "empId": "{emp_id}"}},
+  {{"subtask": "具体的なサブタスク内容", "empId": "emp-XXX"}}
+]
+```
+
+ルール:
+- 各サブタスクは独立して並列実行可能であること
+- メイン担当({emp_id})には中核作業を割り当て
+- 他の社員には補助的な作業（調査・素材準備・レビュー等）を割り当て可
+- 全成果物はmdファイルで保存するよう指示に含める"""
+
     try:
-        conn.execute(
-            "INSERT OR REPLACE INTO data_store (id, collection, data) VALUES (?, ?, ?)",
-            [task_id, f"tasks_{emp_id}", json.dumps({
-                "title": step.get("title", ""),
-                "project": project.get("brief", ""),
-                "projectId": project_id,
-                "step": step_num,
-                "status": "in_progress",
-                "assignedAt": _time.strftime("%Y-%m-%dT%H:%M:%S"),
-            }, ensure_ascii=False)]
-        )
-        conn.commit()
-    finally:
-        conn.close()
+        stdout, _ = await _run_single_agent(split_prompt, "タスク分割エージェント", workdir, "1", task_key)
+    except Exception:
+        return ""
 
-    task_msg = f"""プロジェクト: {project.get('brief', '')}
+    match = re.search(r'```json\s*(\[.*?\])\s*```', stdout, re.DOTALL)
+    if not match:
+        match = re.search(r'\[.*\]', stdout, re.DOTALL)
+    if not match:
+        return ""
+
+    try:
+        subtasks = json.loads(match.group(1) if '```' in stdout else match.group(0))
+    except json.JSONDecodeError:
+        return ""
+
+    if len(subtasks) < 2:
+        return ""
+
+    print(f"[project] Heavy step split into {len(subtasks)} parallel subtasks")
+
+    async def _exec_subtask(st: dict) -> str:
+        st_emp_id = st.get("empId", emp_id)
+        st_emp = employees.get(st_emp_id, emp)
+        st_workdir = _get_employee_workdir(st_emp)
+        st_sys = _build_employee_system_prompt(st_emp)
+        st_sys += f"\n# プロジェクト作業（サブタスク）\n今日は{_time.strftime('%Y-%m-%d')}です。\n"
+
+        msg = f"""プロジェクト: {project.get('brief', '')}
+工程: {step.get('title', '')}
+
+あなたの担当サブタスク: {st.get('subtask', '')}
+
+結果は作業フォルダにmdファイルとして保存してください。"""
+
+        try:
+            _r2_sync_to_local(st_emp_id, st_workdir)
+            out, _ = await _run_single_agent(msg, st_sys, st_workdir, "15", task_key)
+            _r2_sync_from_local(st_emp_id, st_workdir)
+            return out
+        except Exception as e:
+            return f"[エラー] {e}"
+
+    results = await asyncio.gather(*[_exec_subtask(st) for st in subtasks])
+
+    combined = []
+    for st, res in zip(subtasks, results):
+        st_emp = employees.get(st.get("empId", emp_id), emp)
+        combined.append(f"【{st_emp.get('name', '?')}】{st.get('subtask', '')}\n{res[:300]}")
+
+    return "\n\n---\n\n".join(combined)
+
+
+# ─── Background step execution ───
+
+async def _execute_step_bg(project_id: str, step_num: int):
+    """バックグラウンドでステップを実行"""
+    task_key = f"{project_id}-{step_num}"
+    try:
+        project = _load_project(project_id)
+        if not project:
+            return
+
+        steps = project.get("steps", [])
+        step = next((s for s in steps if s.get("step") == step_num), None)
+        if not step:
+            return
+
+        emp_id = step.get("empId", "")
+        employees = load_employees()
+        emp = employees.get(emp_id)
+        if not emp:
+            step["status"] = "error"
+            step["result"] = "社員が見つかりません"
+            _save_project(project_id, project)
+            return
+
+        step["status"] = "running"
+        _save_project(project_id, project)
+
+        # タスク追加
+        conn = _get_db()
+        try:
+            conn.execute(
+                "INSERT OR REPLACE INTO data_store (id, collection, data) VALUES (?, ?, ?)",
+                [task_key, f"tasks_{emp_id}", json.dumps({
+                    "title": step.get("title", ""),
+                    "project": project.get("brief", ""),
+                    "projectId": project_id,
+                    "step": step_num,
+                    "status": "in_progress",
+                    "assignedAt": _time.strftime("%Y-%m-%dT%H:%M:%S"),
+                }, ensure_ascii=False)]
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+        workdir = _get_employee_workdir(emp)
+        system_prompt = _build_employee_system_prompt(emp)
+        system_prompt += f"\n# プロジェクト作業\n今日は{_time.strftime('%Y-%m-%d')}です。\n"
+
+        thread = _create_thread(emp_id, f"案件: {project.get('brief', '')[:20]}...")
+
+        task_msg = f"""プロジェクト: {project.get('brief', '')}
 
 あなたの担当工程: {step.get('title', '')}
 作業内容: {step.get('description', '')}
 
 結果は作業フォルダにmdファイルとして保存してください。"""
 
-    workdir = _get_employee_workdir(emp)
-    system_prompt = _build_employee_system_prompt(emp)
-    system_prompt += f"\n# プロジェクト作業\n今日は{_time.strftime('%Y-%m-%d')}です。\n"
+        _append_chat_log(emp_id, "user", task_msg, thread["id"])
 
-    thread = _create_thread(emp_id, f"案件: {project.get('brief', '')[:20]}...")
-    _append_chat_log(emp_id, "user", task_msg, thread["id"])
+        try:
+            is_heavy = _is_heavy_step(step)
+            if is_heavy:
+                print(f"[project] Step {step_num} detected as heavy — attempting parallel split")
+                parallel_result = await _split_and_run_parallel(step, project, emp, emp_id, workdir, system_prompt, task_key)
+            else:
+                parallel_result = ""
 
-    try:
-        _r2_sync_to_local(emp_id, workdir)
-        proc = await asyncio.create_subprocess_exec(
-            "claude", "--dangerously-skip-permissions", "-p", task_msg,
-            "--system-prompt", system_prompt, "--max-turns", "15",
-            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=workdir,
-        )
-        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=300)
-        reply = stdout.decode().strip()
-        _r2_sync_from_local(emp_id, workdir)
+            if parallel_result:
+                reply = parallel_result
+            else:
+                _r2_sync_to_local(emp_id, workdir)
+                reply_out, err_out = await _run_single_agent(task_msg, system_prompt, workdir, "15", task_key)
+                reply = reply_out
+                _r2_sync_from_local(emp_id, workdir)
 
-        if reply:
+                if not reply:
+                    err_msg = err_out[:200] if err_out else "No output"
+                    # re-read project to avoid stale data
+                    project = _load_project(project_id) or project
+                    step = next((s for s in project.get("steps", []) if s.get("step") == step_num), step)
+                    step["status"] = "error"
+                    step["result"] = f"エージェント出力なし: {err_msg}"
+                    step["threadId"] = thread["id"]
+                    _save_project(project_id, project)
+                    return
+
+            # re-read to avoid overwriting concurrent changes
+            project = _load_project(project_id) or project
+            step = next((s for s in project.get("steps", []) if s.get("step") == step_num), step)
+
             _append_chat_log(emp_id, "assistant", reply, thread["id"])
             step["status"] = "done"
             step["result"] = reply[:300]
-        else:
-            err_msg = stderr.decode().strip()[:200] if stderr else "No output"
+            step["threadId"] = thread["id"]
+
+        except asyncio.CancelledError:
+            project = _load_project(project_id) or project
+            step = next((s for s in project.get("steps", []) if s.get("step") == step_num), step)
+            step["status"] = "cancelled"
+            step["result"] = "中断されました"
+            print(f"[project] Step {step_num} cancelled for {emp_id}")
+        except asyncio.TimeoutError:
+            project = _load_project(project_id) or project
+            step = next((s for s in project.get("steps", []) if s.get("step") == step_num), step)
             step["status"] = "error"
-            step["result"] = f"エージェント出力なし: {err_msg}"
-        step["threadId"] = thread["id"]
-    except asyncio.TimeoutError:
-        step["status"] = "error"
-        step["result"] = "タイムアウト（5分）"
-        print(f"[project] Step {step_num} timed out for {emp_id}")
-    except Exception as e:
-        step["status"] = "error"
-        step["result"] = str(e) or type(e).__name__
+            step["result"] = f"タイムアウト（{_STEP_TIMEOUT // 60}分）"
+            print(f"[project] Step {step_num} timed out for {emp_id}")
+        except Exception as e:
+            project = _load_project(project_id) or project
+            step = next((s for s in project.get("steps", []) if s.get("step") == step_num), step)
+            step["status"] = "error"
+            step["result"] = str(e) or type(e).__name__
 
-    # タスクステータス更新
-    conn = _get_db()
-    try:
-        existing = conn.execute("SELECT data FROM data_store WHERE id = ? AND collection = ?", [task_id, f"tasks_{emp_id}"]).fetchone()
-        if existing:
-            task_data = json.loads(existing["data"])
-            task_data["status"] = "done" if step["status"] == "done" else "error"
-            task_data["completedAt"] = _time.strftime("%Y-%m-%dT%H:%M:%S")
-            task_data["result"] = step.get("result", "")[:200]
-            conn.execute("UPDATE data_store SET data = ? WHERE id = ? AND collection = ?",
-                [json.dumps(task_data, ensure_ascii=False), task_id, f"tasks_{emp_id}"])
-            conn.commit()
+        # タスクステータス更新
+        final_status = step.get("status", "error")
+        conn = _get_db()
+        try:
+            existing = conn.execute("SELECT data FROM data_store WHERE id = ? AND collection = ?", [task_key, f"tasks_{emp_id}"]).fetchone()
+            if existing:
+                task_data = json.loads(existing["data"])
+                task_data["status"] = "done" if final_status == "done" else ("cancelled" if final_status == "cancelled" else "error")
+                task_data["completedAt"] = _time.strftime("%Y-%m-%dT%H:%M:%S")
+                task_data["result"] = step.get("result", "")[:200]
+                conn.execute("UPDATE data_store SET data = ? WHERE id = ? AND collection = ?",
+                    [json.dumps(task_data, ensure_ascii=False), task_key, f"tasks_{emp_id}"])
+                conn.commit()
+        finally:
+            conn.close()
+
+        _save_project(project_id, project)
+
     finally:
-        conn.close()
+        _running_tasks.pop(task_key, None)
+        _running_procs.pop(task_key, None)
 
+
+# ─── Step Execution (fire-and-forget) ───
+
+@router.post("/projects/{project_id}/execute/{step_num}")
+async def execute_project_step(project_id: str, step_num: int):
+    """ステップをバックグラウンドで実行開始し、即座にレスポンスを返す"""
+    task_key = f"{project_id}-{step_num}"
+
+    # 既に実行中なら拒否
+    if task_key in _running_tasks and not _running_tasks[task_key].done():
+        return {"status": "already_running", "step": step_num}
+
+    project = _load_project(project_id)
+    if not project:
+        return {"error": "Project not found"}
+
+    step = next((s for s in project.get("steps", []) if s.get("step") == step_num), None)
+    if not step:
+        return {"error": f"Step {step_num} not found"}
+
+    emp_id = step.get("empId", "")
+    employees = load_employees()
+    if emp_id not in employees:
+        step["status"] = "error"
+        step["result"] = "社員が見つかりません"
+        _save_project(project_id, project)
+        return {"error": "Employee not found"}
+
+    # バックグラウンドタスクとして起動
+    task = asyncio.create_task(_execute_step_bg(project_id, step_num))
+    _running_tasks[task_key] = task
+
+    # 即座にrunningを返す
+    step["status"] = "running"
     _save_project(project_id, project)
-    return {"step": step, "project": project}
+    return {"status": "started", "step": step_num, "projectId": project_id}
+
+
+# ─── Cancel ───
+
+@router.post("/projects/{project_id}/cancel/{step_num}")
+async def cancel_project_step(project_id: str, step_num: int):
+    """実行中のステップを中断"""
+    task_key = f"{project_id}-{step_num}"
+
+    # サブプロセスをkill
+    procs = _running_procs.get(task_key, [])
+    for proc in procs:
+        try:
+            os.kill(proc.pid, signal.SIGTERM)
+        except (ProcessLookupError, OSError):
+            pass
+
+    # asyncio.Taskをcancel
+    task = _running_tasks.get(task_key)
+    if task and not task.done():
+        task.cancel()
+        # cancelが反映されるまで少し待つ
+        try:
+            await asyncio.wait_for(asyncio.shield(task), timeout=3)
+        except (asyncio.CancelledError, asyncio.TimeoutError, Exception):
+            pass
+
+    # ステータスを強制更新
+    project = _load_project(project_id)
+    if project:
+        step = next((s for s in project.get("steps", []) if s.get("step") == step_num), None)
+        if step and step["status"] == "running":
+            step["status"] = "cancelled"
+            step["result"] = "中断されました"
+            _save_project(project_id, project)
+
+    _running_tasks.pop(task_key, None)
+    _running_procs.pop(task_key, None)
+
+    return {"status": "cancelled", "step": step_num}
+
+
+# ─── Running status ───
+
+@router.get("/projects/{project_id}/status")
+async def get_project_status(project_id: str):
+    """プロジェクトの最新状態 + 実行中ステップ情報"""
+    project = _load_project(project_id)
+    if not project:
+        return {"error": "Not found"}
+
+    running_steps = []
+    for s in project.get("steps", []):
+        task_key = f"{project_id}-{s['step']}"
+        if task_key in _running_tasks and not _running_tasks[task_key].done():
+            running_steps.append(s["step"])
+
+    return {"project": project, "runningSteps": running_steps}
