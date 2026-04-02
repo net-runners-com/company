@@ -61,7 +61,3 @@ async def update_news():
     return {"status": "updating"}
 
 
-@router.get("/news")
-async def get_news():
-    """保存済みニュース取得"""
-    return back.get("/news")
