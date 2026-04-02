@@ -206,6 +206,36 @@ async def upsert_schedule(request: Request):
     return {"id": schedule_id, "name": name, "cron": cron, "type": job_type, "status": "registered"}
 
 
+@router.post("/schedules/trigger")
+async def trigger_schedule(request: Request):
+    """Cloud Schedulerから呼ばれる。job_idに該当するジョブを即時実行"""
+    body = await request.json()
+    job_id = body.get("job_id", "")
+    if not job_id:
+        return {"error": "job_id required"}
+
+    row = query(
+        "SELECT id, data FROM data_store WHERE id = %s AND collection = 'schedules' AND user_id = %s",
+        (job_id, DEV_USER_ID), one=True
+    )
+    if not row:
+        return {"error": f"Schedule {job_id} not found"}
+
+    d = row["data"] if isinstance(row["data"], dict) else json.loads(row["data"])
+    job_type = d.get("type", "employee")
+    name = d.get("name", job_id)
+
+    if job_type == "system":
+        _run_system_job(d.get("handler", ""), name)
+    else:
+        emp_id = d.get("empId", "")
+        task = d.get("task", "")
+        if emp_id and task:
+            _run_scheduled_task(job_id, emp_id, task, name)
+
+    return {"status": "triggered", "job_id": job_id, "name": name}
+
+
 @router.delete("/schedules/{schedule_id}")
 async def delete_schedule(schedule_id: str):
     execute(
