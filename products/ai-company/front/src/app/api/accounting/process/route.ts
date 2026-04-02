@@ -1,11 +1,11 @@
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const res = await fetch(`${WORKER_URL}/accounting/process`, {
+    const res = await fetch(`${BACK_URL}/worker/accounting/process`, {
       method: "POST",
       body: formData,
     });

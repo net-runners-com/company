@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function GET() {
@@ -28,7 +27,7 @@ export async function POST(req: NextRequest) {
   // 更新
   if (body._action === "update" && body.slug) {
     try {
-      const res = await fetch(`${WORKER_URL}/pages/${body.slug}/update`, {
+      const res = await fetch(`${BACK_URL}/pages/${body.slug}/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -42,7 +41,7 @@ export async function POST(req: NextRequest) {
 
   // 生成
   try {
-    const res = await fetch(`${WORKER_URL}/pages/generate`, {
+    const res = await fetch(`${BACK_URL}/pages/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),

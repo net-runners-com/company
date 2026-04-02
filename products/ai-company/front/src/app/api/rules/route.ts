@@ -1,6 +1,6 @@
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 
 // GET /api/rules?type=company
 // GET /api/rules?type=department&id=sales
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(`${WORKER_URL}${endpoint}`, {
+    const res = await fetch(`${BACK_URL}/worker${endpoint}`, {
       signal: AbortSignal.timeout(5000),
     });
     const data = await res.json();
@@ -42,7 +42,7 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(`${WORKER_URL}${endpoint}`, {
+    const res = await fetch(`${BACK_URL}/worker${endpoint}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content }),

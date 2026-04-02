@@ -1,6 +1,6 @@
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   // Presigned URL for Office files
   if (action === "presign") {
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/files/presign?path=${encodeURIComponent(path)}`);
+      const res = await fetch(`${BACK_URL}/worker/employee/${employeeId}/files/presign?path=${encodeURIComponent(path)}`);
       return Response.json(await res.json());
     } catch {
       return Response.json({ error: "Worker not reachable" }, { status: 502 });
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   // Serve file (binary proxy for images etc.)
   if (action === "serve") {
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/files/serve?path=${encodeURIComponent(path)}`);
+      const res = await fetch(`${BACK_URL}/worker/employee/${employeeId}/files/serve?path=${encodeURIComponent(path)}`);
       if (!res.ok) return new Response("Not found", { status: 404 });
       const contentType = res.headers.get("content-type") || "application/octet-stream";
       return new Response(res.body, { headers: { "Content-Type": contentType, "Cache-Control": "public, max-age=3600" } });
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
   };
 
   try {
-    const res = await fetch(`${WORKER_URL}${endpoints[action] || endpoints.list}`);
+    const res = await fetch(`${BACK_URL}/worker${endpoints[action] || endpoints.list}`);
     return Response.json(await res.json());
   } catch {
     return Response.json({ error: "Worker not reachable" }, { status: 502 });
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
   const [url, method] = urlMap[_action] || [`/employee/${employeeId}/files`, "GET"];
 
   try {
-    const res = await fetch(`${WORKER_URL}${url}`, {
+    const res = await fetch(`${BACK_URL}/worker${url}`, {
       method,
       headers: method !== "GET" ? { "Content-Type": "application/json" } : {},
       body: method !== "GET" && method !== "DELETE" ? JSON.stringify(params) : undefined,

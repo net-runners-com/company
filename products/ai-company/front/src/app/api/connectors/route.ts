@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function GET(req: NextRequest) {
@@ -11,7 +10,7 @@ export async function GET(req: NextRequest) {
   if (action === "google-auth") {
     const provider = searchParams.get("provider") || "";
     try {
-      const res = await fetch(`${WORKER_URL}/oauth/google/auth-url?provider=${encodeURIComponent(provider)}`);
+      const res = await fetch(`${BACK_URL}/oauth/google/auth-url?provider=${encodeURIComponent(provider)}`);
       return Response.json(await res.json());
     } catch {
       return Response.json({ error: "Worker not reachable" }, { status: 502 });
@@ -21,7 +20,7 @@ export async function GET(req: NextRequest) {
   // Google OAuth status
   if (action === "google-status") {
     try {
-      const res = await fetch(`${WORKER_URL}/oauth/google/status`);
+      const res = await fetch(`${BACK_URL}/oauth/google/status`);
       return Response.json(await res.json());
     } catch {
       return Response.json({ error: "Worker not reachable" }, { status: 502 });
@@ -44,7 +43,7 @@ export async function POST(req: NextRequest) {
   // Route to specific actions
   if (_action === "start" && connectorId) {
     try {
-      const res = await fetch(`${WORKER_URL}/connectors/${connectorId}/start`, {
+      const res = await fetch(`${BACK_URL}/worker/connectors/${connectorId}/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
@@ -57,7 +56,7 @@ export async function POST(req: NextRequest) {
 
   if (_action === "verify" && connectorId) {
     try {
-      const res = await fetch(`${WORKER_URL}/connectors/${connectorId}/verify`, {
+      const res = await fetch(`${BACK_URL}/worker/connectors/${connectorId}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
@@ -70,7 +69,7 @@ export async function POST(req: NextRequest) {
 
   if (_action === "stop" && connectorId) {
     try {
-      const res = await fetch(`${WORKER_URL}/connectors/${connectorId}/stop`, {
+      const res = await fetch(`${BACK_URL}/worker/connectors/${connectorId}/stop`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
@@ -83,7 +82,7 @@ export async function POST(req: NextRequest) {
 
   if (_action === "delete" && connectorId) {
     try {
-      const res = await fetch(`${WORKER_URL}/connectors/${connectorId}`, {
+      const res = await fetch(`${BACK_URL}/connectors/${connectorId}`, {
         method: "DELETE",
       });
       return Response.json(await res.json());
@@ -94,7 +93,7 @@ export async function POST(req: NextRequest) {
 
   // Default: create/update connector
   try {
-    const res = await fetch(`${WORKER_URL}/connectors`, {
+    const res = await fetch(`${BACK_URL}/connectors`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(params),

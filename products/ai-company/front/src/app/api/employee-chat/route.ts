@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 
 export async function POST(req: NextRequest) {
@@ -78,7 +77,7 @@ export async function POST(req: NextRequest) {
   if (_action === "permission") {
     const { action: permAction, patterns } = body;
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/permission`, {
+      const res = await fetch(`${BACK_URL}/worker/employee/${employeeId}/permission`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: permAction, patterns }),
@@ -92,7 +91,7 @@ export async function POST(req: NextRequest) {
   // Reset session
   if (_action === "reset") {
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/reset`, {
+      const res = await fetch(`${BACK_URL}/worker/employee/${employeeId}/reset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
@@ -106,7 +105,7 @@ export async function POST(req: NextRequest) {
   // Start chat run (background agent)
   if (_action === "start_run") {
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/chat/stream`, {
+      const res = await fetch(`${BACK_URL}/worker/employee/${employeeId}/chat/stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message, threadId: threadId || "default" }),
@@ -123,7 +122,7 @@ export async function POST(req: NextRequest) {
     if (!runId) return Response.json({ error: "runId required" }, { status: 400 });
     try {
       const res = await fetch(
-        `${WORKER_URL}/employee/${employeeId}/chat/run/${runId}`,
+        `${BACK_URL}/worker/employee/${employeeId}/chat/run/${runId}`,
         { signal: AbortSignal.timeout(600000) }
       );
       if (!res.body) return Response.json({ error: "No stream body" }, { status: 502 });
@@ -145,7 +144,7 @@ export async function POST(req: NextRequest) {
     const runId = body.runId;
     if (!runId) return Response.json({ error: "runId required" }, { status: 400 });
     try {
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/chat/run/${runId}/stop`, {
+      const res = await fetch(`${BACK_URL}/worker/employee/${employeeId}/chat/run/${runId}/stop`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: "{}",
@@ -160,7 +159,7 @@ export async function POST(req: NextRequest) {
   if (_action === "check_active") {
     try {
       const tid = threadId || "default";
-      const res = await fetch(`${WORKER_URL}/employee/${employeeId}/chat/active?thread_id=${tid}`);
+      const res = await fetch(`${BACK_URL}/worker/employee/${employeeId}/chat/active?thread_id=${tid}`);
       return Response.json(await res.json());
     } catch {
       return Response.json({ active: false }, { status: 200 });
@@ -174,7 +173,7 @@ export async function POST(req: NextRequest) {
 
   // New flow: start run + stream
   try {
-    const startRes = await fetch(`${WORKER_URL}/employee/${employeeId}/chat/stream`, {
+    const startRes = await fetch(`${BACK_URL}/worker/employee/${employeeId}/chat/stream`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message, threadId: threadId || "default" }),
@@ -186,7 +185,7 @@ export async function POST(req: NextRequest) {
 
     // Immediately connect to SSE
     const sseRes = await fetch(
-      `${WORKER_URL}/employee/${employeeId}/chat/run/${startData.runId}`,
+      `${BACK_URL}/worker/employee/${employeeId}/chat/run/${startData.runId}`,
       { signal: AbortSignal.timeout(600000) }
     );
     if (!sseRes.body) {

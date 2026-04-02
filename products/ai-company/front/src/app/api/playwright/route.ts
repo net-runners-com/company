@@ -1,6 +1,6 @@
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   // Streaming chat — proxy SSE from worker
   if (action === "chat-stream") {
     try {
-      const res = await fetch(`${WORKER_URL}/chat/stream`, {
+      const res = await fetch(`${BACK_URL}/worker/chat/stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(`${WORKER_URL}${endpoint}`, {
+    const res = await fetch(`${BACK_URL}/worker${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(params),
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    const res = await fetch(`${WORKER_URL}/playwright/status`);
+    const res = await fetch(`${BACK_URL}/worker/playwright/status`);
     const data = await res.json();
     return Response.json(data);
   } catch {

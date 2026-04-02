@@ -1,6 +1,6 @@
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   workerFormData.append("file", file);
 
   try {
-    const res = await fetch(`${WORKER_URL}/employee/${employeeId}/files/upload`, {
+    const res = await fetch(`${BACK_URL}/worker/employee/${employeeId}/files/upload`, {
       method: "POST",
       body: workerFormData,
     });

@@ -1,6 +1,6 @@
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 
 export async function POST(req: NextRequest) {
   const { message } = await req.json();
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(`${WORKER_URL}/chat`, {
+    const res = await fetch(`${BACK_URL}/worker/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),

@@ -1,11 +1,11 @@
+const BACK_URL = process.env.BACK_URL || "http://localhost:8001";
 import { NextRequest } from "next/server";
 
-const WORKER_URL = process.env.WORKER_URL || "http://localhost:8000";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   try {
-    const res = await fetch(`${WORKER_URL}/directive`, {
+    const res = await fetch(`${BACK_URL}/worker/directive`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
