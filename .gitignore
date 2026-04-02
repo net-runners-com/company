@@ -10,3 +10,5 @@ features/preview/node_modules/
 products/todo-app/node_modules/
 products/www/construction-lp/node_modules/
 products/ai-company/.next/
+**/__pycache__/
+*.env.*

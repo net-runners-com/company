@@ -1,4 +1,4 @@
-"""Supabase PostgreSQL connection layer."""
+"""PostgreSQL connection layer."""
 
 import os
 import psycopg2
