@@ -15,8 +15,8 @@ services:
   # --- Back (Shared API — business logic + Supabase DB) ---
   back:
     build:
-      context: ../back
-      dockerfile: ../env/back/Dockerfile
+      context: ..
+      dockerfile: env/back/Dockerfile
     ports:
       - "8001:8001"
     dns:
@@ -31,8 +31,8 @@ services:
   # --- Worker (per-user container — Claude Code CLI + Playwright + R2) ---
   worker:
     build:
-      context: ../worker
-      dockerfile: ../env/worker/Dockerfile
+      context: ..
+      dockerfile: env/worker/Dockerfile
     ports:
       - "8000:8000"
     volumes:

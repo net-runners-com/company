@@ -45,7 +45,7 @@ RUN pip install playwright \
 # ============================================
 # Python deps
 # ============================================
-COPY requirements.txt .
+COPY env/worker/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # ============================================
@@ -59,28 +59,24 @@ RUN mkdir -p /root/.gemini \
 # Project context (products/ 以外のプロジェクトファイル)
 # ビルド前に ./sync-context.sh を実行すること
 # ============================================
-COPY project-context/.claude /workspace/.claude
-COPY project-context/company /workspace/company
-COPY project-context/features /workspace/features
-COPY project-context/SPEC.md /workspace/SPEC.md
-COPY project-context/HANDOFF.md /workspace/HANDOFF.md
-COPY project-context/.mcp.json /workspace/.mcp.json
-COPY project-context/.mcp.json /root/.claude/.mcp.json
-COPY project-context/package.json /workspace/package.json
-COPY connector-plugins /app/connector-plugins
+COPY worker/project-context/.claude /workspace/.claude
+COPY worker/project-context/company /workspace/company
+COPY worker/project-context/features /workspace/features
+COPY worker/project-context/.mcp.json /workspace/.mcp.json
+COPY worker/project-context/.mcp.json /root/.claude/.mcp.json
+COPY worker/connector-plugins /app/connector-plugins
 
 # ============================================
 # Copy app
 # ============================================
-COPY . .
+COPY worker/app /app/app
 
 # Claude Agent SDK (for employee chat streaming)
 RUN cd /app && npm init -y --silent 2>/dev/null; npm install @anthropic-ai/claude-agent-sdk
 
-
 EXPOSE 8000
 
-COPY start.sh /app/start.sh
+COPY worker/start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
 CMD ["/app/start.sh"]
