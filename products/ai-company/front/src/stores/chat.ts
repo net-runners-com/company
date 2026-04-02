@@ -23,6 +23,7 @@ interface ChatStore {
   systemLines: string[];
   permissionRequest: PermissionRequest | null;
   activeRunId: string | null;              // 現在のrun ID
+  activeEmployeeId: string | null;
 
   fetchThreads: (employeeId: string) => Promise<void>;
   createThread: (employeeId: string) => Promise<void>;
