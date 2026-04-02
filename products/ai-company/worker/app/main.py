@@ -18,8 +18,8 @@ from app.routes.accounting import router as accounting_router
 from app.routes.projects import router as projects_router
 from app.routes.pages import router as pages_router
 from app.routes.connectors import router as connectors_router
-from app.routes.schedules import router as schedules_router, _scheduler, _load_schedules_to_scheduler
 from app.routes.news import router as news_router
+from app.routes.agent import router as agent_router
 from app.routes.line import router as line_router
 from app.routes.rules import router as rules_router
 from app.routes.general_chat import router as general_chat_router
@@ -42,8 +42,8 @@ app.include_router(accounting_router)
 app.include_router(projects_router)
 app.include_router(pages_router)
 app.include_router(connectors_router)
-app.include_router(schedules_router)
 app.include_router(news_router)
+app.include_router(agent_router)
 app.include_router(line_router)
 app.include_router(rules_router)
 app.include_router(general_chat_router)
@@ -55,11 +55,6 @@ async def on_startup():
     _ensure_employees_file()
 
 
-@app.on_event("startup")
-async def start_scheduler():
-    _load_schedules_to_scheduler()
-    _scheduler.start()
-    print("[scheduler] Started")
 
 
 

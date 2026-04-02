@@ -5,3 +5,4 @@ supabase==2.15.1
 python-dotenv==1.1.0
 httpx==0.28.1
 boto3==1.38.0
+apscheduler==3.11.0

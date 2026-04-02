@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import employees, data, chat, user, connectors, schedules, news, share, pages, nango, worker_proxy
+from app.routes.schedules import load_and_start_scheduler
 
 app = FastAPI(title="AI Company API", version="0.1.0")
 
@@ -27,6 +28,11 @@ app.include_router(share.router)
 app.include_router(pages.router)
 app.include_router(nango.router)
 app.include_router(worker_proxy.router)
+
+
+@app.on_event("startup")
+def on_startup():
+    load_and_start_scheduler()
 
 
 @app.get("/health")
