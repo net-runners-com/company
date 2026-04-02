@@ -5,48 +5,25 @@ import datetime
 import time as _time
 from pathlib import Path
 
-from app.db import _get_db
 from app.r2 import _r2_read
+import app.back_client as back
+
 
 def load_employees() -> dict:
-    conn = _get_db()
-    try:
-        rows = conn.execute("SELECT id, data FROM employees").fetchall()
-        return {r["id"]: json.loads(r["data"]) for r in rows}
-    finally:
-        conn.close()
+    return back.load_employees()
 
 
 def save_employees(data: dict):
-    conn = _get_db()
-    try:
-        for eid, emp in data.items():
-            conn.execute(
-                "INSERT OR REPLACE INTO employees (id, data, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
-                [eid, json.dumps(emp, ensure_ascii=False)])
-        conn.commit()
-    finally:
-        conn.close()
+    for eid, emp in data.items():
+        back.save_employee(eid, emp)
 
 
 def save_employee(emp_id: str, emp: dict):
-    conn = _get_db()
-    try:
-        conn.execute(
-            "INSERT OR REPLACE INTO employees (id, data, updated_at) VALUES (?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
-            [emp_id, json.dumps(emp, ensure_ascii=False)])
-        conn.commit()
-    finally:
-        conn.close()
+    back.save_employee(emp_id, emp)
 
 
 def get_employee(emp_id: str) -> dict | None:
-    conn = _get_db()
-    try:
-        row = conn.execute("SELECT data FROM employees WHERE id = ?", [emp_id]).fetchone()
-        return json.loads(row["data"]) if row else None
-    finally:
-        conn.close()
+    return back.get_employee(emp_id)
 
 
 def _next_dept_id() -> str:
@@ -274,11 +251,9 @@ Nango外部API: POST /nango/proxy {{"method":"GET/POST","endpoint":"APIパス","
             pass
 
     # ユーザープロファイル（AIが学んだ情報）を注入
-    conn = _get_db()
     try:
-        rows = conn.execute("SELECT data FROM data_store WHERE collection = 'user_profile' ORDER BY updated_at DESC LIMIT 1").fetchall()
-        if rows:
-            profile = json.loads(rows[0]["data"])
+        profile = back.get("/user/profile")
+        if profile and not profile.get("error"):
             profile_lines = []
             for k, v in profile.items():
                 if k.startswith("_"):
@@ -292,7 +267,5 @@ Nango外部API: POST /nango/proxy {{"method":"GET/POST","endpoint":"APIパス","
                 prompt += "\n".join(profile_lines) + "\n"
     except Exception:
         pass
-    finally:
-        conn.close()
 
     return prompt

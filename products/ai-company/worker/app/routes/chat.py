@@ -15,7 +15,7 @@ from fastapi.responses import StreamingResponse
 # Playwright同時実行制限（1つのブラウザのみ許可）
 _browser_semaphore = asyncio.Semaphore(1)
 
-from app.db import _get_db
+import app.back_client as back
 from app.employee import (
     load_employees, save_employees, get_employee,
     _get_employee_workdir, _ensure_mcp_symlink,
@@ -243,82 +243,25 @@ async def _run_agent_background(run: AgentRun, sdk_input: str, emp_id: str,
 
 
 # ============================================
-# Chat Threads & Messages (SQLite)
+# Chat Threads & Messages (via Back API)
 # ============================================
 
 
 def _get_threads(emp_id: str) -> list[dict]:
-    conn = _get_db()
-    try:
-        rows = conn.execute(
-            "SELECT id, title, created_at FROM chat_threads WHERE emp_id = ? ORDER BY created_at DESC",
-            [emp_id]
-        ).fetchall()
-        return [{"id": r["id"], "title": r["title"], "createdAt": r["created_at"]} for r in rows]
-    finally:
-        conn.close()
+    result = back.get(f"/employee/{emp_id}/threads")
+    return result.get("threads", [])
 
 
 def _create_thread(emp_id: str, title: str = "") -> dict:
-    thread_id = str(uuid.uuid4())[:8]
-    count = len(_get_threads(emp_id))
-    t = title or "新規チャット"
-    conn = _get_db()
-    try:
-        conn.execute("INSERT INTO chat_threads (id, emp_id, title) VALUES (?, ?, ?)", [thread_id, emp_id, t])
-        conn.commit()
-    finally:
-        conn.close()
-    return {"id": thread_id, "title": t, "createdAt": _time.strftime("%Y-%m-%dT%H:%M:%S")}
+    return back.create_thread(emp_id, title)
 
 
 def _append_chat_log(emp_id: str, role: str, content: str, thread_id: str = "default"):
-    conn = _get_db()
-    try:
-        conn.execute(
-            "INSERT INTO chat_messages (thread_id, emp_id, role, content) VALUES (?, ?, ?, ?)",
-            [thread_id, emp_id, role, content]
-        )
-        # スレッドタイトル自動設定（最初のユーザーメッセージが来たら）
-        if role == "user":
-            row = conn.execute(
-                "SELECT title FROM chat_threads WHERE id = ?", [thread_id]
-            ).fetchone()
-            if row and row["title"] in ("新規チャット", "General") or (row and row["title"].startswith("Chat ")):
-                msg = content.strip().split("\n")[0]
-                if len(msg) <= 20:
-                    new_title = msg
-                else:
-                    new_title = msg[:20] + "..."
-                conn.execute("UPDATE chat_threads SET title = ? WHERE id = ?", [new_title, thread_id])
-        if role == "assistant":
-            msg_count = conn.execute(
-                "SELECT COUNT(*) FROM chat_messages WHERE thread_id = ? AND role = 'assistant'", [thread_id]
-            ).fetchone()[0]
-            if msg_count <= 1:
-                user_msg = conn.execute(
-                    "SELECT content FROM chat_messages WHERE thread_id = ? AND role = 'user' ORDER BY id ASC LIMIT 1", [thread_id]
-                ).fetchone()
-                if user_msg:
-                    topic = user_msg["content"].strip().split("\n")[0]
-                    if len(topic) > 20:
-                        topic = topic[:20] + "..."
-                    conn.execute("UPDATE chat_threads SET title = ? WHERE id = ?", [topic, thread_id])
-        conn.commit()
-    finally:
-        conn.close()
+    back.append_chat_log(emp_id, role, content, thread_id)
 
 
 def _read_chat_log(emp_id: str, thread_id: str = "default") -> list[dict]:
-    conn = _get_db()
-    try:
-        rows = conn.execute(
-            "SELECT role, content, created_at as timestamp FROM chat_messages WHERE thread_id = ? AND emp_id = ? ORDER BY id ASC",
-            [thread_id, emp_id]
-        ).fetchall()
-        return [{"role": r["role"], "content": r["content"], "timestamp": r["timestamp"]} for r in rows]
-    finally:
-        conn.close()
+    return back.read_chat_log(emp_id, thread_id)
 
 
 # ============================================
@@ -340,13 +283,10 @@ async def _update_user_profile(user_msg: str, assistant_reply: str):
     _profile_update_lock = True
 
     try:
-        conn = _get_db()
-        try:
-            rows = conn.execute("SELECT id, data FROM data_store WHERE collection = 'user_profile' LIMIT 1").fetchall()
-            existing = json.loads(rows[0]["data"]) if rows else {}
-            profile_id = rows[0]["id"] if rows else "profile-main"
-        finally:
-            conn.close()
+        existing = back.get("/user/profile")
+        if existing.get("error"):
+            existing = {}
+        profile_id = "profile-main"
 
         existing_text = json.dumps(existing, ensure_ascii=False) if existing else "{}"
 
@@ -404,15 +344,7 @@ JSON形式のみ出力:
                         unique.append(l)
                 merged["learnings"] = unique[-5:]
 
-            conn = _get_db()
-            try:
-                conn.execute(
-                    "INSERT OR REPLACE INTO data_store (id, collection, data, updated_at) VALUES (?, ?, ?, strftime('%Y-%m-%dT%H:%M:%S','now','localtime'))",
-                    [profile_id, "user_profile", json.dumps(merged, ensure_ascii=False)]
-                )
-                conn.commit()
-            finally:
-                conn.close()
+            back.put("/user/profile", merged)
     except Exception as e:
         print(f"[profile] Update error: {e}")
     finally:
@@ -442,13 +374,7 @@ async def create_thread_endpoint(emp_id: str, payload: dict = {}):
 
 @router.delete("/employee/{emp_id}/threads/{thread_id}")
 async def delete_thread(emp_id: str, thread_id: str):
-    conn = _get_db()
-    try:
-        conn.execute("DELETE FROM chat_messages WHERE thread_id = ? AND emp_id = ?", [thread_id, emp_id])
-        conn.execute("DELETE FROM chat_threads WHERE id = ? AND emp_id = ?", [thread_id, emp_id])
-        conn.commit()
-    finally:
-        conn.close()
+    back.delete(f"/employee/{emp_id}/threads/{thread_id}")
     return {"ok": True}
 
 

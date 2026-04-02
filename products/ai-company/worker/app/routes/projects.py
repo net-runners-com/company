@@ -10,7 +10,7 @@ import time as _time
 
 from fastapi import APIRouter, Request
 
-from app.db import _get_db
+import app.back_client as back
 from app.employee import (
     load_employees, _get_employee_workdir, _build_employee_system_prompt,
 )
@@ -30,26 +30,11 @@ _running_procs: dict[str, list[asyncio.subprocess.Process]] = {}
 
 
 def _save_project(project_id: str, project: dict):
-    conn = _get_db()
-    try:
-        conn.execute(
-            "UPDATE data_store SET data = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%S','now','localtime') WHERE id = ? AND collection = 'projects'",
-            [json.dumps(project, ensure_ascii=False), project_id]
-        )
-        conn.commit()
-    finally:
-        conn.close()
+    back.save_data("projects", project_id, project)
 
 
 def _load_project(project_id: str) -> dict | None:
-    conn = _get_db()
-    try:
-        row = conn.execute(
-            "SELECT data FROM data_store WHERE collection = 'projects' AND id = ?", [project_id]
-        ).fetchone()
-        return json.loads(row["data"]) if row else None
-    finally:
-        conn.close()
+    return back.get_data("projects", project_id)
 
 
 # ─── Directive ───
@@ -224,29 +209,15 @@ async def create_project(request: Request):
         emp = employees.get(s.get("empId", ""))
         s["empName"] = emp.get("name", "") if emp else ""
 
-    conn = _get_db()
-    try:
-        conn.execute(
-            "INSERT INTO data_store (id, collection, data) VALUES (?, ?, ?)",
-            [project_id, "projects", json.dumps(project, ensure_ascii=False)]
-        )
-        conn.commit()
-    finally:
-        conn.close()
+    back.save_data("projects", project_id, project)
 
     return project
 
 
 @router.get("/projects")
 async def list_projects():
-    conn = _get_db()
-    try:
-        rows = conn.execute(
-            "SELECT id, data, created_at FROM data_store WHERE collection = 'projects' ORDER BY created_at DESC"
-        ).fetchall()
-        return {"projects": [json.loads(r["data"]) for r in rows]}
-    finally:
-        conn.close()
+    entries = back.list_data("projects")
+    return {"projects": entries}
 
 
 @router.get("/projects/{project_id}")
@@ -393,22 +364,14 @@ async def _execute_step_bg(project_id: str, step_num: int):
         _save_project(project_id, project)
 
         # タスク追加
-        conn = _get_db()
-        try:
-            conn.execute(
-                "INSERT OR REPLACE INTO data_store (id, collection, data) VALUES (?, ?, ?)",
-                [task_key, f"tasks_{emp_id}", json.dumps({
-                    "title": step.get("title", ""),
-                    "project": project.get("brief", ""),
-                    "projectId": project_id,
-                    "step": step_num,
-                    "status": "in_progress",
-                    "assignedAt": _time.strftime("%Y-%m-%dT%H:%M:%S"),
-                }, ensure_ascii=False)]
-            )
-            conn.commit()
-        finally:
-            conn.close()
+        back.save_data(f"tasks_{emp_id}", task_key, {
+            "title": step.get("title", ""),
+            "project": project.get("brief", ""),
+            "projectId": project_id,
+            "step": step_num,
+            "status": "in_progress",
+            "assignedAt": _time.strftime("%Y-%m-%dT%H:%M:%S"),
+        })
 
         workdir = _get_employee_workdir(emp)
         system_prompt = _build_employee_system_prompt(emp)
@@ -481,19 +444,12 @@ async def _execute_step_bg(project_id: str, step_num: int):
 
         # タスクステータス更新
         final_status = step.get("status", "error")
-        conn = _get_db()
-        try:
-            existing = conn.execute("SELECT data FROM data_store WHERE id = ? AND collection = ?", [task_key, f"tasks_{emp_id}"]).fetchone()
-            if existing:
-                task_data = json.loads(existing["data"])
-                task_data["status"] = "done" if final_status == "done" else ("cancelled" if final_status == "cancelled" else "error")
-                task_data["completedAt"] = _time.strftime("%Y-%m-%dT%H:%M:%S")
-                task_data["result"] = step.get("result", "")[:200]
-                conn.execute("UPDATE data_store SET data = ? WHERE id = ? AND collection = ?",
-                    [json.dumps(task_data, ensure_ascii=False), task_key, f"tasks_{emp_id}"])
-                conn.commit()
-        finally:
-            conn.close()
+        existing = back.get_data(f"tasks_{emp_id}", task_key)
+        if existing:
+            existing["status"] = "done" if final_status == "done" else ("cancelled" if final_status == "cancelled" else "error")
+            existing["completedAt"] = _time.strftime("%Y-%m-%dT%H:%M:%S")
+            existing["result"] = step.get("result", "")[:200]
+            back.save_data(f"tasks_{emp_id}", task_key, existing)
 
         _save_project(project_id, project)
 
